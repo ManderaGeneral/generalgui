@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "generalgui",
-    version = "1.0.0",
+    version = "0.0.1",
     description = (""
                    "Core features for GUI using Tkinter."
                    ""),
