@@ -1,27 +1,43 @@
 
-from tkinter import Tk, Frame
+from generallibrary.types import typeChecker
+import tkinter as tk
 
 class Page:
-    def __init__(self, master = None, name=None):
-        if master is None:
-            self.app = Tk()
-            master = self.app
+    def __init__(self, parentPage=None, name=None):
+        typeChecker(parentPage, (None, Page))
 
-        else:
-            self.app = None
+        if parentPage is None:
+            parentPage = App()
 
+        self.parentPage = parentPage
+        self.widget = tk.Frame(parentPage.widget)
         self.name = name
 
-        self.master = master
-        self.frame = Frame(master)
+    def getParentPages(self, includeSelf=False):
+        pages = [self]
+        while True:
+            parentPage = pages[-1].parentPage
+            if isinstance(parentPage, App):
+                if includeSelf:
+                    return pages
+                else:
+                    return pages[1:]
+            else:
+                pages.append(parentPage)
 
-        self.elements = []
+    def getApp(self):
+        return self.getParentPages()[-1].parentPage.widget
 
     def show(self):
-        self.frame.pack()
-        self.app.mainloop()
+        for page in (pages := self.getParentPages(includeSelf=True)):
+            page.widget.pack()
+
+        pages[-1].parentPage.widget.mainloop()
 
     def hide(self):
-        self.frame.pack_forget()
+        self.widget.pack_forget()
+
+
+from generalgui.app import App
 
 
