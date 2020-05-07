@@ -3,9 +3,9 @@ from generallibrary.types import typeChecker
 import tkinter as tk
 
 class Page:
-    def __init__(self, parentPage=None, name=None):
-        typeChecker(parentPage, (None, Page))
-
+    def __init__(self, parentPage=None, name=None, side="top"):
+        typeChecker(parentPage, (None, Page, App))
+        self.side = side
         if parentPage is None:
             parentPage = App()
 
@@ -26,13 +26,19 @@ class Page:
                 pages.append(parentPage)
 
     def getApp(self):
-        return self.getParentPages()[-1].parentPage.widget
+        parentPages = self.getParentPages()
+        if parentPages:
+            topPage = parentPages[-1]
+        else:
+            topPage = self
+        return topPage.parentPage
 
-    def show(self):
-        for page in (pages := self.getParentPages(includeSelf=True)):
-            page.widget.pack()
+    def show(self, mainloop=True):
+        for page in self.getParentPages(includeSelf=True):
+            page.widget.pack(side=page.side)
 
-        pages[-1].parentPage.widget.mainloop()
+        if mainloop:
+            self.getApp().widget.mainloop()
 
     def hide(self):
         self.widget.pack_forget()
