@@ -17,13 +17,14 @@ def onClick(page):
 
 
 page = Page()
-page2 = Page(page)
+page2 = Page(page.app)
 
 Text(page, "hello")
 Text(page2, "there")
 
 
-Button(page, "button", lambda: onClick(page2))
+Button(page, "button", page2.show)
+Button(page2, "button", page.show)
 
 
 page.show()

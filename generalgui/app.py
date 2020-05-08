@@ -1,19 +1,18 @@
 
 from tkinter import Tk
+from generalgui.page import Page
 
 # Inherit Page?
-class App:
+class App(Page):
     """
     Container for Tk() object with a lot of convenient features.
     """
     def __init__(self):
-        self.widget = Tk()
         self.parentPage = None
-        self.mainlooped = False
+        self.widget = Tk()
         self.app = self
 
-    def isShown(self):
-        return self.widget.winfo_ismapped()
+        self.mainlooped = False
 
     def show(self):
         if not self.isShown():
@@ -27,8 +26,7 @@ class App:
         if self.isShown():
             self.widget.withdraw()
 
-    def toggle(self):
-        if self.isShown():
-            self.hide()
-        else:
-            self.show()
+    def getParentPages(self, includeSelf=False):
+        raise BlockingIOError("This method is disabled in App")
+
+

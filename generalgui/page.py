@@ -13,6 +13,8 @@ class Page:
         self.side = side
 
         self.widget = tk.Frame(parentPage.widget)
+        setattr(self.widget, "element", self)
+
         self.app = parentPage.app
 
     def getParentPages(self, includeSelf=False):
@@ -39,6 +41,8 @@ class Page:
         return self.widget.winfo_ismapped()
 
     def show(self):
+        self.parentPage.hideChildren()
+
         for page in self.getParentPages(includeSelf=True):
             if page.isShown():
                 return
@@ -55,6 +59,17 @@ class Page:
             self.hide()
         else:
             self.show()
+
+    def getChildren(self):
+        return [widget.element for widget in self.widget.winfo_children()]
+
+    def showChildren(self):
+        for child in self.getChildren():
+            child.show()
+
+    def hideChildren(self):
+        for child in self.getChildren():
+            child.hide()
 
 
 from generalgui.app import App
