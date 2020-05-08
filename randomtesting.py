@@ -1,20 +1,31 @@
 
 from generalgui.page import Page
 from generalgui.element import Text, Button
-from generalgui.app import App
+from generallibrary.time import sleep
 
 
 
 def onClick(page):
-    page2 = Page(page)
-    Text(page2, "there")
-    page2.show()
+
+    page.toggle()
+    page.app.toggle()
+    sleep(1)
+    page.app.toggle()
+
+
 
 
 
 page = Page()
+page2 = Page(page)
+
 Text(page, "hello")
-Button(page, "button", lambda page=page: onClick(page))
+Text(page2, "there")
+
+
+Button(page, "button", lambda: onClick(page2))
+
+
 page.show()
 
 

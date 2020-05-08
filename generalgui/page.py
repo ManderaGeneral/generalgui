@@ -5,13 +5,15 @@ import tkinter as tk
 class Page:
     def __init__(self, parentPage=None, name=None, side="top"):
         typeChecker(parentPage, (None, Page, App))
-        self.side = side
         if parentPage is None:
             parentPage = App()
 
         self.parentPage = parentPage
-        self.widget = tk.Frame(parentPage.widget)
         self.name = name
+        self.side = side
+
+        self.widget = tk.Frame(parentPage.widget)
+        self.app = parentPage.app
 
     def getParentPages(self, includeSelf=False):
         pages = [self]
@@ -25,23 +27,34 @@ class Page:
             else:
                 pages.append(parentPage)
 
-    def getApp(self):
+    def getTopPage(self):
         parentPages = self.getParentPages()
         if parentPages:
             topPage = parentPages[-1]
         else:
             topPage = self
-        return topPage.parentPage
+        return topPage
 
-    def show(self, mainloop=True):
+    def isShown(self):
+        return self.widget.winfo_ismapped()
+
+    def show(self):
         for page in self.getParentPages(includeSelf=True):
+            if page.isShown():
+                return
             page.widget.pack(side=page.side)
 
-        if mainloop:
-            self.getApp().widget.mainloop()
+        self.app.show()
 
     def hide(self):
-        self.widget.pack_forget()
+        if self.isShown():
+            self.widget.pack_forget()
+
+    def toggle(self):
+        if self.isShown():
+            self.hide()
+        else:
+            self.show()
 
 
 from generalgui.app import App
