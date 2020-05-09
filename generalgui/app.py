@@ -1,6 +1,5 @@
 
 from tkinter import Tk
-
 from generalgui.shared_methods import Element_Page_App, Page_App
 
 # Inherit Page?
