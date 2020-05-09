@@ -1,9 +1,11 @@
 
 import tkinter as tk
+
 from generallibrary.types import typeChecker
 
+from generalgui.shared_methods import Element_Page, Element_Page_App
 
-class Element:
+class Element(Element_Page, Element_Page_App):
     def __init__(self, page, widget):
         typeChecker(page, Page)
 

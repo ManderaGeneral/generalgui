@@ -1,9 +1,10 @@
 
 from tkinter import Tk
-from generalgui.page import Page
+
+from generalgui.shared_methods import Element_Page_App, Page_App
 
 # Inherit Page?
-class App(Page):
+class App(Element_Page_App, Page_App):
     """
     Container for Tk() object with a lot of convenient features.
     """
@@ -25,8 +26,5 @@ class App(Page):
     def hide(self):
         if self.isShown():
             self.widget.withdraw()
-
-    def getParentPages(self, includeSelf=False):
-        raise BlockingIOError("This method is disabled in App")
 
 
