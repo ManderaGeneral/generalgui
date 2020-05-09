@@ -3,32 +3,21 @@ from generalgui.page import Page
 from generalgui.element import Text, Button
 from generallibrary.time import sleep
 
+import random
 
 
-def onClick(page):
-
-    page.toggle()
-    page.app.toggle()
-    sleep(1)
-    page.app.toggle()
-
-
+def createPage(parentPage):
+    page = Page(parentPage)
+    Text(page, f"hello {random.randint(0, 1000)}")
+    Button(page, "button", lambda: createPage(page.parentPage))
+    print(len(page.parentPage.getChildren()))
+    page.show(hideSiblings=False)
 
 
 
-page = Page()
-page2 = Page(page.app)
-
-Text(page, "hello")
-Text(page2, "there")
 
 
-Button(page, "button", page2.show)
-Button(page2, "button", page.show)
-
-
-page.show()
-
+createPage(None)
 
 
 

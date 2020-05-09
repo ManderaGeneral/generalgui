@@ -3,10 +3,13 @@ from generallibrary.types import typeChecker
 import tkinter as tk
 
 class Page:
-    def __init__(self, parentPage=None, name=None, side="top"):
+    def __init__(self, parentPage=None, name=None, side="top", removeSiblings=False):
         typeChecker(parentPage, (None, Page, App))
+
         if parentPage is None:
             parentPage = App()
+        elif removeSiblings:
+            parentPage.removeChildren()
 
         self.parentPage = parentPage
         self.name = name
@@ -40,8 +43,9 @@ class Page:
     def isShown(self):
         return self.widget.winfo_ismapped()
 
-    def show(self):
-        self.parentPage.hideChildren()
+    def show(self, hideSiblings):
+        if hideSiblings:
+            self.parentPage.hideChildren()
 
         for page in self.getParentPages(includeSelf=True):
             if page.isShown():
@@ -70,6 +74,13 @@ class Page:
     def hideChildren(self):
         for child in self.getChildren():
             child.hide()
+
+    def remove(self):
+        self.widget.destroy()
+
+    def removeChildren(self):
+        for child in self.getChildren():
+            child.remove()
 
 
 from generalgui.app import App
