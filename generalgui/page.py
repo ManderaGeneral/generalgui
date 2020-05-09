@@ -1,9 +1,12 @@
-
+"""App for generalgui, controls Frame"""
 from generallibrary.types import typeChecker
 import tkinter as tk
 from generalgui.shared_methods import Element_Page, Element_Page_App, Page_App
 
 class Page(Element_Page, Element_Page_App, Page_App):
+    """
+    Controls one tkinter Frame and adds a lot of convenient features.
+    """
     def __init__(self, parentPage=None, name=None, side="top", removeSiblings=False):
         typeChecker(parentPage, (None, Page, App))
 

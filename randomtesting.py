@@ -1,15 +1,21 @@
+"""Random testing"""
 
 from generalgui.page import Page
 from generalgui.element import Text, Button
 from generallibrary.time import sleep
 
-import random
 
 
 def aktivering(page):
-    page.hide()
+    """
+    test
+
+    :param page:
+    :return:
+    """
+    page.app.hide()
     sleep(1)
-    page.show()
+    page.app.show()
 
 page = Page()
 Text(page, "Lisbeth")

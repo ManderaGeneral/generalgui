@@ -1,9 +1,12 @@
-
+"""Element for generalgui, controls a widget that's not App or Page"""
 import tkinter as tk
 from generallibrary.types import typeChecker
 from generalgui.shared_methods import Element_Page, Element_Page_App
 
 class Element(Element_Page, Element_Page_App):
+    """
+    Element is inherited by all tkinter widgets exluding App and Page.
+    """
     def __init__(self, page, widget, side="top"):
         typeChecker(page, Page)
 
@@ -15,6 +18,7 @@ class Element(Element_Page, Element_Page_App):
         self.pack()
 
 class Text(Element):
+    """Controls one tkinter Label"""
     def __init__(self, page, text):
         typeChecker(page, Page)
 
@@ -24,6 +28,7 @@ class Text(Element):
         super().__init__(page, widget)
 
 class Button(Element):
+    """Controls one tkinter Button"""
     def __init__(self, page, text, lambdaFunc):
         typeChecker(page, Page)
 
