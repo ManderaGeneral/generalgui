@@ -1,6 +1,8 @@
 """App for generalgui, controls Tk"""
+
 from tkinter import Tk
-from generalgui.shared_methods import Element_Page_App, Page_App
+from generalgui.shared_methods.element_page_app import Element_Page_App
+from generalgui.shared_methods.page_app import Page_App
 
 class App(Element_Page_App, Page_App):
     """
@@ -13,16 +15,18 @@ class App(Element_Page_App, Page_App):
 
         self.mainlooped = False
 
-    def show(self):
+    def show(self, mainloop=True):
         """
         Create tkinter window if it's not shown. Starts mainloop if it's not started.
         """
         if not self.isShown():
             self.widget.deiconify()
 
-            if not self.mainlooped:
+            if mainloop and not self.mainlooped:
                 self.widget.mainloop()
                 self.mainlooped = True
+            else:
+                self.widget.update()
 
     def hide(self):
         """

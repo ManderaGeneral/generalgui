@@ -1,7 +1,9 @@
 """Element for generalgui, controls a widget that's not App or Page"""
+
 import tkinter as tk
 from generallibrary.types import typeChecker
-from generalgui.shared_methods import Element_Page, Element_Page_App
+from generalgui.shared_methods.element_page import Element_Page
+from generalgui.shared_methods.element_page_app import Element_Page_App
 
 class Element(Element_Page, Element_Page_App):
     """
