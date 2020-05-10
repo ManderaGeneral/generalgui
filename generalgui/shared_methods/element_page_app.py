@@ -21,7 +21,4 @@ class Element_Page_App:
         """
         self.widget.destroy()
 
-def _configureIgnore(ignore):
-    if not isinstance(ignore, (tuple, list)):
-        ignore = [ignore]
-    return [value for value in ignore if value is not None]
+

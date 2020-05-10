@@ -25,8 +25,8 @@ class App(Element_Page_App, Page_App):
             if mainloop and not self.mainlooped:
                 self.widget.mainloop()
                 self.mainlooped = True
-            else:
-                self.widget.update()
+        if not mainloop:
+            self.widget.update()
 
     def hide(self):
         """
