@@ -33,12 +33,8 @@ class Element_Page:
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         :rtype: generalgui.page.Page
         """
-        parentPages = self.getParentPages()
-        if parentPages:
-            topPage = parentPages[-1]
-        else:
-            topPage = self
-        return topPage
+        parentPages = self.getParentPages(includeSelf=True)
+        return parentPages[-1]
 
     @ignore
     def getSiblings(self, ignore=None):

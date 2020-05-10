@@ -9,10 +9,10 @@ class Element(Element_Page, Element_Page_App):
     """
     Element is inherited by all tkinter widgets exluding App and Page.
     """
-    def __init__(self, page, widget, side="top"):
-        typeChecker(page, Page)
+    def __init__(self, parentPage, widget, side="top"):
+        typeChecker(parentPage, Page)
 
-        self.page = page
+        self.parentPage = parentPage
         self.widget = widget
         self.side = side
 
