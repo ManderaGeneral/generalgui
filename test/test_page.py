@@ -9,7 +9,6 @@ class PageTest(unittest.TestCase):
     def test_init(self):
         page = Page()
         self.assertIs(page.parentPage, page.app)
-        self.assertEqual(page.side, "top")
         self.assertIs(page.widget.element, page)
         page.remove()
 

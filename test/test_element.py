@@ -11,7 +11,6 @@ class ElementTest(unittest.TestCase):
         text = Text(page, "hello")
         self.assertEqual(text.parentPage, page)
         self.assertIs(text.widget.element, text)
-        self.assertEqual(text.side, "top")
         self.assertFalse(text.isShown())
 
         text.show(mainloop=False)
@@ -25,7 +24,6 @@ class ElementTest(unittest.TestCase):
         button = Button(page, "hello", lambda: 5)
         self.assertEqual(button.parentPage, page)
         self.assertIs(button.widget.element, button)
-        self.assertEqual(button.side, "top")
         self.assertFalse(button.isShown())
 
         button.show(mainloop=False)

@@ -11,7 +11,13 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, side="top", removeSiblings=False):
+    def __init__(self, parentPage=None, removeSiblings=False):
+        """
+
+        :param parentPage:
+        :param removeSiblings:
+        """
+
         typeChecker(parentPage, (None, Page, App))
 
         if parentPage is None:
@@ -19,9 +25,31 @@ class Page(Element_Page, Element_Page_App, Page_App):
         elif removeSiblings:
             parentPage.removeChildren()
 
-        widget = tk.Frame(parentPage.widget)
-        super().__init__(parentPage, widget, side)
 
+        # mainFrame = tk.Frame(parentPage.getBaseWidget())
+
+        canvas = tk.Canvas(parentPage.getBaseWidget())
+        self.setPackParameters(canvas, side="left", fill="both", expand=True)
+
+        frame = tk.Frame(canvas)
+        self.setPackParameters(frame, side="left", fill="both", expand=True)
+
+        vsb = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=vsb.set)
+        vsb.pack(side="right", fill="y")
+
+        hsb = tk.Scrollbar(canvas, orient="horizontal", command=canvas.xview)
+        canvas.configure(xscrollcommand=hsb.set)
+        hsb.pack(side="bottom", fill="x")
+
+        canvas.create_window((4, 4), window=frame, anchor="nw", tags="self.canvas")
+
+        canvas.bind("<Configure>", lambda event: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        setattr(canvas, "widget", frame)
+        setattr(frame, "element", self)
+
+        super().__init__(parentPage=parentPage, widget=canvas)
 
 
 from generalgui.app import App

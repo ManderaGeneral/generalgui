@@ -7,18 +7,17 @@ class Element_Page:
     """
     Pure methods that Element and Page share.
     """
-    def __init__(self, parentPage, widget, side):
+    def __init__(self, parentPage, widget):
         """
 
         :param generalgui.app.App or generalgui.page.Page parentPage:
         :param widget:
-        :param side:
         """
         self.parentPage = parentPage
         self.widget = widget
-        self.side = side
 
         setattr(widget, "element", self)
+
         self.app = parentPage.app
 
     def getParentPages(self, includeSelf=False):
@@ -96,6 +95,15 @@ class Element_Page:
         for sibling in self.getSiblings(ignore=ignore):
             sibling.remove()
 
+    def setPackParameters(self, tkinterEle, **parameters):
+        """
+        Create pack parameters for a specific tkinter element. Store it in it's object which then is used by the 'pack' method.
+
+        :param tkinterEle: tkinter element
+        :param parameters: parameters that this element can take when being packed
+        """
+        setattr(tkinterEle, "packParameters", parameters)
+
     def pack(self):
         """
         Should not have to be called manually.
@@ -103,7 +111,7 @@ class Element_Page:
 
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         """
-        self.widget.pack(side=self.side)
+        self.widget.pack(**getattr(self.widget, "packParameters", {}))
 
     def show(self, hideSiblings=False, mainloop=True):
         """

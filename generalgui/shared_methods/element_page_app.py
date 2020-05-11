@@ -11,7 +11,7 @@ class Element_Page_App:
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :rtype: bool
         """
-        return self.widget.winfo_ismapped()
+        return not not self.widget.winfo_ismapped()
 
     def isPacked(self):
         """

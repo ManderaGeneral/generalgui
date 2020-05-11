@@ -12,10 +12,12 @@ class Element(Element_Page, Element_Page_App):
     Element is inherited by all tkinter widgets exluding App and Page.
     Shown by default. So when it's page is shown then all of page's children are shown automatically.
     """
-    def __init__(self, parentPage, widget, side="top"):
+    def __init__(self, parentPage, widget, **packParameters):
         typeChecker(parentPage, Page)
 
-        super().__init__(parentPage, widget, side)
+        self.setPackParameters(widget, **packParameters)
+
+        super().__init__(parentPage, widget)
 
         self.pack()
         self.events = {}
@@ -104,7 +106,7 @@ class Text(Element):
         typeChecker(page, Page)
 
         self.text = text
-        widget = tk.Label(page.widget, text=text)
+        widget = tk.Label(page.getBaseWidget(), text=text)
 
         super().__init__(page, widget)
 
@@ -123,7 +125,7 @@ class Button(Element):
         typeChecker(page, Page)
 
         self.text = text
-        widget = tk.Button(page.widget, text=text)
+        widget = tk.Button(page.getBaseWidget(), text=text)
 
         super().__init__(page, widget)
 

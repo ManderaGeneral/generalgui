@@ -6,6 +6,14 @@ class Page_App:
     """
     Pure methods that Page and App share.
     """
+    def getBaseWidget(self):
+        """
+
+        :param generalgui.page.Page or generalgui.app.App self: Page or App
+        :return:
+        """
+        return getattr(self.widget, "widget", self.widget)
+
     @ignore
     def getChildren(self, ignore=None):
         """
@@ -16,7 +24,7 @@ class Page_App:
         :return: Children elements in list
         :rtype: list[generalgui.element.Element or generalgui.page.Page]
         """
-        return [widget.element for widget in self.widget.winfo_children() if widget.element not in ignore]
+        return [widget.element for widget in self.getBaseWidget().winfo_children() if widget.element not in ignore]
 
     @ignore
     def showChildren(self, ignore=None, mainloop=True):
