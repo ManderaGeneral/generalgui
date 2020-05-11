@@ -7,6 +7,20 @@ class Element_Page:
     """
     Pure methods that Element and Page share.
     """
+    def __init__(self, parentPage, widget, side):
+        """
+
+        :param generalgui.app.App or generalgui.page.Page parentPage:
+        :param widget:
+        :param side:
+        """
+        self.parentPage = parentPage
+        self.widget = widget
+        self.side = side
+
+        setattr(widget, "element", self)
+        self.app = parentPage.app
+
     def getParentPages(self, includeSelf=False):
         """
         Retrieves parent pages from element or page going all the way up to a top page that has App as it's 'parentPage' attribute.

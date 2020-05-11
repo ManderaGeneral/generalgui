@@ -9,8 +9,9 @@ from generalgui.shared_methods.page_app import Page_App
 class Page(Element_Page, Element_Page_App, Page_App):
     """
     Controls one tkinter Frame and adds a lot of convenient features.
+    Hidden by default.
     """
-    def __init__(self, parentPage=None, name=None, side="top", removeSiblings=False):
+    def __init__(self, parentPage=None, side="top", removeSiblings=False):
         typeChecker(parentPage, (None, Page, App))
 
         if parentPage is None:
@@ -18,14 +19,10 @@ class Page(Element_Page, Element_Page_App, Page_App):
         elif removeSiblings:
             parentPage.removeChildren()
 
-        self.parentPage = parentPage
-        self.name = name
-        self.side = side
+        widget = tk.Frame(parentPage.widget)
+        super().__init__(parentPage, widget, side)
 
-        self.widget = tk.Frame(parentPage.widget)
-        setattr(self.widget, "element", self)
 
-        self.app = parentPage.app
 
 from generalgui.app import App
 

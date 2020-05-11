@@ -10,11 +10,10 @@ class App(Element_Page_App, Page_App):
     """
     def __init__(self):
         self.parentPage = None
-        self.app = self
-
-        self.mainlooped = False
         self.widget = Tk()
         setattr(self.widget, "element", self)
+        self.app = self
+        self.mainlooped = False
 
     def show(self, mainloop=True):
         """

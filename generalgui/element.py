@@ -8,20 +8,25 @@ from generalgui.shared_methods.element_page_app import Element_Page_App
 class Element(Element_Page, Element_Page_App):
     """
     Element is inherited by all tkinter widgets exluding App and Page.
+    Shown by default. So when it's page is shown then all of page's children are shown automatically.
     """
     def __init__(self, parentPage, widget, side="top"):
         typeChecker(parentPage, Page)
 
-        self.parentPage = parentPage
-        self.widget = widget
-        self.side = side
+        super().__init__(parentPage, widget, side)
 
-        setattr(widget, "element", self)
         self.pack()
+
 
 class Text(Element):
     """Controls one tkinter Label"""
     def __init__(self, page, text):
+        """
+        Create a Text element that controls a label.
+
+        :param Page page: Parent page
+        :param str text: Text to be displayed
+        """
         typeChecker(page, Page)
 
         self.text = text
@@ -32,6 +37,13 @@ class Text(Element):
 class Button(Element):
     """Controls one tkinter Button"""
     def __init__(self, page, text, lambdaFunc):
+        """
+        Create a Button element that controls a button.
+
+        :param Page page: Parent page
+        :param str text: Text to be displayed
+        :param function lambdaFunc: Function be called when pressed
+        """
         typeChecker(page, Page)
 
         self.text = text
@@ -41,3 +53,35 @@ class Button(Element):
 
 
 from generalgui.page import Page
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
