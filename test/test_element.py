@@ -1,6 +1,6 @@
 """Tests for App"""
 from generalgui.page import Page
-from generalgui.element import Text, Element
+from generalgui.element import Text, Button
 
 import unittest
 import tkinter as tk
@@ -13,10 +13,28 @@ class ElementTest(unittest.TestCase):
         self.assertIs(text.widget.element, text)
         self.assertEqual(text.side, "top")
         self.assertFalse(text.isShown())
+
         text.show(mainloop=False)
         self.assertTrue(text.isShown())
+
         page.app.remove()
         self.assertRaises(tk.TclError, text.isShown)
+
+    def test_button(self):
+        page = Page()
+        button = Button(page, "hello", lambda: 5)
+        self.assertEqual(button.parentPage, page)
+        self.assertIs(button.widget.element, button)
+        self.assertEqual(button.side, "top")
+        self.assertFalse(button.isShown())
+
+        button.show(mainloop=False)
+        self.assertTrue(button.isShown())
+
+        self.assertEqual(button.click(), 5)
+
+        page.app.remove()
+        self.assertRaises(tk.TclError, button.isShown)
 
     def test_siblings(self):
         page = Page()
@@ -101,8 +119,31 @@ class ElementTest(unittest.TestCase):
         self.assertEqual(text3.getParentPages(), [page2, page])
         self.assertEqual(text3.getParentPages(includeSelf=True), [text3, page2, page])
 
+    def test_textOnClick(self):
+        text = Text(Page(), "hello")
+        text.onClick(lambda: 1)
+        self.assertEqual(text.click(), 1)
+        text.onClick(lambda: 2)
+        self.assertEqual(text.click(), 2)
+        text.onClick(lambda: 3, add=True)
+        self.assertEqual(text.click(), (2, 3))
+        text.onClick(lambda: 4, add=True)
+        self.assertEqual(text.click(), (2, 3, 4))
+        text.onClick(lambda: 5)
+        self.assertEqual(text.click(), 5)
 
-
+    def test_buttonOnRightClick(self):
+        button = Button(Page(), "hello")
+        button.onRightClick(lambda: 1)
+        self.assertEqual(button.rightClick(), 1)
+        button.onRightClick(lambda: 2)
+        self.assertEqual(button.rightClick(), 2)
+        button.onRightClick(lambda: 3, add=True)
+        self.assertEqual(button.rightClick(), (2, 3))
+        button.onRightClick(lambda: 4, add=True)
+        self.assertEqual(button.rightClick(), (2, 3, 4))
+        button.onRightClick(lambda: 5)
+        self.assertEqual(button.rightClick(), 5)
 
 
 
