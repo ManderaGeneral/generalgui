@@ -129,23 +129,22 @@ class Element_Page:
 
     def hide(self):
         """
-        Hide this Element or Page if it's shown.
+        Hide this Element or Page if it's packed.
 
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         """
-        if self.isShown():
+        if self.isPacked:
             self.widget.pack_forget()
-            self.app.widget.update()  # Because if sleep(1) was called directly after for example then the window locked and did nothing.
 
     def toggle(self, mainloop=True):
         """
-        Hides Element or Page if it's shown and shows it if it's not shown.
+        Hides Element or Page if it's packed and shows it if it's not packed.
 
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         :return: Whether it's shown or not after call
         :param mainloop: Whether to call mainloop or not when being shown
         """
-        if self.isShown():
+        if self.isPacked():
             self.hide()
             return False
         else:

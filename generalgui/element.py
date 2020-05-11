@@ -119,7 +119,6 @@ class Button(Element):
         :param Page page: Parent page
         :param str text: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
-        :param tk.Button self.widget: testing
         """
         typeChecker(page, Page)
 
@@ -129,7 +128,6 @@ class Button(Element):
         super().__init__(page, widget)
 
         self.onClick(func)
-        self.widget = self.widget
 
 
 from generalgui.page import Page
