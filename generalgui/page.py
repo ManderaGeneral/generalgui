@@ -25,11 +25,9 @@ class Page(Element_Page, Element_Page_App, Page_App):
         elif removeSiblings:
             parentPage.removeChildren()
 
-
-        # mainFrame = tk.Frame(parentPage.getBaseWidget())
-
-        canvas = tk.Canvas(parentPage.getBaseWidget())
-        self.setPackParameters(canvas, side="left", fill="both", expand=True)
+        canvas = tk.Canvas(parentPage.getBaseWidget(), height=500, width=500)
+        canvas.pack_propagate(0)
+        self.setPackParameters(canvas, fill="both", expand=True)
 
         frame = tk.Frame(canvas)
         self.setPackParameters(frame, side="left", fill="both", expand=True)
