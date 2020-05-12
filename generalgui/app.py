@@ -15,16 +15,19 @@ class App(Element_Page_App, Page_App):
         self.app = self
         self.mainlooped = False
 
+    def mainloop(self):
+        if not self.mainlooped:
+            self.widget.mainloop()
+            self.mainlooped = True
+
     def show(self, mainloop=True):
         """
         Create tkinter window if it's not shown. Starts mainloop if it's not started.
         """
         if not self.isShown():
             self.widget.deiconify()
-
-            if mainloop and not self.mainlooped:
-                self.widget.mainloop()
-                self.mainlooped = True
+        if mainloop and not self.mainlooped:
+            self.mainloop()
         if not mainloop:
             self.widget.update()
 

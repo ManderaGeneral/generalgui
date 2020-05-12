@@ -36,7 +36,9 @@ class Page_App:
         :param mainloop: Whether to call mainloop or not
         """
         for child in self.getChildren(ignore=ignore):
-            child.show(mainloop=mainloop)
+            child.show(mainloop=False)
+        if mainloop:
+            self.app.mainloop()
 
     @ignore
     def hideChildren(self, ignore=None):

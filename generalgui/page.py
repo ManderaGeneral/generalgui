@@ -11,11 +11,14 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False, width=None, height=None):
+    def __init__(self, parentPage=None, removeSiblings=False, width=None, height=None, vsb=True, hsb=True, **packParameters):
         """
 
         :param parentPage:
         :param removeSiblings:
+        :param width:
+        :param height:
+        :param packParameters:
         """
 
         typeChecker(parentPage, (None, Page, App))
@@ -28,12 +31,14 @@ class Page(Element_Page, Element_Page_App, Page_App):
         if height is None and width is None:
             widget = tk.Frame(parentPage.getBaseWidget())
         else:
-            widget = self._getScrollableWidget(parentPage, width, height)
+            widget = self._getScrollableWidget(parentPage, width, height, vsb, hsb)
+
+        self.setPackParameters(widget, **packParameters)
 
         super().__init__(parentPage=parentPage, widget=widget)
 
 
-    def _getScrollableWidget(self, parentPage, width, height):
+    def _getScrollableWidget(self, parentPage, width, height, vsb, hsb):
         canvas = tk.Canvas(parentPage.getBaseWidget(), width=width, height=height)
         canvas.pack_propagate(0)
         self.setPackParameters(canvas, fill="both", expand=True)
@@ -41,13 +46,15 @@ class Page(Element_Page, Element_Page_App, Page_App):
         frame = tk.Frame(canvas)
         self.setPackParameters(frame, side="left", fill="both", expand=True)
 
-        vsb = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
-        canvas.configure(yscrollcommand=vsb.set)
-        vsb.pack(side="right", fill="y")
+        if vsb:
+            verticalScrollbar = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
+            canvas.configure(yscrollcommand=verticalScrollbar.set)
+            verticalScrollbar.pack(side="right", fill="y")
 
-        hsb = tk.Scrollbar(canvas, orient="horizontal", command=canvas.xview)
-        canvas.configure(xscrollcommand=hsb.set)
-        hsb.pack(side="bottom", fill="x")
+        if hsb:
+            horizontalScrollbar = tk.Scrollbar(canvas, orient="horizontal", command=canvas.xview)
+            canvas.configure(xscrollcommand=horizontalScrollbar.set)
+            horizontalScrollbar.pack(side="bottom", fill="x")
 
         canvas.create_window((4, 4), window=frame, anchor="nw", tags="self.canvas")
 

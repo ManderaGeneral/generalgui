@@ -19,7 +19,7 @@ class PageTest(unittest.TestCase):
             self.assertEqual(page.getParentPages(includeSelf=True), [page])
             self.assertEqual(page.getTopPage(), page)
             self.assertEqual(page.getSiblings(), [])
-            page.showSiblings()
+            page.showSiblings(mainloop=False)
             page.hideSiblings()
             page.removeSiblings()
             page.show(mainloop=False)
@@ -57,7 +57,7 @@ class PageTest(unittest.TestCase):
     def test_children(self):
         for page in Page(), Page(width=200):
             self.assertEqual(page.getChildren(), [])
-            page.showChildren()
+            page.showChildren(mainloop=False)
             page.hideChildren()
             page.removeChildren()
 

@@ -71,7 +71,9 @@ class Element_Page:
         :param mainloop: Whether to call mainloop or not
         """
         for sibling in self.getSiblings(ignore=ignore):
-            sibling.show(mainloop=mainloop)
+            sibling.show(mainloop=False)
+        if mainloop:
+            self.app.mainloop()
 
     @ignore
     def hideSiblings(self, ignore=None):
@@ -125,8 +127,8 @@ class Element_Page:
         if hideSiblings:
             self.parentPage.hideChildren()
 
-        if typeChecker(self, "Element", error=False):
-            self.pack()
+        # if typeChecker(self, "Element", error=False):
+        #     self.pack()
 
         for ele_page in self.getParentPages(includeSelf=True):
             if ele_page.isShown():

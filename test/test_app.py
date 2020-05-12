@@ -26,7 +26,7 @@ class AppTest(unittest.TestCase):
     def test_children(self):
         app = App()
         self.assertEqual(app.getChildren(), [])
-        app.showChildren()
+        app.showChildren(mainloop=False)
         app.hideChildren()
         app.removeChildren()
 
