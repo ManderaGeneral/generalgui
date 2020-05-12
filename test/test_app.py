@@ -42,7 +42,7 @@ class AppTest(unittest.TestCase):
         self.assertEqual(app.getChildren(), [])
 
 
-        page = Page(app)
+        page = Page(app, height=200)
         page2 = Page(app)
         self.assertEqual(app.getChildren(), [page, page2])
         self.assertEqual(app.getChildren(ignore=page), [page2])
@@ -72,7 +72,7 @@ class AppTest(unittest.TestCase):
         self.assertEqual(app.getChildren(), [])
 
 
-        page = Page(app)
+        page = Page(app, width=200)
         page2 = Page(page)
 
         page2.show(mainloop=False)

@@ -11,7 +11,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False):
+    def __init__(self, parentPage=None, removeSiblings=False, width=None, height=None):
         """
 
         :param parentPage:
@@ -25,7 +25,16 @@ class Page(Element_Page, Element_Page_App, Page_App):
         elif removeSiblings:
             parentPage.removeChildren()
 
-        canvas = tk.Canvas(parentPage.getBaseWidget(), height=500, width=500)
+        if height is None and width is None:
+            widget = tk.Frame(parentPage.getBaseWidget())
+        else:
+            widget = self._getScrollableWidget(parentPage, width, height)
+
+        super().__init__(parentPage=parentPage, widget=widget)
+
+
+    def _getScrollableWidget(self, parentPage, width, height):
+        canvas = tk.Canvas(parentPage.getBaseWidget(), width=width, height=height)
         canvas.pack_propagate(0)
         self.setPackParameters(canvas, fill="both", expand=True)
 
@@ -46,8 +55,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
 
         setattr(canvas, "widget", frame)
         setattr(frame, "element", self)
-
-        super().__init__(parentPage=parentPage, widget=canvas)
+        return canvas
 
 
 from generalgui.app import App
