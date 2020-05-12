@@ -4,6 +4,7 @@ import tkinter as tk
 import inspect
 from generallibrary.types import typeChecker
 from generallibrary.iterables import addToListInDict
+from generallibrary.functions import leadingArgsCount
 from generalgui.shared_methods.element_page import Element_Page
 from generalgui.shared_methods.element_page_app import Element_Page_App
 
@@ -22,7 +23,7 @@ class Element(Element_Page, Element_Page_App):
         self.pack()
         self.events = {}
 
-    def _bind(self, key, func, add):
+    def _bind(self, key, func, add=False):
         """
         Binds a key to a function using tkinter's bind function.
         Not used directly.
@@ -37,12 +38,7 @@ class Element(Element_Page, Element_Page_App):
             if key in self.events:
                 del self.events[key]
         else:
-            eventParameter = False
-            for _, value in inspect.signature(func).parameters.items():
-                if value.default is inspect.Parameter.empty:
-                    eventParameter = True
-                break
-            if not eventParameter:
+            if leadingArgsCount(func) < 1:
                 oldFunc = func
                 func = lambda _: oldFunc()
 
@@ -103,8 +99,6 @@ class Text(Element):
         :param Page page: Parent page
         :param str text: Text to be displayed
         """
-        typeChecker(page, Page)
-
         self.text = text
         widget = tk.Label(page.getBaseWidget(), text=text)
 
@@ -122,14 +116,54 @@ class Button(Element):
         :param str text: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        typeChecker(page, Page)
-
         self.text = text
         widget = tk.Button(page.getBaseWidget(), text=text)
+        widget.config(cursor='hand2')
 
         super().__init__(page, widget)
 
+        self._bind("<Enter>", lambda btn=widget: btn.config(background="gray80"))
+        self._bind("<Leave>", lambda btn=widget: btn.config(background="SystemButtonFace"))
         self.onClick(func)
+
+class Dropdown(Element):
+    """
+    Controls one tkinter OptionMenu
+    """
+    def __init__(self, page, options, default=None, func=None):
+        """
+        Create a Dropdown element that controls an OptionMenu.
+
+        :param Page page: Parent page
+        :param list[str] options: List of options
+        :param str or None default: What should be shown before selection, doesn't need to be an option.
+        :param function func: A function that is triggered when an option is pressed. 'Value' argument is passed if needed.
+        """
+        self._options = options
+        self._tkString = tk.StringVar()
+        self._default = default
+
+        if default is None:
+            self._tkString.set(options[0])
+        else:
+            self._tkString.set(default)
+
+        if leadingArgsCount(func) < 1:
+            oldFunc = func
+            func = lambda _: oldFunc()
+
+        widget = tk.OptionMenu(page.getBaseWidget(), self._tkString, *options, command=func)
+
+        super().__init__(page, widget)
+
+    def getOptions(self):
+        return self._options
+
+    def getDefault(self):
+        return self._default
+
+    def getValue(self):
+        return self._tkString.get() if self._tkString.get() in self.getOptions() else None
 
 
 from generalgui.page import Page
