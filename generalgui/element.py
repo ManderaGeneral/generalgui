@@ -1,7 +1,6 @@
 """Element for generalgui, controls a widget that's not App or Page"""
 
 import tkinter as tk
-import inspect
 from generallibrary.types import typeChecker
 from generallibrary.iterables import addToListInDict
 from generallibrary.functions import leadingArgsCount
@@ -29,7 +28,7 @@ class Element(Element_Page, Element_Page_App):
         Not used directly.
 
         :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
-        :param function func: A function to be called
+        :param function or None func: A function to be called or None to unbind
         :param bool add: Add to existing binds instead of overwriting
         :return:
         """
@@ -122,48 +121,10 @@ class Button(Element):
 
         super().__init__(page, widget)
 
-        self._bind("<Enter>", lambda btn=widget: btn.config(background="gray80"))
+        self._bind("<Enter>", lambda btn=widget: btn.config(background="gray90"))
         self._bind("<Leave>", lambda btn=widget: btn.config(background="SystemButtonFace"))
         self.onClick(func)
 
-class Dropdown(Element):
-    """
-    Controls one tkinter OptionMenu
-    """
-    def __init__(self, page, options, default=None, func=None):
-        """
-        Create a Dropdown element that controls an OptionMenu.
-
-        :param Page page: Parent page
-        :param list[str] options: List of options
-        :param str or None default: What should be shown before selection, doesn't need to be an option.
-        :param function func: A function that is triggered when an option is pressed. 'Value' argument is passed if needed.
-        """
-        self._options = options
-        self._tkString = tk.StringVar()
-        self._default = default
-
-        if default is None:
-            self._tkString.set(options[0])
-        else:
-            self._tkString.set(default)
-
-        if leadingArgsCount(func) < 1:
-            oldFunc = func
-            func = lambda _: oldFunc()
-
-        widget = tk.OptionMenu(page.getBaseWidget(), self._tkString, *options, command=func)
-
-        super().__init__(page, widget)
-
-    def getOptions(self):
-        return self._options
-
-    def getDefault(self):
-        return self._default
-
-    def getValue(self):
-        return self._tkString.get() if self._tkString.get() in self.getOptions() else None
 
 
 from generalgui.page import Page

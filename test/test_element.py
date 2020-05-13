@@ -1,6 +1,7 @@
 """Tests for App"""
 from generalgui.page import Page
 from generalgui.element import Text, Button
+from generalgui.dropdown import Dropdown
 
 import unittest
 import tkinter as tk
@@ -142,18 +143,6 @@ class ElementTest(unittest.TestCase):
         self.assertEqual(button.rightClick(), (2, 3, 4))
         button.onRightClick(lambda: 5)
         self.assertEqual(button.rightClick(), 5)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

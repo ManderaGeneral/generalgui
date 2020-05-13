@@ -13,12 +13,15 @@ class Page(Element_Page, Element_Page_App, Page_App):
     """
     def __init__(self, parentPage=None, removeSiblings=False, width=None, height=None, vsb=True, hsb=True, **packParameters):
         """
+        Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
-        :param parentPage:
-        :param removeSiblings:
-        :param width:
-        :param height:
-        :param packParameters:
+        :param App or Page or None parentPage: Parent page, can be App, Page or None (Creates new App).
+        :param removeSiblings: Remove all siblings on creations, to easily update a page for example by replacing it.
+        :param None or int width: Width in pixels
+        :param None or int height: Width in pixels
+        :param vsb: Vertical scrollbar if page is scrollable.
+        :param hsb: Horiziontal scrollbar if page is scrollable
+        :param packParameters: Parameters given to page's tkinter Frame when being packed.
         """
 
         typeChecker(parentPage, (None, Page, App))
