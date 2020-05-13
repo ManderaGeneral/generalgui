@@ -66,5 +66,18 @@ class DropdownTest(unittest.TestCase):
         dropdown._updateDefault()
         self.assertEqual(1, dropdown.getValue())
 
+    def test_setDefault(self):
+        dropdown = Dropdown(Page(), [1, "hello", 3.5])
+        dropdown.setDefault("test")
+        self.assertEqual(1, dropdown.getValue())
+        dropdown.setValue("test")
+        self.assertEqual("test", dropdown.getValue())
+
+        dropdown.setDefault("new default")
+        self.assertEqual("new default", dropdown.getValue())
+
+        dropdown.setDefault(None)
+        self.assertEqual(1, dropdown.getValue())
+
 
 

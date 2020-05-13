@@ -87,6 +87,15 @@ class Dropdown(Element):
         """
         return self._default
 
+    def setDefault(self, default):
+        """
+        Change the default value. If current value is old default then it will be changed as well.
+
+        :param str or None default: New default value
+        """
+        self._default = default
+        self._updateDefault()
+
     def getValue(self):
         """
         Get the currently shown value.

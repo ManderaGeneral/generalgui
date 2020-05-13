@@ -1,7 +1,7 @@
 """Element for generalgui, controls a widget that's not App or Page"""
 
 import tkinter as tk
-from generallibrary.types import typeChecker
+from generallibrary.types import typeChecker, strToDynamicType
 from generallibrary.iterables import addToListInDict
 from generallibrary.functions import leadingArgsCount
 from generalgui.shared_methods.element_page import Element_Page
@@ -121,9 +121,70 @@ class Button(Element):
 
         super().__init__(page, widget)
 
-        self._bind("<Enter>", lambda btn=widget: btn.config(background="gray90"))
-        self._bind("<Leave>", lambda btn=widget: btn.config(background="SystemButtonFace"))
+        self._bind("<Enter>", lambda w=widget: w.config(background="gray90"))
+        self._bind("<Leave>", lambda w=widget: w.config(background="SystemButtonFace"))
         self.onClick(func)
+
+class Entry(Element):
+    """
+    Controls one tkinter Entry
+    """
+    def __init__(self, page, default=None):
+        """
+        Create an Entry element that controls an entry.
+        """
+        self._default = default
+        widget = tk.Entry(page.getBaseWidget())
+
+        super().__init__(page, widget)
+
+        if default:
+            self.setValue(default)
+        self.onClick(self.clearIfDefault)
+
+        self._bind("<Control-BackSpace>", self._backspaceWord)
+
+    def _backspaceWord(self):
+        marker = self.widget.index(tk.INSERT)
+        if marker >= 2:
+            value = str(self.getValue())
+            index = marker - 1
+            removeChar = value[index]
+
+            checkIndex = index - 1
+            repeatingRemovedChar = True
+            # Change checkIndex to be the last inclusive index of the start string
+            while checkIndex >= 0:
+                checkChar = value[checkIndex]
+                if repeatingRemovedChar and checkChar != removeChar:
+                    repeatingRemovedChar = False
+                matchingAlpha = removeChar.isalpha() and checkChar.isalpha()
+                matchingNumeric = removeChar.isnumeric() and checkChar.isnumeric()
+
+                if matchingAlpha or matchingNumeric or repeatingRemovedChar:
+                    checkIndex -= 1
+                else:
+                    break
+
+            # Add an x to be removed from the original backspace
+            self.setValue(value[0:checkIndex + 1] + "x" + value[index + 1:])
+            self.setMarker(checkIndex + 2)
+
+    def setMarker(self, index):
+        self.widget.icursor(index)
+
+    def setValue(self, value):
+        if value is None:
+            value = ""
+        self.widget.delete(0, "end")
+        self.widget.insert(tk.END, value)
+
+    def getValue(self):
+        return strToDynamicType(self.widget.get())
+
+    def clearIfDefault(self):
+        if self.getValue() == strToDynamicType(self._default):
+            self.setValue(None)
 
 
 
