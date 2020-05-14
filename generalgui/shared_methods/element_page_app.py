@@ -28,6 +28,7 @@ class Element_Page_App:
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
+        self.widget.update()
         self.widget.destroy()
 
 

@@ -27,7 +27,7 @@ class Entry(Element):
 
         self._bind("<Control-BackSpace>", self._removeWord)
         self._bind("<Control-Delete>", lambda: self._removeWord(delete=True))
-        self._bind("<FocusOut>", lambda: self.setValue(self.getDefault() if self.getValue() == "" else None))
+        self._bind("<FocusOut>", lambda: self.setValue(self.getDefault()) if self.getValue() == "" else None)
         self._bind("<Return>", self._clickNextButton)
 
     def _clickNextButton(self):
@@ -36,8 +36,7 @@ class Entry(Element):
         """
         for sibling in self.getSiblings():
             if typeChecker(sibling, Button):
-                sibling.click()
-                break
+                return sibling.click()
 
     def _removeWord(self, delete=False):
         """
@@ -97,12 +96,15 @@ class Entry(Element):
         """
         return strToDynamicType(self.widget.get())
 
-    def setValue(self, value):
+    def setValue(self, value, useDefault=True):
         """
         Set current value of entry widget, casts value to string beforehand.
         """
         if value is None:
             value = ""
+        if useDefault and value == "" and self.getDefault() is not None:
+            value = self.getDefault()
+
         self.widget.delete(0, "end")
         self.widget.insert(tk.END, str(value))
 
@@ -111,7 +113,7 @@ class Entry(Element):
         Clears current value if it's the current default value
         """
         if self.getValue() == strToDynamicType(self._default):
-            self.setValue(None)
+            self.setValue(None, useDefault=False)
 
     def getDefault(self):
         """
@@ -126,3 +128,5 @@ class Entry(Element):
         if str(self.getDefault()) == str(self.getValue()):
             self.setValue(default)
         self._default = default
+
+
