@@ -4,7 +4,6 @@ import tkinter as tk
 
 from generallibrary.types import typeChecker, strToDynamicType
 
-from generalgui import Button
 from generalgui.element import Element
 
 
@@ -18,17 +17,14 @@ class Entry(Element):
         """
         self._default = default
 
-        # HERE ** figure out good way to have a label alongside entry
-        # widget = Page(page)
-        # tk.Entry(widget, width=width)
         widget = tk.Entry(page.getBaseWidget(), width=width)
 
         super().__init__(page, widget, **packParameters)
 
         if default:
             self.setValue(default)
-        self.onClick(self.clearIfDefault)
 
+        self.onClick(self.clearIfDefault)
         self._bind("<Control-BackSpace>", self._removeWord)
         self._bind("<Control-Delete>", lambda: self._removeWord(delete=True))
         self._bind("<FocusOut>", lambda: self.setValue(self.getDefault()) if self.getValue() == "" else None)
@@ -39,7 +35,7 @@ class Entry(Element):
         Click the first sibling that's a button when Enter key is pressed.
         """
         for sibling in self.getSiblings():
-            if typeChecker(sibling, Button):
+            if typeChecker(sibling, "Button"):
                 return sibling.click()
 
     def _removeWord(self, delete=False):
@@ -133,5 +129,3 @@ class Entry(Element):
             self.setValue(default)
         self._default = default
 
-# Causes circular import... HERE **
-# from generalgui import Page
