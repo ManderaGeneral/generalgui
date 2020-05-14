@@ -4,7 +4,7 @@ import tkinter as tk
 
 from generallibrary.types import typeChecker, strToDynamicType
 
-from generalgui import Button
+from generalgui import Button, Page
 from generalgui.element import Element
 
 
@@ -12,14 +12,18 @@ class Entry(Element):
     """
     Controls one tkinter Entry
     """
-    def __init__(self, page, default=None):
+    def __init__(self, page, default=None, label=None, width=15, **packParameters):
         """
         Create an Entry element that controls an entry.
         """
         self._default = default
-        widget = tk.Entry(page.getBaseWidget())
 
-        super().__init__(page, widget)
+        # HERE ** figure out good way to have a label alongside entry
+        # widget = Page(page)
+        # tk.Entry(widget, width=width)
+        widget = tk.Entry(page.getBaseWidget(), width=width)
+
+        super().__init__(page, widget, **packParameters)
 
         if default:
             self.setValue(default)

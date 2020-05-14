@@ -11,7 +11,7 @@ class Button(Element):
     """
     Controls one tkinter Button
     """
-    def __init__(self, page, text, func=None):
+    def __init__(self, page, text, func=None, **packParameters):
         """
         Create a Button element that controls a button.
 
@@ -23,7 +23,7 @@ class Button(Element):
         widget = tk.Button(page.getBaseWidget(), text=text)
         widget.config(cursor='hand2')
 
-        super().__init__(page, widget)
+        super().__init__(page, widget, **packParameters)
 
         self._bind("<Enter>", lambda w=widget: w.config(background="gray90"))
         self._bind("<Leave>", lambda w=widget: w.config(background="SystemButtonFace"))

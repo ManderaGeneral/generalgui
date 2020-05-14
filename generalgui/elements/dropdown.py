@@ -12,7 +12,7 @@ class Dropdown(Element):
     """
     Controls one tkinter OptionMenu
     """
-    def __init__(self, page, options, default=None, func=None):
+    def __init__(self, page, options, default=None, func=None, **packParameters):
         """
         Create a Dropdown element that controls an OptionMenu.
 
@@ -30,7 +30,7 @@ class Dropdown(Element):
             func = lambda _: oldFunc()
 
         widget = tk.OptionMenu(page.getBaseWidget(), self._tkString, *options, command=func)
-        super().__init__(page, widget)
+        super().__init__(page, widget, **packParameters)
         self._updateDefault()
 
     def _updateDefault(self):
