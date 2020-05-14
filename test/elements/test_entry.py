@@ -2,13 +2,15 @@
 
 import unittest
 
-from generalgui import Page, Entry, Button
+from generalgui import Page, Entry, Button, Label
 
 
 class EntryTest(unittest.TestCase):
     def test__clickNextButton(self):
         page = Page()
         entry = Entry(page, "hello")
+        Label(page, "random")
+        Button(page, "no click")
         Button(page, "Change default", lambda: 5)
         self.assertEqual(5, entry._clickNextButton())
         page.app.remove()

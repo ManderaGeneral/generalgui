@@ -57,7 +57,7 @@ class Element(Element_Page, Element_Page_App):
         :return: Function's return value or functions' return values in tuple in the order they were binded.
         """
         if key not in self.events:
-            return None
+            raise UserWarning(f"Key {key} is not bound to any function.")
 
         # Event is None when calling manually
         results = tuple(func(None) for func in self.events[key])

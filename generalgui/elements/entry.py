@@ -15,6 +15,7 @@ class Entry(Element):
         """
         Create an Entry element that controls an entry.
         """
+
         self._default = default
 
         widget = tk.Entry(page.getBaseWidget(), width=width)
@@ -33,10 +34,17 @@ class Entry(Element):
     def _clickNextButton(self):
         """
         Click the first sibling that's a button when Enter key is pressed.
+        :return: Click's return value or False if no button was found
         """
-        for sibling in self.getSiblings():
-            if typeChecker(sibling, "Button"):
-                return sibling.click()
+        for parentPage in self.getParentPages():
+            for sibling in parentPage.getChildren(ignore=self):
+                if typeChecker(sibling, "Button", error=False):
+                    # See if click is bound
+                    try:
+                        return sibling.click()
+                    except UserWarning:
+                        pass
+        return False
 
     def _removeWord(self, delete=False):
         """

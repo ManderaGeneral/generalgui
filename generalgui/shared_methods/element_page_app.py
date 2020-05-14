@@ -1,5 +1,6 @@
 """Shared methods by Element, Page and App"""
 
+
 class Element_Page_App:
     """
     Pure methods that Element, Page and App all share.
@@ -30,5 +31,22 @@ class Element_Page_App:
         """
         self.widget.update()
         self.widget.destroy()
+
+    def widgetConfig(self, **kwargs):
+        """
+        Configure widget.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        self.widget.config(**kwargs)
+
+    def getWidgetConfigs(self):
+        """
+        Get all the keys we can use in method 'widgetConfig()' as a list.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        return self.widget.keys()
+
 
 

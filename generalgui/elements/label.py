@@ -14,8 +14,14 @@ class Label(Element):
         :param Page page: Parent page
         :param str text: Text to be displayed
         """
-        self.text = text
         widget = tk.Label(page.getBaseWidget(), text=text)
 
         super().__init__(page, widget, **packParameters)
 
+    def setValue(self, value):
+        if value is None:
+            value = ""
+        self.widget["text"] = str(value)
+
+    def getValue(self):
+        return self.widget["text"]
