@@ -4,7 +4,7 @@ import tkinter as tk
 
 from generallibrary.types import typeChecker, strToDynamicType
 
-from generalgui import Button, Page
+from generalgui import Button
 from generalgui.element import Element
 
 
@@ -12,7 +12,7 @@ class Entry(Element):
     """
     Controls one tkinter Entry
     """
-    def __init__(self, page, default=None, label=None, width=15, **packParameters):
+    def __init__(self, page, default=None, width=15, **packParameters):
         """
         Create an Entry element that controls an entry.
         """
@@ -133,4 +133,5 @@ class Entry(Element):
             self.setValue(default)
         self._default = default
 
-
+# Causes circular import... HERE **
+# from generalgui import Page
