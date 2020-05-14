@@ -7,8 +7,13 @@ from generalgui.dropdown import Dropdown
 from generallibrary.time import sleep
 import tkinter as tk
 
+page = Page()
 
-Entry(Page(), "hello").show()
+
+entry = Entry(page, "hello")
+Button(page, "Change default", lambda: entry.setDefault("testing"))
+
+entry.show()
 
 
 

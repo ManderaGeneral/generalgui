@@ -1,6 +1,7 @@
 """Element for generalgui, controls a widget that's not App or Page"""
 
 import tkinter as tk
+from generallibrary.time import sleep
 from generallibrary.types import typeChecker, strToDynamicType
 from generallibrary.iterables import addToListInDict
 from generallibrary.functions import leadingArgsCount
@@ -125,6 +126,19 @@ class Button(Element):
         self._bind("<Leave>", lambda w=widget: w.config(background="SystemButtonFace"))
         self.onClick(func)
 
+    def click(self, animate=True):
+        """
+        Simple animation if button's click bind is called.
+        """
+        if animate:
+            self._callBind("<Enter>")
+            self.widget.config(relief=tk.SUNKEN)
+            self.app.widget.update()
+            sleep(0.05)
+            self.widget.config(relief=tk.RAISED)
+            self._callBind("<Leave>")
+        return super().click()
+
 class Entry(Element):
     """
     Controls one tkinter Entry
@@ -142,12 +156,34 @@ class Entry(Element):
             self.setValue(default)
         self.onClick(self.clearIfDefault)
 
-        self._bind("<Control-BackSpace>", self._backspaceWord)
+        self._bind("<Control-BackSpace>", self._removeWord)
+        self._bind("<Control-Delete>", lambda: self._removeWord(delete=True))
+        self._bind("<FocusOut>", lambda: self.setValue(self.getDefault() if self.getValue() == "" else None))
+        self._bind("<Return>", self._clickNextButton)
 
-    def _backspaceWord(self):
+    def _clickNextButton(self):
+        """
+        Click the first sibling that's a button when Enter key is pressed.
+        """
+        for sibling in self.getSiblings():
+            if typeChecker(sibling, Button):
+                sibling.click()
+                break
+
+    def _removeWord(self, delete=False):
+        """
+        Remove a full word or a range of repeating characters when Ctrl key is being held.
+
+        :param delete: Whether delete key was used and we should reverse backspace method.
+        """
         marker = self.widget.index(tk.INSERT)
+        value = str(self.getValue())
+        if delete:
+            marker = len(value) - marker
+            value = value[::-1]
+
         if marker >= 2:
-            value = str(self.getValue())
+
             index = marker - 1
             removeChar = value[index]
 
@@ -166,25 +202,62 @@ class Entry(Element):
                 else:
                     break
 
-            # Add an x to be removed from the original backspace
-            self.setValue(value[0:checkIndex + 1] + "x" + value[index + 1:])
-            self.setMarker(checkIndex + 2)
+            # Add an x to be removed from the original backspace or delete
+            newValue = value[0:checkIndex + 1] + "x" + value[index + 1:]
+            if delete:
+                self.setValue(newValue[::-1])
+                self.setMarker(len(newValue) - checkIndex - 2)
+            else:
+                self.setValue(newValue)
+                self.setMarker(checkIndex + 2)
 
     def setMarker(self, index):
+        """
+        Move the marker inside entry widget.
+        """
         self.widget.icursor(index)
 
+    def getValue(self):
+        """
+        Get the current value of the entry widget, casts to dynamic type beforehand.
+         | "true" -> True
+         | "noNe" -> None
+         | "" -> ""
+         | "5.2" -> 5.2 (float)
+         | "5" -> 5 (int)
+        """
+        return strToDynamicType(self.widget.get())
+
     def setValue(self, value):
+        """
+        Set current value of entry widget, casts value to string beforehand.
+        """
         if value is None:
             value = ""
         self.widget.delete(0, "end")
-        self.widget.insert(tk.END, value)
-
-    def getValue(self):
-        return strToDynamicType(self.widget.get())
+        self.widget.insert(tk.END, str(value))
 
     def clearIfDefault(self):
+        """
+        Clears current value if it's the current default value
+        """
         if self.getValue() == strToDynamicType(self._default):
             self.setValue(None)
+
+    def getDefault(self):
+        """
+        Get the supplied default value
+        """
+        return self._default
+
+    def setDefault(self, default):
+        """
+        Change the default value. If current value is old default then it will be changed as well.
+        """
+        if str(self.getDefault()) == str(self.getValue()):
+            self.setValue(default)
+        self._default = default
+
 
 
 
