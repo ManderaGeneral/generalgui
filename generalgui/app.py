@@ -1,8 +1,10 @@
 """App for generalgui, controls Tk"""
 
 from tkinter import Tk
+
 from generalgui.shared_methods.element_page_app import Element_Page_App
 from generalgui.shared_methods.page_app import Page_App
+
 
 class App(Element_Page_App, Page_App):
     """
@@ -16,6 +18,9 @@ class App(Element_Page_App, Page_App):
         self.mainlooped = False
 
     def mainloop(self):
+        """
+        Call mainloop of widget and remember it.
+        """
         if not self.mainlooped:
             self.widget.mainloop()
             self.mainlooped = True

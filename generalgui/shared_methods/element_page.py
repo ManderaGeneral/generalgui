@@ -1,7 +1,9 @@
 """Shared methods by Element and Page"""
 
 from generallibrary.types import typeChecker
+
 from generalgui.shared_methods.decorators import ignore
+
 
 class Element_Page:
     """

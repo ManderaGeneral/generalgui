@@ -1,8 +1,8 @@
 """Tests for Dropdown"""
-from generalgui.page import Page
-from generalgui.dropdown import Dropdown
-
 import unittest
+
+from generalgui import Page, Dropdown
+
 
 class DropdownTest(unittest.TestCase):
     def test_init(self):

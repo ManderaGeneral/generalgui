@@ -1,8 +1,12 @@
+"""Dropdown class that inherits Element"""
 
 import tkinter as tk
-from generallibrary.types import strToDynamicType
-from generalgui.element import Element
+
 from generallibrary.functions import leadingArgsCount
+from generallibrary.types import strToDynamicType
+
+from generalgui.element import Element
+
 
 class Dropdown(Element):
     """

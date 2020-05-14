@@ -1,5 +1,9 @@
+"""Decorator functions"""
 
 def ignore(func):
+    """
+    Fix the ignore argument with a wrapper function
+    """
     def f(self, ignore=None, *args, **kwargs):
         if not isinstance(ignore, (tuple, list)):
             ignore = [ignore]

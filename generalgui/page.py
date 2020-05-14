@@ -1,10 +1,13 @@
 """App for generalgui, controls Frame"""
 
-from generallibrary.types import typeChecker
 import tkinter as tk
-from generalgui.shared_methods.element_page_app import Element_Page_App
+
+from generallibrary.types import typeChecker
+
 from generalgui.shared_methods.element_page import Element_Page
+from generalgui.shared_methods.element_page_app import Element_Page_App
 from generalgui.shared_methods.page_app import Page_App
+
 
 class Page(Element_Page, Element_Page_App, Page_App):
     """

@@ -1,44 +1,15 @@
-"""Tests for App"""
-from generalgui.page import Page
-from generalgui.element import Text, Button
-from generalgui.dropdown import Dropdown
-
-import unittest
+"""Tests for Element"""
 import tkinter as tk
+import unittest
+
+from generalgui import Page, Label, Button
+
 
 class ElementTest(unittest.TestCase):
-    def test_text(self):
-        for page in Page(), Page(width=200):
-            text = Text(page, "hello")
-            self.assertEqual(text.parentPage, page)
-            self.assertIs(text.widget.element, text)
-            self.assertFalse(text.isShown())
-
-            text.show(mainloop=False)
-            self.assertTrue(text.isShown())
-
-            page.app.remove()
-            self.assertRaises(tk.TclError, text.isShown)
-
-    def test_button(self):
-        for page in Page(), Page(width=200):
-            button = Button(page, "hello", lambda: 5)
-            self.assertEqual(button.parentPage, page)
-            self.assertIs(button.widget.element, button)
-            self.assertFalse(button.isShown())
-
-            button.show(mainloop=False)
-            self.assertTrue(button.isShown())
-
-            self.assertEqual(button.click(), 5)
-
-            page.app.remove()
-            self.assertRaises(tk.TclError, button.isShown)
-
     def test_siblings(self):
         for page in Page(), Page(width=200):
-            text1 = Text(page, "hi")
-            text2 = Text(page, "hello")
+            text1 = Label(page, "hi")
+            text2 = Label(page, "hello")
             self.assertEqual(text1.getSiblings(), [text2])
             self.assertEqual(text2.getSiblings(), [text1])
             self.assertEqual(text1.getSiblings(ignore=text1), [text2])
@@ -69,10 +40,10 @@ class ElementTest(unittest.TestCase):
 
     def test_children(self):
         for page in Page(), Page(width=200):
-            text1 = Text(page, "hello")
-            text2 = Text(page, "there")
+            text1 = Label(page, "hello")
+            text2 = Label(page, "there")
             page2 = Page(page)
-            text3 = Text(page2, "in page 2")
+            text3 = Label(page2, "in page 2")
 
             self.assertEqual(page.getChildren(), [text1, text2, page2])
 
@@ -109,17 +80,17 @@ class ElementTest(unittest.TestCase):
 
     def test_parents(self):
         for page in Page(), Page(width=200):
-            Text(page, "hello")
-            Text(page, "there")
+            Label(page, "hello")
+            Label(page, "there")
             page2 = Page(page)
-            text3 = Text(page2, "in page 2")
+            text3 = Label(page2, "in page 2")
 
             self.assertIs(text3.getTopPage(), page)
             self.assertEqual(text3.getParentPages(), [page2, page])
             self.assertEqual(text3.getParentPages(includeSelf=True), [text3, page2, page])
 
     def test_textOnClick(self):
-        text = Text(Page(), "hello")
+        text = Label(Page(), "hello")
         text.onClick(lambda: 1)
         self.assertEqual(text.click(), 1)
         text.onClick(lambda: 2)

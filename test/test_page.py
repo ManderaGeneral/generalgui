@@ -1,8 +1,8 @@
-"""Tests for App"""
-from generalgui.page import Page
-
-import unittest
+"""Tests for Page"""
 import tkinter as tk
+import unittest
+
+from generalgui import Page
 
 
 class PageTest(unittest.TestCase):
