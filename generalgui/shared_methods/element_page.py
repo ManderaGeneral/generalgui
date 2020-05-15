@@ -148,7 +148,7 @@ class Element_Page:
         if self.isPacked:
             self.widget.pack_forget()
 
-    def toggle(self, mainloop=True):
+    def toggleShow(self, mainloop=True):
         """
         Hides Element or Page if it's packed and shows it if it's not packed.
 

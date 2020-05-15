@@ -1,14 +1,17 @@
 """Random testing"""
 
-from generalgui import Page, Button, Entry, LabelEntry
+from generalgui import Page, Button, Entry, LabelCheckbutton
+
+import tkinter as tk
+
+
 
 
 page = Page()
 
+labelEntry = LabelCheckbutton(page, "Name:")
+Button(page, "Click me", lambda: labelEntry.label.setValue(labelEntry.checkbutton.getValue()))
 
-labelEntry = LabelEntry(page, "Name:", "Mandera", 10)
-
-Button(page, "Click me", lambda: labelEntry.label.setValue(labelEntry.entry.getValue()))
 
 page.show()
 

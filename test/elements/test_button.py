@@ -20,3 +20,22 @@ class ButtonTest(unittest.TestCase):
 
             page.app.remove()
             self.assertRaises(tk.TclError, button.isShown)
+
+    def test_value(self):
+        button = Button(Page(), "start")
+        self.assertEqual("start", button.getValue())
+
+        button.setValue("changed")
+        self.assertEqual("changed", button.getValue())
+
+        button.setValue("")
+        self.assertEqual("", button.getValue())
+
+        button.setValue(True)
+        self.assertIs(True, button.getValue())
+
+        button.setValue(None)
+        self.assertIs(None, button.getValue())
+
+
+

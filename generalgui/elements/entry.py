@@ -107,6 +107,9 @@ class Entry(Element):
     def setValue(self, value, useDefault=True):
         """
         Set current value of entry widget, casts value to string beforehand.
+
+        :param str or float or bool or None value: New value for entry
+        :param useDefault: Whether to use default value or not if new value is None or empty
         """
         if value is None:
             value = ""

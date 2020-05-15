@@ -3,6 +3,7 @@
 import tkinter as tk
 
 from generallibrary.time import sleep
+from generallibrary.types import strToDynamicType
 
 from generalgui.element import Element
 
@@ -11,16 +12,16 @@ class Button(Element):
     """
     Controls one tkinter Button
     """
-    def __init__(self, page, text, func=None, **packParameters):
+    def __init__(self, page, value, func=None, **packParameters):
         """
         Create a Button element that controls a button.
 
         :param Page page: Parent page
-        :param str text: Text to be displayed
+        :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        self.text = text
-        widget = tk.Button(page.getBaseWidget(), text=text)
+        self.text = value
+        widget = tk.Button(page.getBaseWidget(), text=value)
         widget.config(cursor='hand2')
 
         super().__init__(page, widget, **packParameters)
@@ -41,6 +42,22 @@ class Button(Element):
             self.widget.config(relief=tk.RAISED)
             self._callBind("<Leave>")
         return super().click()
+
+    def setValue(self, value):
+        """
+        Set the value (text) of the button.
+
+        :param str or float or bool or None value:
+        """
+        self.widget["text"] = str(value)
+
+    def getValue(self):
+        """
+        Get the value (text) of the button as a dynamic type.
+        """
+        return strToDynamicType(self.widget["text"])
+
+
 
 
 

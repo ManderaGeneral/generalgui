@@ -7,14 +7,14 @@ from generalgui.element import Element
 
 class Label(Element):
     """Controls one tkinter Label"""
-    def __init__(self, page, text, **packParameters):
+    def __init__(self, page, value, **packParameters):
         """
         Create a Label element that controls a label.
 
         :param Page page: Parent page
-        :param str text: Text to be displayed
+        :param str value: Text to be displayed
         """
-        widget = tk.Label(page.getBaseWidget(), text=text)
+        widget = tk.Label(page.getBaseWidget(), text=value)
 
         super().__init__(page, widget, **packParameters)
 

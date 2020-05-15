@@ -26,9 +26,9 @@ class PageTest(unittest.TestCase):
             self.assertTrue(page.isShown())
             page.hide()
             self.assertFalse(page.isShown())
-            page.toggle(mainloop=False)
+            page.toggleShow(mainloop=False)
             self.assertTrue(page.isShown())
-            page.toggle(mainloop=False)
+            page.toggleShow(mainloop=False)
             self.assertFalse(page.isShown())
 
             page3 = Page(page.app)
