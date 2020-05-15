@@ -64,8 +64,8 @@ class Element_Page:
 
         if self in children:
             selfIndex = children.index(self)
-            siblings = children[0:selfIndex]
-            siblings.extend(children[selfIndex + 1:])
+            siblings = children[selfIndex + 1:]
+            siblings.extend(children[0:selfIndex])
             return siblings
         else:
             return children
@@ -106,15 +106,33 @@ class Element_Page:
         for sibling in self.getSiblings(ignore=ignore):
             sibling.remove()
 
-    # HERE **
     @ignore
     def nextSibling(self, ignore=None):
+        """
+        Get the next sibling.
+
+        :param generalgui.element.Element or generalgui.page.Page self: Element or Page
+        :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
+        """
         siblings = self.getSiblings(ignore=ignore)
         if siblings:
             return siblings[0]
         else:
             return None
 
+    @ignore
+    def previousSibling(self, ignore=None):
+        """
+        Get the previos sibling.
+
+        :param generalgui.element.Element or generalgui.page.Page self: Element or Page
+        :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
+        """
+        siblings = self.getSiblings(ignore=ignore)
+        if siblings:
+            return siblings[-1]
+        else:
+            return None
 
     def setPackParameters(self, tkinterEle, **parameters):
         """

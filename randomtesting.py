@@ -1,26 +1,19 @@
 """Random testing"""
 
-from generalgui import Page, Button, Entry, LabelCheckbutton
+from generalgui import Page, Button, Label, Checkbutton, Entry, LabelCheckbutton
 
 import tkinter as tk
 
 
-children = [1, 2, 3, 4]
-
-selfIndex = 1
-
-ret = children[0:selfIndex]
-ret.extend(children[selfIndex + 1:])
-
-print(ret)
-exit()
 
 
 page = Page()
+button = Button(page, "button")
+label = Label(page, "label")
+checkbutton = Checkbutton(page)
 
-labelEntry = LabelCheckbutton(page, "Name:")
-Button(page, "Click me", lambda: labelEntry.label.setValue(labelEntry.checkbutton.getValue()))
 
 
-page.show()
+print(button.getSiblings())
 
+print(page.getChildren())

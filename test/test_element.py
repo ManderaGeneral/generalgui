@@ -2,7 +2,7 @@
 import tkinter as tk
 import unittest
 
-from generalgui import Page, Label, Button
+from generalgui import Page, Label, Button, Checkbutton
 
 
 class ElementTest(unittest.TestCase):
@@ -37,6 +37,17 @@ class ElementTest(unittest.TestCase):
             text1.parentPage.showChildren(mainloop=False)
             self.assertTrue(text2.isShown())
             page.app.remove()
+
+    def test_nextSibling(self):
+        page = Page()
+        button = Button(page, "button")
+        label = Label(page, "label")
+        checkbutton = Checkbutton(page)
+        self.assertEqual(button.nextSibling(), label)
+        self.assertEqual(label.nextSibling(), checkbutton)
+        self.assertEqual(checkbutton.nextSibling(), button)
+        self.assertEqual(checkbutton.previousSibling(), label)
+        self.assertEqual(button.previousSibling(), checkbutton)
 
     def test_children(self):
         for page in Page(), Page(width=200):

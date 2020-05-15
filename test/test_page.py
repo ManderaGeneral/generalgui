@@ -54,6 +54,17 @@ class PageTest(unittest.TestCase):
             page.remove()
             self.assertRaises(tk.TclError, page.isShown)
 
+    def test_nextSibling(self):
+        page = Page()
+        page1 = Page(page)
+        page2 = Page(page)
+        page3 = Page(page)
+        self.assertEqual(page1.nextSibling(), page2)
+        self.assertEqual(page2.nextSibling(), page3)
+        self.assertEqual(page3.nextSibling(), page1)
+        self.assertEqual(page3.previousSibling(), page2)
+        self.assertEqual(page1.previousSibling(), page3)
+
     def test_children(self):
         for page in Page(), Page(width=200):
             self.assertEqual(page.getChildren(), [])
