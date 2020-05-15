@@ -60,8 +60,15 @@ class Element_Page:
         :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
         :rtype: list[generalgui.element.Element or generalgui.page.Page]
         """
-        ignore.append(self)
-        return self.parentPage.getChildren(ignore=ignore)
+        children = self.parentPage.getChildren(ignore=ignore)
+
+        if self in children:
+            selfIndex = children.index(self)
+            siblings = children[0:selfIndex]
+            siblings.extend(children[selfIndex + 1:])
+            return siblings
+        else:
+            return children
 
     @ignore
     def showSiblings(self, ignore=None, mainloop=True):
@@ -98,6 +105,16 @@ class Element_Page:
         """
         for sibling in self.getSiblings(ignore=ignore):
             sibling.remove()
+
+    # HERE **
+    @ignore
+    def nextSibling(self, ignore=None):
+        siblings = self.getSiblings(ignore=ignore)
+        if siblings:
+            return siblings[0]
+        else:
+            return None
+
 
     def setPackParameters(self, tkinterEle, **parameters):
         """
