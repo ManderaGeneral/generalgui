@@ -9,6 +9,7 @@ class LabelEntry(Page):
     """
     def __init__(self, parentPage=None, text=None, default=None, width=None, **packParameters):
         super().__init__(parentPage=parentPage, **packParameters)
+        self.pack()
 
         self.label = Label(self, text, side="left")
         self.label.widgetConfig(padx=4)
@@ -17,5 +18,7 @@ class LabelEntry(Page):
         self.label.widgetConfig(padx=4)
 
         self.widgetConfig(pady=4)
+
+
 
 
