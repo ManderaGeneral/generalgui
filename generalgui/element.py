@@ -23,6 +23,11 @@ class Element(Element_Page, Element_Page_App):
         self.pack()
         self.events = {}
 
+        # self.onRightClick(self.menu)
+
+    # def menu(self):  # Couldn't get this to work because I want to use Label here for example but it causes cirular imports
+    #     Page()
+
     def _bind(self, key, func, add=False):
         """
         Binds a key to a function using tkinter's bind function.
@@ -90,7 +95,7 @@ class Element(Element_Page, Element_Page_App):
         """Manually call the function that is called when this element is right clicked."""
         return self._callBind("<Button-3>")
 
-from generalgui.page import Page
+from generalgui import Page
 
 
 

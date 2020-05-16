@@ -10,4 +10,5 @@ from generalgui.elements.checkbutton import Checkbutton
 
 from generalgui.pages.labelentry import LabelEntry
 from generalgui.pages.labelcheckbutton import LabelCheckbutton
+from generalgui.pages.spreadsheet import Spreadsheet
 
