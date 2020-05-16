@@ -13,6 +13,10 @@ LabelCheckbutton(page, "yes")
 LabelEntry(page, "yes", "write")
 Button(page, "Click me")
 
+spreadsheet = Spreadsheet(page)
+
+spreadsheet.addRows([1, 2, 3])
+
 page.show()
 
 # Spreadsheet([[1, 2, 3], [4, 5, 6]])

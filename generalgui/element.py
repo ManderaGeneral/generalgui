@@ -20,7 +20,10 @@ class Element(Element_Page, Element_Page_App):
 
         super().__init__(parentPage, widget)
 
-        self.pack()
+        if "column" in packParameters and "row" in packParameters:
+            self.grid(packParameters["column"], packParameters["row"])
+        else:
+            self.pack()
         self.events = {}
 
         # self.onRightClick(self.menu)

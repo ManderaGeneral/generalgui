@@ -143,6 +143,10 @@ class Element_Page:
         """
         setattr(tkinterEle, "packParameters", parameters)
 
+    def grid(self, column, row):
+        print(column, row)
+        self.widget.grid(column=column, row=row)
+
     def pack(self):
         """
         Should not have to be called manually.
