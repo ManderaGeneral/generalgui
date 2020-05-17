@@ -13,21 +13,13 @@ class Element(Element_Page, Element_Page_App):
     Element is inherited by all tkinter widgets exluding App and Page.
     Shown by default. So when it's page is shown then all of page's children are shown automatically.
     """
-    def __init__(self, parentPage, widget, **packParameters):
+    def __init__(self, parentPage):
         typeChecker(parentPage, Page)
+        super().__init__(parentPage)
 
-        self.setPackParameters(widget, **packParameters)
-
-        super().__init__(parentPage, widget)
-
-        if "column" in packParameters and "row" in packParameters:
-            self.grid(packParameters["column"], packParameters["row"])
-        else:
-            self.pack()
         self.events = {}
 
         # self.onRightClick(self.menu)
-
     # def menu(self):  # Couldn't get this to work because I want to use Label here for example but it causes cirular imports
     #     Page()  # Use place()?
 

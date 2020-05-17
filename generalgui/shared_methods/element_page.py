@@ -11,18 +11,25 @@ class Element_Page:
     """
     Pure methods that Element and Page share.
     """
-    def __init__(self, parentPage, widget):
+    def __init__(self, parentPage):
         """
 
         :param generalgui.app.App or generalgui.page.Page parentPage:
-        :param widget:
         """
         self.parentPage = parentPage
-        self.widget = widget
+        self.app = parentPage.app
+        self.widget = None
+
+    def addWidget(self, widget, **packParameters):
+        if self.widget is None:
+            self.widget = widget
 
         setattr(widget, "element", self)
 
-        self.app = parentPage.app
+        if "column" in packParameters and "row" in packParameters:
+            self.grid(packParameters["column"], packParameters["row"])
+        else:
+            self.pack()
 
     def getParentPages(self, includeSelf=False):
         """
