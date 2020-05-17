@@ -29,7 +29,7 @@ class Element(Element_Page, Element_Page_App):
         # self.onRightClick(self.menu)
 
     # def menu(self):  # Couldn't get this to work because I want to use Label here for example but it causes cirular imports
-    #     Page()
+    #     Page()  # Use place()?
 
     def _bind(self, key, func, add=False):
         """

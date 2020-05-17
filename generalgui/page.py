@@ -43,14 +43,12 @@ class Page(Element_Page, Element_Page_App, Page_App):
 
         super().__init__(parentPage=parentPage, widget=widget)
 
-
     def _getScrollableWidget(self, parentPage, width, height, vsb, hsb):
         canvas = tk.Canvas(parentPage.getBaseWidget(), width=width, height=height)
         canvas.pack_propagate(0)
-        self.setPackParameters(canvas, fill="both", expand=True)
+        self.setPackParameters(canvas)
 
-        frame = tk.Frame(canvas)
-        self.setPackParameters(frame, side="left", fill="both", expand=True)
+        frame = tk.Frame(canvas, bg="red")
 
         if vsb:
             verticalScrollbar = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
@@ -62,13 +60,19 @@ class Page(Element_Page, Element_Page_App, Page_App):
             canvas.configure(xscrollcommand=horizontalScrollbar.set)
             horizontalScrollbar.pack(side="bottom", fill="x")
 
-        canvas.create_window((4, 4), window=frame, anchor="nw", tags="self.canvas")
+        windowId = canvas.create_window(0, 0, window=frame, anchor="nw")
 
-        canvas.bind("<Configure>", lambda event: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        def _canvasConfigure(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+            canvas.itemconfig(windowId, width=event.width, height=event.height)
+
+        canvas.bind("<Configure>", _canvasConfigure)
 
         setattr(canvas, "widget", frame)
         setattr(frame, "element", self)
         return canvas
+
 
 
 from generalgui.app import App

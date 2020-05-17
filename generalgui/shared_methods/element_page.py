@@ -1,5 +1,7 @@
 """Shared methods by Element and Page"""
 
+import tkinter as tk
+
 from generallibrary.types import typeChecker
 
 from generalgui.shared_methods.decorators import ignore
@@ -144,8 +146,7 @@ class Element_Page:
         setattr(tkinterEle, "packParameters", parameters)
 
     def grid(self, column, row):
-        print(column, row)
-        self.widget.grid(column=column, row=row)
+        self.widget.grid(column=column, row=row, sticky=tk.NSEW)
 
     def pack(self):
         """
@@ -167,9 +168,6 @@ class Element_Page:
         """
         if hideSiblings:
             self.parentPage.hideChildren()
-
-        # if typeChecker(self, "Element", error=False):
-        #     self.pack()
 
         for ele_page in self.getParentPages(includeSelf=True):
             if ele_page.isShown():

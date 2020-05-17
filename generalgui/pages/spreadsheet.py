@@ -1,6 +1,6 @@
 """Spreadsheet class that inherits Page"""
 
-from generalgui import Label, Page
+from generalgui import Button, Page
 
 from generallibrary.iterables import getRows
 
@@ -20,11 +20,11 @@ class Spreadsheet(Page):
         self.columnKeys = Keys()
         self.rowKeys = Keys()
 
-
     def addRows(self, obj):
         for rowI, row in enumerate(getRows(obj)):
             for colI, value in enumerate(row):
-                label = Label(self, value, column=colI, row=rowI)
+                button = Button(self, value, column=colI, row=rowI, sticky="nsew")
+                self.setPackParameters(button, fill="x")
 
 
 class Keys:
