@@ -1,10 +1,8 @@
 """Spreadsheet class that inherits Page"""
 
-from generalgui import Button, Page
+from generalgui import Button, Page, Label
 
 from generallibrary.iterables import getRows
-
-
 class Spreadsheet(Page):
     """
     Controls elements in a grid
@@ -13,19 +11,30 @@ class Spreadsheet(Page):
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
     def __init__(self, parentPage=None, width=640, height=640, **packParameters):
-        super().__init__(parentPage=parentPage, width=width, height=height, **packParameters)
-        self.pack()
+        super().__init__(parentPage=parentPage, **packParameters)
+
+        # Something like this instead, add as Page method. Automatically add attributes to widget and such
+        self.headerPage = self.addWidget(Page(self, bg="red", fill="x"))
+        self.cellPage = self.addWidget(Page(self, width=width, height=height, bg="yellow", fill="x"), makeBase=True)
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.columnKeys = Keys()
         self.rowKeys = Keys()
 
-    def addRows(self, obj):
+    def _addRows(self, obj, page):
         for rowI, row in enumerate(getRows(obj)):
             for colI, value in enumerate(row):
-                button = Button(self, value, column=colI, row=rowI, sticky="nsew")
-                self.setPackParameters(button, fill="x")
+                label = Label(page, value, column=colI, row=rowI)
+                # button = Button(self, value, column=colI, row=rowI, sticky="nsew")
 
+                if rowI == 0:
+                    page.getBaseWidget().columnconfigure(colI, weight=1)
+
+    def addRows(self, obj):
+        self._addRows(obj, self.cellPage)
+
+    def headerRows(self, obj):
+        self._addRows(obj, self.headerPage)
 
 class Keys:
     """

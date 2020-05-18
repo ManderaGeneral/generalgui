@@ -22,21 +22,11 @@ Button(page, "Click me")
 
 spreadsheet = Spreadsheet(page)
 
-
-
-spreadsheet.getBaseWidget().rowconfigure(0, weight=1)
-spreadsheet.getBaseWidget().columnconfigure(0, weight=1)
-
-spreadsheet.addRows([[1, 2, 3], [4, 5, 6]])
-
-spreadsheet.addRows("hello")
-
-
-
-spreadsheet.widget.rowconfigure(0, weight=1)
-spreadsheet.widget.columnconfigure(0, weight=1)
-
-
+rows = []
+for _ in range(50):
+    rows.append([1, 2, "hello"])
+spreadsheet.addRows(rows)
+spreadsheet.headerRows(["this", "is", "test"])
 
 page.show()
 

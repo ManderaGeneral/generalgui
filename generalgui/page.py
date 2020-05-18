@@ -14,7 +14,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False, width=None, height=None, vsb=True, hsb=True, **packParameters):
+    def __init__(self, parentPage=None, removeSiblings=False, width=None, height=None, vsb=True, hsb=True, bg=None, **packParameters):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
@@ -36,16 +36,16 @@ class Page(Element_Page, Element_Page_App, Page_App):
         super().__init__(parentPage=parentPage)
 
         if height is None and width is None:
-            self.addWidget(tk.Frame(parentPage.getBaseWidget()), **packParameters)
+            self.addWidget(tk.Frame(parentPage.getBaseWidget(), bg=bg), **packParameters)
         else:
-            self._getScrollableWidget(parentPage, width, height, vsb, hsb, **packParameters)
+            self._getScrollableWidget(parentPage, width, height, vsb, hsb, bg, **packParameters)
 
-    def _getScrollableWidget(self, parentPage, width, height, vsb, hsb, **packParameters):
+    def _getScrollableWidget(self, parentPage, width, height, vsb, hsb, bg, **packParameters):
         canvas = tk.Canvas(parentPage.getBaseWidget(), width=width, height=height)
         self.addWidget(canvas, **packParameters)
         canvas.pack_propagate(0)
 
-        frame = tk.Frame(canvas, bg="red")
+        frame = tk.Frame(canvas, bg=bg)
         self.addWidget(frame, makeBase=True, pack=False)
 
         if vsb:

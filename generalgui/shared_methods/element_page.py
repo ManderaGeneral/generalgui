@@ -20,16 +20,22 @@ class Element_Page:
         self.app = parentPage.app
         self.widget = None
 
-    def addWidget(self, widget, makeBase=False, pack=True, **packParameters):
+    def addWidget(self, widgetOrPart, makeBase=False, pack=True, **packParameters):
         """
 
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
-        :param widget:
+        :param widgetOrPart:
         :param makeBase:
         :param pack:
         :param packParameters:
         :return:
         """
+        # If widget is an App, Page or Element - We take the main widget
+        if getattr(widgetOrPart, "widget", False):
+            widget = widgetOrPart.widget
+        else:
+            widget = widgetOrPart
+
         if self.widget is None:
             self.widget = widget
 
@@ -45,7 +51,7 @@ class Element_Page:
             else:
                 self.pack(widget)
 
-        return widget
+        return widgetOrPart
 
     def getParentPages(self, includeSelf=False):
         """
@@ -175,7 +181,7 @@ class Element_Page:
         if widget is None:
             widget = self.widget
         packParameters = self.getPackParameters(widget)
-        self.widget.grid(column=packParameters["column"], row=packParameters["row"], sticky=tk.NSEW)
+        widget.grid(column=packParameters["column"], row=packParameters["row"], sticky=tk.NSEW)
 
     def pack(self, widget=None):
         """
@@ -186,7 +192,8 @@ class Element_Page:
         """
         if widget is None:
             widget = self.widget
-        self.widget.pack(**getattr(self.widget, "packParameters", {}))
+        packParameters = self.getPackParameters(widget)
+        widget.pack(**packParameters)
 
     def show(self, hideSiblings=False, mainloop=True):
         """
