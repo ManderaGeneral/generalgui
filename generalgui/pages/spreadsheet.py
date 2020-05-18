@@ -14,8 +14,8 @@ class Spreadsheet(Page):
         super().__init__(parentPage=parentPage, **packParameters)
 
         # Something like this instead, add as Page method. Automatically add attributes to widget and such
-        self.headerPage = self.addWidget(Page(self, bg="red", fill="x"))
-        self.cellPage = self.addWidget(Page(self, width=width, height=height, bg="yellow", fill="x"), makeBase=True)
+        self.headerPage = self.addWidget(Page(self, fill="x", padx=2))
+        self.cellPage = self.addWidget(Page(self, width=width, height=height, fill="x"), makeBase=True)
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.columnKeys = Keys()
@@ -25,6 +25,8 @@ class Spreadsheet(Page):
         for rowI, row in enumerate(getRows(obj)):
             for colI, value in enumerate(row):
                 label = Label(page, value, column=colI, row=rowI)
+                # print(label.getWidgetConfigs())
+                label.widgetConfig(bg="red")
                 # button = Button(self, value, column=colI, row=rowI, sticky="nsew")
 
                 if rowI == 0:

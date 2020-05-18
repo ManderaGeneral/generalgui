@@ -11,19 +11,19 @@ page = Page()
 
 
 
-Label(page, "hello")
+# Label(page, "hello")
 
-Dropdown(page, ["red", "green", "blue"])
-LabelCheckbutton(page, "yes")
-LabelEntry(page, "yes", "write")
-Button(page, "Click me")
+# Dropdown(page, ["red", "green", "blue"])
+# LabelCheckbutton(page, "yes")
+# LabelEntry(page, "yes", "write")
+# Button(page, "Click me")
 
 
 
 spreadsheet = Spreadsheet(page)
 
 rows = []
-for _ in range(50):
+for _ in range(35):
     rows.append([1, 2, "hello"])
 spreadsheet.addRows(rows)
 spreadsheet.headerRows(["this", "is", "test"])
