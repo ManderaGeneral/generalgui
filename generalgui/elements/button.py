@@ -20,11 +20,11 @@ class Button(Element):
         :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        self.text = value
-        widget = tk.Button(page.getBaseWidget(), text=value)
-        widget.config(cursor='hand2')
+        super().__init__(page)
 
-        super().__init__(page, widget, **packParameters)
+        self.text = value
+        widget = self.addWidget(tk.Button(page.getBaseWidget(), text=value), **packParameters)
+        self.widgetConfig(cursor="hand2")
 
         self._bind("<Enter>", lambda w=widget: w.config(background="gray90"))
         self._bind("<Leave>", lambda w=widget: w.config(background="SystemButtonFace"))

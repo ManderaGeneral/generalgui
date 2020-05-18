@@ -15,7 +15,7 @@ class Element(Element_Page, Element_Page_App):
     """
     def __init__(self, parentPage):
         typeChecker(parentPage, Page)
-        super().__init__(parentPage)
+        super().__init__(parentPage=parentPage)
 
         self.events = {}
 

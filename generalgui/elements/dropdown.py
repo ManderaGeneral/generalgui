@@ -21,6 +21,8 @@ class Dropdown(Element):
         :param str or float or None default: What should be shown before selection, doesn't need to be an option.
         :param function func: A function that is triggered when an option is pressed. 'Value' argument is passed if needed.
         """
+        super().__init__(page)
+
         self._options = options
         self._tkString = tk.StringVar()
         self._default = default
@@ -29,8 +31,8 @@ class Dropdown(Element):
             oldFunc = func
             func = lambda _: oldFunc()
 
-        widget = tk.OptionMenu(page.getBaseWidget(), self._tkString, *options, command=func)
-        super().__init__(page, widget, **packParameters)
+        self.addWidget(tk.OptionMenu(page.getBaseWidget(), self._tkString, *options, command=func), **packParameters)
+
         self._updateDefault()
 
     def _updateDefault(self):

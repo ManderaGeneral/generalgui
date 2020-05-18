@@ -12,7 +12,6 @@ class LabelCheckbutton(Page):
         self.pack()
 
         self.label = Label(self, value, side="left")
-
         self.checkbutton = Checkbutton(self, default=default, side="left")
 
         self.widgetConfig(pady=4, padx=4)

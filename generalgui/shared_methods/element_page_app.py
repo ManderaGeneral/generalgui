@@ -5,6 +5,19 @@ class Element_Page_App:
     """
     Pure methods that Element, Page and App all share.
     """
+    def getBaseWidget(self):
+        """
+        Get the bottom widget in this element, page or app.
+        Defined with addWidget().
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        :return:
+        """
+        widget = self.widget
+        while nextWidget := getattr(widget, "widget", False):
+            widget = nextWidget
+        return widget
+
     def isShown(self):
         """
         Get whether an element's widget is shown or not.

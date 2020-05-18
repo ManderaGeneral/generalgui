@@ -15,12 +15,11 @@ class Entry(Element):
         """
         Create an Entry element that controls an entry.
         """
+        super().__init__(page)
 
         self._default = default
 
-        widget = tk.Entry(page.getBaseWidget(), width=width)
-
-        super().__init__(page, widget, **packParameters)
+        self.addWidget(tk.Entry(page.getBaseWidget(), width=width), **packParameters)
 
         if default:
             self.setValue(default)

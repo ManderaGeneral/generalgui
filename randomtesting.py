@@ -12,6 +12,7 @@ page = Page()
 
 
 Label(page, "hello")
+
 Dropdown(page, ["red", "green", "blue"])
 LabelCheckbutton(page, "yes")
 LabelEntry(page, "yes", "write")
@@ -23,17 +24,17 @@ spreadsheet = Spreadsheet(page)
 
 
 
-# spreadsheet.getBaseWidget().rowconfigure(0, weight=1)
+spreadsheet.getBaseWidget().rowconfigure(0, weight=1)
 spreadsheet.getBaseWidget().columnconfigure(0, weight=1)
 
-# spreadsheet.addRows([[1, 2, 3], [4, 5, 6]])
+spreadsheet.addRows([[1, 2, 3], [4, 5, 6]])
 
 spreadsheet.addRows("hello")
 
 
 
-# spreadsheet.widget.rowconfigure(0, weight=1)
-# spreadsheet.widget.columnconfigure(0, weight=1)
+spreadsheet.widget.rowconfigure(0, weight=1)
+spreadsheet.widget.columnconfigure(0, weight=1)
 
 
 

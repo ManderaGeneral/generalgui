@@ -20,16 +20,32 @@ class Element_Page:
         self.app = parentPage.app
         self.widget = None
 
-    def addWidget(self, widget, **packParameters):
+    def addWidget(self, widget, makeBase=False, pack=True, **packParameters):
+        """
+
+        :param generalgui.element.Element or generalgui.page.Page self: Element or Page
+        :param widget:
+        :param makeBase:
+        :param pack:
+        :param packParameters:
+        :return:
+        """
         if self.widget is None:
             self.widget = widget
 
+        if makeBase:
+            setattr(self.getBaseWidget(), "widget", widget)
+
         setattr(widget, "element", self)
 
-        if "column" in packParameters and "row" in packParameters:
-            self.grid(packParameters["column"], packParameters["row"])
-        else:
-            self.pack()
+        self.setPackParameters(widget, **packParameters)
+        if pack:
+            if "column" in packParameters and "row" in packParameters:
+                self.grid(widget)
+            else:
+                self.pack(widget)
+
+        return widget
 
     def getParentPages(self, includeSelf=False):
         """
@@ -143,25 +159,33 @@ class Element_Page:
         else:
             return None
 
-    def setPackParameters(self, tkinterEle, **parameters):
+    def setPackParameters(self, widget, **parameters):
         """
         Create pack parameters for a specific tkinter element. Store it in it's object which then is used by the 'pack' method.
 
-        :param tkinterEle: tkinter element
+        :param widget: tkinter element
         :param parameters: parameters that this element can take when being packed
         """
-        setattr(tkinterEle, "packParameters", parameters)
+        setattr(widget, "packParameters", parameters)
 
-    def grid(self, column, row):
-        self.widget.grid(column=column, row=row, sticky=tk.NSEW)
+    def getPackParameters(self, widget):
+        return getattr(widget, "packParameters", {})
 
-    def pack(self):
+    def grid(self, widget=None):
+        if widget is None:
+            widget = self.widget
+        packParameters = self.getPackParameters(widget)
+        self.widget.grid(column=packParameters["column"], row=packParameters["row"], sticky=tk.NSEW)
+
+    def pack(self, widget=None):
         """
         Should not have to be called manually.
         Packs this Element or Page using it's 'side' attribute.
 
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         """
+        if widget is None:
+            widget = self.widget
         self.widget.pack(**getattr(self.widget, "packParameters", {}))
 
     def show(self, hideSiblings=False, mainloop=True):

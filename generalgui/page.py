@@ -26,7 +26,6 @@ class Page(Element_Page, Element_Page_App, Page_App):
         :param hsb: Horiziontal scrollbar if page is scrollable
         :param packParameters: Parameters given to page's tkinter Frame when being packed.
         """
-
         typeChecker(parentPage, (None, Page, App))
 
         if parentPage is None:
@@ -34,21 +33,20 @@ class Page(Element_Page, Element_Page_App, Page_App):
         elif removeSiblings:
             parentPage.removeChildren()
 
+        super().__init__(parentPage=parentPage)
+
         if height is None and width is None:
-            widget = tk.Frame(parentPage.getBaseWidget())
+            self.addWidget(tk.Frame(parentPage.getBaseWidget()), **packParameters)
         else:
-            widget = self._getScrollableWidget(parentPage, width, height, vsb, hsb)
+            self._getScrollableWidget(parentPage, width, height, vsb, hsb, **packParameters)
 
-        self.setPackParameters(widget, **packParameters)
-
-        super().__init__(parentPage=parentPage, widget=widget)
-
-    def _getScrollableWidget(self, parentPage, width, height, vsb, hsb):
+    def _getScrollableWidget(self, parentPage, width, height, vsb, hsb, **packParameters):
         canvas = tk.Canvas(parentPage.getBaseWidget(), width=width, height=height)
+        self.addWidget(canvas, **packParameters)
         canvas.pack_propagate(0)
-        self.setPackParameters(canvas)
 
         frame = tk.Frame(canvas, bg="red")
+        self.addWidget(frame, makeBase=True, pack=False)
 
         if vsb:
             verticalScrollbar = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
@@ -62,19 +60,56 @@ class Page(Element_Page, Element_Page_App, Page_App):
 
         windowId = canvas.create_window(0, 0, window=frame, anchor="nw")
 
-
         def _canvasConfigure(event):
             canvas.configure(scrollregion=canvas.bbox("all"))
             canvas.itemconfig(windowId, width=event.width, height=event.height)
-
         canvas.bind("<Configure>", _canvasConfigure)
 
-        setattr(canvas, "widget", frame)
-        setattr(frame, "element", self)
         return canvas
 
 
 
 from generalgui.app import App
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

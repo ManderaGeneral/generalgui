@@ -16,10 +16,11 @@ class Checkbutton(Element):
         :param generalgui.Page page: Parent page
         :param bool default: Whether to be created on or off
         """
+        super().__init__(page)
+
         self.default = default
         self._boolVar = tk.BooleanVar(value=default)
-        widget = tk.Checkbutton(page.getBaseWidget(), variable=self._boolVar)
-        super().__init__(page, widget, **packParameters)
+        self.addWidget(tk.Checkbutton(page.getBaseWidget(), variable=self._boolVar), **packParameters)
 
     def toggle(self):
         """

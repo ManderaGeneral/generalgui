@@ -6,14 +6,6 @@ class Page_App:
     """
     Pure methods that Page and App share.
     """
-    def getBaseWidget(self):
-        """
-
-        :param generalgui.page.Page or generalgui.app.App self: Page or App
-        :return:
-        """
-        return getattr(self.widget, "widget", self.widget)
-
     @ignore
     def getChildren(self, ignore=None):
         """
