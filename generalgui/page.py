@@ -36,13 +36,13 @@ class Page(Element_Page, Element_Page_App, Page_App):
         super().__init__(parentPage=parentPage)
 
         if height is None and width is None:
-            self.addWidget(tk.Frame(parentPage.getBaseWidget()), **packParameters)
+            self.addWidget(tk.Frame(parentPage.getBaseWidget()), pack=False, **packParameters)
         else:
             self._getScrollableWidget(parentPage, width, height, vsb, hsb, **packParameters)
 
     def _getScrollableWidget(self, parentPage, width, height, vsb, hsb, **packParameters):
         canvas = tk.Canvas(parentPage.getBaseWidget(), width=width, height=height)
-        self.addWidget(canvas, **packParameters)
+        self.addWidget(canvas, pack=False, **packParameters)
         canvas.pack_propagate(0)
 
         frame = tk.Frame(canvas, bg="green")
