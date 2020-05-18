@@ -1,5 +1,7 @@
 """Element for generalgui, controls a widget that's not App or Page"""
 
+import tkinter as tk
+
 from generallibrary.functions import leadingArgsCount
 from generallibrary.iterables import addToListInDict
 from generallibrary.types import typeChecker
@@ -13,15 +15,59 @@ class Element(Element_Page, Element_Page_App):
     Element is inherited by all tkinter widgets exluding App and Page.
     Shown by default. So when it's page is shown then all of page's children are shown automatically.
     """
-    def __init__(self, parentPage):
-        typeChecker(parentPage, Page)
-        super().__init__(parentPage=parentPage)
+    def __init__(self, parentPart, widgetClass, **parameters):
+        if typeChecker(parentPart, Page, error=False):
+            parentPart = parentPart.baseElement
+        typeChecker(parentPart, ("Frame", "Canvas"))
+
+
+
+        baseWidget = parentPart.getBaseWidget()
+        baseElement = baseWidget.element
+        widget = widgetClass(baseWidget)
+        setattr(widget, "element", baseElement)
+        self.widget = widget
+
+        configParameters, self.packParameters = self._filterParameters(**parameters)
+        self.widgetConfig(**configParameters)
+
+        self.parentPart = parentPart
+        self.parentPage = parentPart.parentPage
+        self.app = parentPart.app
 
         self.events = {}
 
-        # self.onRightClick(self.menu)
-    # def menu(self):  # Couldn't get this to work because I want to use Label here for example but it causes cirular imports
-    #     Page()  # Use place()?
+
+    # def __set_name__(self, owner, name):
+    #     print(name)
+    #     if owner.packParameters is None:
+    #         raise AttributeError("")
+
+    def _filterParameters(self, **parameters):
+        configParameters = {}
+        packParameters = {}
+        allConfigKeys = self.widget.keys()
+        for key, value in parameters.items():
+            if key in allConfigKeys:
+                configParameters[key] = value
+            else:
+                packParameters[key] = value
+        return configParameters, packParameters
+
+    def _grid(self):
+        self.widget.grid(column=self.packParameters["column"], row=self.packParameters["row"], sticky=tk.NSEW)
+
+    def pack(self):
+        """
+        Should not have to be called manually.
+        Packs this Element or Page using it's 'side' attribute.
+
+        :param generalgui.element.Element or generalgui.page.Page self: Element or Page
+        """
+        if "column" in self.packParameters and "row" in self.packParameters:
+            self._grid()
+        else:
+            self.widget.pack(**self.packParameters)
 
     def _bind(self, key, func, add=False):
         """
@@ -86,6 +132,7 @@ class Element(Element_Page, Element_Page_App):
         :param add: Whether to add to functions list or replace all
         """
         self._bind("<Button-3>", func, add)
+
     def rightClick(self):
         """Manually call the function that is called when this element is right clicked."""
         return self._callBind("<Button-3>")

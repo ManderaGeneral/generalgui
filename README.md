@@ -4,6 +4,7 @@ Three main parts: App, Page and Element.
 
 ## App
 Tk is 'widget' attribute.  
+'mainPart' attribute is None.
 
 ## Page
 Frame or ScrollableFrame is 'widget' attribute.  
@@ -27,4 +28,15 @@ Term | Meaning
 ---|---
 Widget | A tkinter widget such as Label and Button.
 Part | An App, Page or Element from generalgui
+
+## Attributes
+Attributes  | .parentPage   | .parentPart   | .widget   | .topElement   | .baseElement  | .element
+---|---|---|---|---|---
+App         | -             | -             | tk.Tk     | -             | -             | -
+Page        | Page or App   | Frame or App  | -         | Frame         | Canvas        | -
+Element     | Page          | Frame         | tk.Label  | -             | -             | -
+Widget      | -             | -             | -         | -             | -             | Element
+
+## Todo
+Split page
 

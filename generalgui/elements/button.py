@@ -12,22 +12,19 @@ class Button(Element):
     """
     Controls one tkinter Button
     """
-    def __init__(self, page, value, func=None, **packParameters):
+    def __init__(self, parentPart, value, func=None, **parameters):
         """
         Create a Button element that controls a button.
 
-        :param Page page: Parent page
+        :param generalgui.Page or Element parentPart: Parent page
         :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        super().__init__(page)
+        super().__init__(parentPart, tk.Button, text=value, cursor="hand2", **parameters)
+        # HERE ** I like this now
 
-        self.text = value
-        widget = self.addWidget(tk.Button(page.getBaseWidget(), text=value), **packParameters)
-        self.widgetConfig(cursor="hand2")
-
-        self._bind("<Enter>", lambda w=widget: w.config(background="gray90"))
-        self._bind("<Leave>", lambda w=widget: w.config(background="SystemButtonFace"))
+        self._bind("<Enter>", lambda w=self.widget: w.config(background="gray90"))
+        self._bind("<Leave>", lambda w=self.widget: w.config(background="SystemButtonFace"))
         self.onClick(func)
 
     def click(self, animate=True):
