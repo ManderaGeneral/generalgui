@@ -1,19 +1,19 @@
 # generalgui
-Makes tkinter easy.
+Makes tkinter easy to use.
 Three main parts: App, Page and Element.
 
 ## App
-Tk is 'widget' attribute.
+Tk is 'widget' attribute.  
 
 ## Page
-Has to be packed manually.
-Frame or ScrollableFrame is 'widget' attribute.
-Contains any amount of Elements and Pages
-Can be subclassed to create pre-built pages easily.
+Frame or ScrollableFrame is 'widget' attribute.  
+Contains any amount of Elements and Pages.  
+Can be subclassed to create pre-built pages easily.  
+Has to be packed manually.  
 
 ## Element
-Packed instantly because it always has to be inside a page.
-Tkinter widget is 'widget' attribute.
+Tkinter widget is 'widget' attribute.  
+Packed instantly because it always has to be inside a page.  
 
 ## Guiderules
  * Never use a widget directly, always go through an Element subclass.
@@ -24,7 +24,7 @@ Tkinter widget is 'widget' attribute.
 
 ## Terms
 Term | Meaning
---- | ---
+---|---
 Widget | A tkinter widget such as Label and Button.
 Part | An App, Page or Element from generalgui
 
