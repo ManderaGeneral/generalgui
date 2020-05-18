@@ -10,7 +10,7 @@ class Spreadsheet(Page):
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
-    def __init__(self, parentPage=None, width=640, height=640, **packParameters):
+    def __init__(self, parentPage=None, width=300, height=300, **packParameters):
         super().__init__(parentPage=parentPage, **packParameters)
 
         # Something like this instead, add as Page method. Automatically add attributes to widget and such
@@ -26,11 +26,12 @@ class Spreadsheet(Page):
             for colI, value in enumerate(row):
                 label = Label(page, value, column=colI, row=rowI)
                 # print(label.getWidgetConfigs())
-                label.widgetConfig(bg="red")
+                # label.widgetConfig(bg="red")
                 # button = Button(self, value, column=colI, row=rowI, sticky="nsew")
 
                 if rowI == 0:
                     page.getBaseWidget().columnconfigure(colI, weight=1)
+        # self.cellPage.widget.configure(scrollregion=self.cellPage.widget.bbox("all"))
 
     def addRows(self, obj):
         self._addRows(obj, self.cellPage)

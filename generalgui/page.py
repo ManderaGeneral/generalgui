@@ -45,7 +45,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
         self.addWidget(canvas, **packParameters)
         canvas.pack_propagate(0)
 
-        frame = tk.Frame(canvas)
+        frame = tk.Frame(canvas, bg="green")
         self.addWidget(frame, makeBase=True, pack=False)
 
         if vsb:
@@ -62,7 +62,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
 
         def _canvasConfigure(event):
             canvas.configure(scrollregion=canvas.bbox("all"))
-            canvas.itemconfig(windowId, width=event.width, height=event.height)
+            canvas.itemconfig(windowId, width=event.width)
         canvas.bind("<Configure>", _canvasConfigure)
 
         return canvas

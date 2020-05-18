@@ -23,8 +23,8 @@ page = Page()
 spreadsheet = Spreadsheet(page)
 
 rows = []
-for _ in range(35):
-    rows.append([1, 2, "hello"])
+for _ in range(50):
+    rows.append([1, 2])
 spreadsheet.addRows(rows)
 spreadsheet.headerRows(["this", "is", "test"])
 
