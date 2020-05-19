@@ -11,24 +11,26 @@ class Entry(Element):
     """
     Controls one tkinter Entry
     """
-    def __init__(self, page, default=None, width=15, **packParameters):
+    def __init__(self, parentPage, default=None, width=15, **parameters):
         """
         Create an Entry element that controls an entry.
+
+        :param generalgui.Page parentPage: Parent page
+        :param default: What value to start with that is removed when clicking
+        :param width: Width of Entry in pixels
+        :param parameters: Both config and pack parameters together
         """
-        super().__init__(page)
+        super().__init__(parentPage, tk.Entry, width=width, **parameters)
 
         self._default = default
-
-        self.addWidget(tk.Entry(page.getBaseWidget(), width=width), **packParameters)
-
         if default:
             self.setValue(default)
 
         self.onClick(self.clearIfDefault)
-        self._bind("<Control-BackSpace>", self._removeWord)
-        self._bind("<Control-Delete>", lambda: self._removeWord(delete=True))
-        self._bind("<FocusOut>", lambda: self.setValue(self.getDefault()) if self.getValue() == "" else None)
-        self._bind("<Return>", self._clickNextButton)
+        self.createBind("<Control-BackSpace>", self._removeWord)
+        self.createBind("<Control-Delete>", lambda: self._removeWord(delete=True))
+        self.createBind("<FocusOut>", lambda: self.setValue(self.getDefault()) if self.getValue() == "" else None)
+        self.createBind("<Return>", self._clickNextButton)
 
     def _clickNextButton(self):
         """

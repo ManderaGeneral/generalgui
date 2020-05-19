@@ -18,10 +18,12 @@ Packed instantly because it always has to be inside a page.
 
 ## Guiderules
  * Never use a widget directly, always go through an Element subclass.
- * parentPage attribute in Label goes to Page.
- * parentPart attribute in Label goes to Page's Frame.
- * Every widget and part has a parentPage and parentPart attribute.
+ * .parentPage attribute in Label goes to Page.
+ * .parentPart attribute in Label goes to Page's Frame.
+ * Every part has a .parentPage and .parentPart attribute.
  * An Element can never have more than one widget.
+ * A widget only has .element attribute.
+ * Element can only be put inside a Page, so create subpages if needed.
 
 ## Terms
 Term | Meaning

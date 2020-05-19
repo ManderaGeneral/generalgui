@@ -1,5 +1,7 @@
 """Shared methods by Element, Page and App"""
 
+from generallibrary.types import typeChecker
+
 
 class Element_Page_App:
     """
@@ -7,16 +9,31 @@ class Element_Page_App:
     """
     def getBaseWidget(self):
         """
-        Get the bottom widget in this element, page or app.
-        Defined with addWidget().
+        Get base widget from a part.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        :return:
         """
-        widget = self.widget
-        while nextWidget := getattr(widget, "widget", False):
-            widget = nextWidget
-        return widget
+        if typeChecker(self, ("App", "Element"), error=False):
+            return self.widget
+        else:
+            if self.baseElement is None:
+                return self.parentPage.getBaseWidget()
+            else:
+                return self.baseElement.widget
+
+    def getTopWidget(self):
+        """
+        Get top widget from a part.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        if typeChecker(self, ("App", "Element"), error=False):
+            return self.widget
+        else:
+            if self.topElement is None:
+                return self.parentPage.getTopWidget()
+            else:
+                return self.topElement.widget
 
     def isShown(self):
         """
@@ -25,7 +42,7 @@ class Element_Page_App:
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :rtype: bool
         """
-        return not not self.widget.winfo_ismapped()
+        return not not self.getTopWidget().winfo_ismapped()
 
     def isPacked(self):
         """
@@ -34,7 +51,7 @@ class Element_Page_App:
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :rtype: bool
         """
-        return self.widget.winfo_manager() != ""
+        return self.getTopWidget().winfo_manager() != ""
 
     def remove(self):
         """
@@ -42,8 +59,8 @@ class Element_Page_App:
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        self.widget.update()
-        self.widget.destroy()
+        self.getTopWidget().update()
+        self.getTopWidget().destroy()
 
     def widgetConfig(self, **kwargs):
         """
@@ -51,7 +68,7 @@ class Element_Page_App:
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        self.widget.config(**kwargs)
+        self.getBaseWidget().config(**kwargs)
 
     def getWidgetConfigs(self):
         """
@@ -59,7 +76,7 @@ class Element_Page_App:
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        return self.widget.keys()
+        return self.getBaseWidget().keys()
 
 
 

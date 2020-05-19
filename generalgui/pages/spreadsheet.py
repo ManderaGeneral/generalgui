@@ -3,6 +3,8 @@
 from generalgui import Button, Page, Label
 
 from generallibrary.iterables import getRows
+
+
 class Spreadsheet(Page):
     """
     Controls elements in a grid
@@ -10,16 +12,17 @@ class Spreadsheet(Page):
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
-    def __init__(self, parentPage=None, width=300, height=300, **packParameters):
-        super().__init__(parentPage=parentPage, **packParameters)
+    def __init__(self, parentPage=None, width=300, height=300, **parameters):
+        super().__init__(parentPage=parentPage, **parameters)
 
-        # Something like this instead, add as Page method. Automatically add attributes to widget and such
-        self.headerPage = self.addWidget(Page(self, fill="x", padx=2))
-        self.cellPage = self.addWidget(Page(self, width=width, height=height, fill="x"), makeBase=True)
+        self.headerPage = Page(self, fill="x", padx=2, pack=True)
+        self.cellPage = Page(self, vsb=True, hsb=True, width=width, height=height, fill="x", pack=True)
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.columnKeys = Keys()
         self.rowKeys = Keys()
+
+        self.pack()
 
     def _addRows(self, obj, page):
         for rowI, row in enumerate(getRows(obj)):

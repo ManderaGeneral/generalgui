@@ -1,7 +1,5 @@
 """Shared methods by Element and Page"""
 
-import tkinter as tk
-
 from generallibrary.types import typeChecker
 
 from generalgui.shared_methods.decorators import ignore
@@ -11,14 +9,22 @@ class Element_Page:
     """
     Pure methods that Element and Page share.
     """
-    def __init__(self, parentPage):
+    def pack(self):
         """
+        Packs this Element's widget using the packParameters attribute.
 
-        :param generalgui.app.App or generalgui.page.Page parentPage:
+        :param generalgui.element.Element or generalgui.Page self: Element or Page
         """
-        self.parentPage = parentPage
-        self.app = parentPage.app
-        self.widget = None
+        if typeChecker(self, "Page", error=False):
+            if self.topElement is None:
+                raise AttributeError("Cannot pack Page without a topElement.")
+            self.topElement.pack()
+
+        else:
+            if "column" in self.packParameters and "row" in self.packParameters:
+                self._grid()
+            else:
+                self.widget.pack(**self.packParameters)
 
     def getParentPages(self, includeSelf=False):
         """

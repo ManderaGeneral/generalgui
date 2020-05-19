@@ -11,7 +11,6 @@ class App(Element_Page_App, Page_App):
     Controls one tkinter Tk object and adds a lot of convenient features.
     """
     def __init__(self):
-        self.parentPage = None
         self.widget = Tk()
         setattr(self.widget, "element", self)
         self.app = self

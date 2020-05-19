@@ -1,4 +1,4 @@
-"""Dropdown class that inherits Element"""
+"""OptionMenu class that inherits Element"""
 
 import tkinter as tk
 
@@ -8,30 +8,27 @@ from generallibrary.types import strToDynamicType
 from generalgui.element import Element
 
 
-class Dropdown(Element):
+class OptionMenu(Element):
     """
     Controls one tkinter OptionMenu
     """
-    def __init__(self, page, options, default=None, func=None, **packParameters):
+    def __init__(self, parentPage, options, default=None, func=None, **parameters):
         """
-        Create a Dropdown element that controls an OptionMenu.
+        Create a OptionMenu element that controls an OptionMenu.
 
-        :param Page page: Parent page
+        :param generalgui.Page parentPage: Parent page
         :param list[str or float] options: List of options
         :param str or float or None default: What should be shown before selection, doesn't need to be an option.
         :param function func: A function that is triggered when an option is pressed. 'Value' argument is passed if needed.
+        :param parameters: Both config and pack parameters together
         """
-        super().__init__(page)
-
-        self._options = options
-        self._tkString = tk.StringVar()
-        self._default = default
-
         if func and leadingArgsCount(func) < 1:
             oldFunc = func
             func = lambda _: oldFunc()
-
-        self.addWidget(tk.OptionMenu(page.getBaseWidget(), self._tkString, *options, command=func), **packParameters)
+        self._options = options
+        self._tkString = tk.StringVar()
+        self._default = default
+        super().__init__(parentPage, tk.OptionMenu, variable=self._tkString, value=options[0], command=func, values=options[1:], **parameters)
 
         self._updateDefault()
 

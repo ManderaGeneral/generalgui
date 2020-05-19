@@ -9,18 +9,17 @@ class Checkbutton(Element):
     """
     Controls one tkinter Checkbutton
     """
-    def __init__(self, page, default=False, **packParameters):
+    def __init__(self, parentPage, default=False, **parameters):
         """
         Create an Entry element that controls an entry.
 
-        :param generalgui.Page page: Parent page
+        :param generalgui.Page parentPage: Parent page
         :param bool default: Whether to be created on or off
+        :param parameters: Both config and pack parameters together
         """
-        super().__init__(page)
-
-        self.default = default
         self._boolVar = tk.BooleanVar(value=default)
-        self.addWidget(tk.Checkbutton(page.getBaseWidget(), variable=self._boolVar), **packParameters)
+        super().__init__(parentPage, tk.Checkbutton, variable=self._boolVar, **parameters)
+        self.default = default
 
     def toggle(self):
         """

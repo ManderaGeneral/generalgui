@@ -1,7 +1,5 @@
 """App for generalgui, controls Frame"""
 
-import tkinter as tk
-
 from generallibrary.types import typeChecker
 
 from generalgui.shared_methods.element_page import Element_Page
@@ -14,7 +12,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPart=None, removeSiblings=False, width=None, height=None, vsb=True, hsb=True, **packParameters):
+    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, **parameters):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
@@ -30,67 +28,50 @@ class Page(Element_Page, Element_Page_App, Page_App):
 
         if parentPage is None:
             parentPage = App()
-        elif removeSiblings:
+
+        if removeSiblings:
             parentPage.removeChildren()
 
-        super().__init__(parentPage=parentPage)
-
-        if height is None and width is None:
-            self.addWidget(tk.Frame(parentPage.getBaseWidget()), pack=False, **packParameters)
+        self.parentPage = parentPage
+        if typeChecker(parentPage, App, error=False):
+            self.parentPart = parentPage
         else:
-            self._getScrollableWidget(parentPage, width, height, vsb, hsb, **packParameters)
+            self.parentPart = parentPage.baseElement
 
-    # def addWidget(self, widget, pack=True, **packParameters):
-    #     self.baseElement.addWidget(self, widget, pack, **packParameters)
+        self.app = parentPage.app
 
-    def addElement(self, element, pack=True, makeBase=False, **packParameters):
-        if self.widget is None:
-            self.widget = widget
+        self.baseElement = None
+        self.topElement = None
+
+        if not vsb and not hsb:
+            Frame(self, makeBase=True, **parameters)
+
         else:
-            raise AttributeError("Element can only have one widget")
+            # HERE ** make it work
+            canvas = Canvas(parentPage, pack=False, makeBase=True, **parameters)
+            canvas.widget.pack_propagate(0)
 
-        setattr(widget, "element", self)
+            if vsb:
+                scrollbar = Scrollbar(self, orient="vertical", command=canvas.widget.yview, side="right", fill="y")
+                canvas.widgetConfig(yscrollcommand=scrollbar.widget.set)
+            if hsb:
+                scrollbar = Scrollbar(self, orient="horizontal", command=canvas.widget.xview, side="bottom", fill="x")
+                canvas.widgetConfig(xscrollcommand=scrollbar.widget.set)
 
-        self.setPackParameters(widget, **packParameters)
+            frame = Frame(self, pack=False, makeBase=True)
+            windowId = canvas.widget.create_window(0, 0, window=frame.widget, anchor="nw")
+
+            def _canvasConfigure(event):
+                canvas.widgetConfig(scrollregion=canvas.widget.bbox("all"))
+                canvas.widget.itemconfig(windowId, width=event.width)
+            canvas.createBind("<Configure>", _canvasConfigure)
+
         if pack:
-            if "column" in packParameters and "row" in packParameters:
-                self.grid(widget)
-            else:
-                self.pack(widget)
-
-        return widget
-
-    def _getScrollableWidget(self, parentPage, width, height, vsb, hsb, **packParameters):
-        canvas = tk.Canvas(parentPage.getBaseWidget(), width=width, height=height)
-        self.addWidget(canvas, pack=False, **packParameters)
-        canvas.pack_propagate(0)
-
-        frame = tk.Frame(canvas, bg="green")
-        self.addWidget(frame, makeBase=True, pack=False)
-
-        if vsb:
-            verticalScrollbar = tk.Scrollbar(canvas, orient="vertical", command=canvas.yview)
-            canvas.configure(yscrollcommand=verticalScrollbar.set)
-            verticalScrollbar.pack(side="right", fill="y")
-
-        if hsb:
-            horizontalScrollbar = tk.Scrollbar(canvas, orient="horizontal", command=canvas.xview)
-            canvas.configure(xscrollcommand=horizontalScrollbar.set)
-            horizontalScrollbar.pack(side="bottom", fill="x")
-
-        windowId = canvas.create_window(0, 0, window=frame, anchor="nw")
-
-        def _canvasConfigure(event):
-            canvas.configure(scrollregion=canvas.bbox("all"))
-            canvas.itemconfig(windowId, width=event.width)
-        canvas.bind("<Configure>", _canvasConfigure)
-
-        return canvas
+            self.pack()
 
 
 
-from generalgui.app import App
-
+from generalgui import App, Frame, Canvas, Scrollbar
 
 
 

@@ -2,6 +2,7 @@
 
 from generalgui.shared_methods.decorators import ignore
 
+
 class Page_App:
     """
     Pure methods that Page and App share.
@@ -16,7 +17,14 @@ class Page_App:
         :return: Children elements in list
         :rtype: list[generalgui.element.Element or generalgui.page.Page]
         """
-        return [widget.element for widget in self.getBaseWidget().winfo_children() if widget.element not in ignore]
+        children = []
+        for widget in self.getBaseWidget().winfo_children():
+            part = widget.element
+            if part.parentPage.topElement == part:
+                part = part.parentPage
+            if widget.element not in ignore and part not in ignore:
+                children.append(widget.element)
+        return children
 
     @ignore
     def showChildren(self, ignore=None, mainloop=True):
