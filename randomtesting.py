@@ -18,8 +18,10 @@ Button(page, "Click me")
 
 spreadsheet = Spreadsheet(page)
 rows = []
-for _ in range(50):
-    rows.append([1, 2])
+for _ in range(20):
+    # rows.append([1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2])
+    rows.append([1, 2, 1, "randoom", 1, 2, 1, 2, 1, 2, 1, 2])
+
 spreadsheet.headerRows(["this", "is"])
 spreadsheet.addRows(rows)
 

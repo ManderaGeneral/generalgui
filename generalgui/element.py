@@ -62,12 +62,14 @@ class Element(Element_Page, Element_Page_App):
         self.events = {}
 
         if makeBase:
-            self.parentPage.baseElement = self
-            if self.parentPage.topElement is None:
-                self.parentPage.topElement = self
-
+            self.makeBase()
         if pack:
             self.pack()
+
+    def makeBase(self):
+        self.parentPage.baseElement = self
+        if self.parentPage.topElement is None:
+            self.parentPage.topElement = self
 
     def _grid(self):
         self.widget.grid(column=self.packParameters["column"], row=self.packParameters["row"], sticky=tk.NSEW)

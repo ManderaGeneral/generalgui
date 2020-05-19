@@ -15,10 +15,17 @@ class Spreadsheet(Page):
     def __init__(self, parentPage=None, width=300, height=300, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, **parameters)
 
-        self.headerPage = Page(self, fill="x", padx=2, pack=True)
+        self.topPage = Page(self, pack=True, height=50, fill="x", bg="yellow")
+
+        self.headerPage = Page(self.topPage, pack=True, side="left", fill="both", bg="green")
+        self.headerPage.getTopWidget().grid_propagate(0)
+
+        # self.headerPage = Page(self, fill="x", padx=2, pack=True)
+
         self.cellPage = Page(self, vsb=True, hsb=True, pack=True)
 
-        print(self.headerPage.getBaseWidget())
+        self.cellPage.baseElement.createBind("<Configure>", lambda event: self.headerPage.widgetConfig(width=event.width), add=True)
+        # self.cellPage.baseElement.createBind("<Configure>", lambda event: print(event.width), add=True)
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.columnKeys = Keys()

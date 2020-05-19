@@ -24,6 +24,7 @@ Packed instantly because it always has to be inside a page.
  * An Element can never have more than one widget.
  * A widget only has .element attribute.
  * Element can only be put inside a Page, so create subpages if needed.
+ * Elements are packed directly because they need a parent page.
 
 ## Terms
 Term | Meaning

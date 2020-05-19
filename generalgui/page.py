@@ -43,11 +43,12 @@ class Page(Element_Page, Element_Page_App, Page_App):
         self.baseElement = None
         self.topElement = None
 
-        if not vsb and not hsb:
-            Frame(self, makeBase=True, **parameters)
+        frame = Frame(self, makeBase=True, **parameters)
+        if "width" in parameters or "height" in parameters:
+            frame.widget.pack_propagate(0)
 
-        else:
-            canvas = Canvas(self, pack=False, makeBase=True, fill="both", expand=True, **parameters)
+        if vsb or hsb:
+            canvas = Canvas(self, pack=False, fill="both", side="left", expand=True)
             canvas.widget.pack_propagate(0)
 
             if vsb:
@@ -57,12 +58,15 @@ class Page(Element_Page, Element_Page_App, Page_App):
                 scrollbar = Scrollbar(self, orient="horizontal", command=canvas.widget.xview, side="bottom", fill="x")
                 canvas.widgetConfig(xscrollcommand=scrollbar.widget.set)
 
+            canvas.pack()
+            canvas.makeBase()
+
             frame = Frame(self, pack=False, makeBase=True)
             windowId = canvas.widget.create_window(0, 0, window=frame.widget, anchor="nw")
 
             def _canvasConfigure(event):
                 canvas.widgetConfig(scrollregion=canvas.widget.bbox("all"))
-                canvas.widget.itemconfig(windowId, width=event.width)
+                # canvas.widget.itemconfig(windowId, width=event.width)
             canvas.createBind("<Configure>", _canvasConfigure)
 
         if pack:

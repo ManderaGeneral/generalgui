@@ -8,6 +8,9 @@ from generalgui.element import Element
 class Canvas(Element):
     """
     Controls one tkinter Frame
+
+    Attributes:
+        widget  Hello
     """
     def __init__(self, parentPage, **parameters):
         """
