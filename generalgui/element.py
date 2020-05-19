@@ -43,7 +43,6 @@ class Element(Element_Page, Element_Page_App):
             else:
                 raise AttributeError(f"Missing positional parameter that doesn't have a default value {parameterName} with kind {kind}")
 
-
         self.widget = widgetClass(*initArgs)
 
         configParameters = {}

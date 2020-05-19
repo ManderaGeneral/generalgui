@@ -47,8 +47,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
             Frame(self, makeBase=True, **parameters)
 
         else:
-            # HERE ** make it work
-            canvas = Canvas(parentPage, pack=False, makeBase=True, **parameters)
+            canvas = Canvas(self, pack=False, makeBase=True, fill="both", expand=True, **parameters)
             canvas.widget.pack_propagate(0)
 
             if vsb:

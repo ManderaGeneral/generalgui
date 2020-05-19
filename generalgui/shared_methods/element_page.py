@@ -164,7 +164,7 @@ class Element_Page:
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         """
         if self.isPacked:
-            self.widget.pack_forget()
+            self.getTopWidget().pack_forget()
 
     def toggleShow(self, mainloop=True):
         """

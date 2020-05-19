@@ -13,10 +13,12 @@ class Spreadsheet(Page):
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
     def __init__(self, parentPage=None, width=300, height=300, **parameters):
-        super().__init__(parentPage=parentPage, **parameters)
+        super().__init__(parentPage=parentPage, width=width, height=height, **parameters)
 
         self.headerPage = Page(self, fill="x", padx=2, pack=True)
-        self.cellPage = Page(self, vsb=True, hsb=True, width=width, height=height, fill="x", pack=True)
+        self.cellPage = Page(self, vsb=True, hsb=True, pack=True)
+
+        print(self.headerPage.getBaseWidget())
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.columnKeys = Keys()
