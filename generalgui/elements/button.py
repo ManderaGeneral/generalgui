@@ -22,8 +22,8 @@ class Button(Element):
         """
         super().__init__(parentPage, tk.Button, text=value, cursor="hand2", **parameters)
 
-        self.createBind("<Enter>", lambda w=self.widget: w.config(background="gray90"))
-        self.createBind("<Leave>", lambda w=self.widget: w.config(background="SystemButtonFace"))
+
+        self.configOnHover(bg="gray90")
         self.onClick(func)
 
     def click(self, animate=True):

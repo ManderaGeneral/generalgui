@@ -45,21 +45,22 @@ class Element(Element_Page, Element_Page_App):
 
         self.widget = widgetClass(*initArgs)
 
+        setattr(self.widget, "element", self)
+        self.parentPage = parentPage
+        self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
+        self.app = parentPage.app
+        self.events = {}
+        self.originalParameters = {}
+
         configParameters = {}
         self.packParameters = {}
-        allConfigKeys = self.getWidgetConfigs()
+        allConfigKeys = self.getAllWidgetConfigs()
         for key, value in parameters.items():
             if key in allConfigKeys:
                 configParameters[key] = value
             else:
                 self.packParameters[key] = value
         self.widgetConfig(**configParameters)
-
-        setattr(self.widget, "element", self)
-        self.parentPage = parentPage
-        self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
-        self.app = parentPage.app
-        self.events = {}
 
         if makeBase:
             self.makeBase()
@@ -72,7 +73,7 @@ class Element(Element_Page, Element_Page_App):
             self.parentPage.topElement = self
 
     def _grid(self):
-        self.widget.grid(column=self.packParameters["column"], row=self.packParameters["row"], sticky=tk.NSEW)
+        self.widget.grid(**self.packParameters)
 
     def createBind(self, key, func, add=False):
         """
@@ -143,6 +144,45 @@ class Element(Element_Page, Element_Page_App):
         return self._callBind("<Button-3>")
 
 
+    def widgetConfig(self, overwriteOriginal=True, **kwargs):
+        """
+        Configure widget.
+        """
+        if overwriteOriginal:
+            for key, value in kwargs.items():
+                if key in self.originalParameters:
+                    self.originalParameters[key] = value
+        self.widget.config(**kwargs)
+
+    def getAllWidgetConfigs(self):
+        """
+        Get all the keys we can use in method 'widgetConfig()' as a list.
+        """
+        return self.widget.keys()
+
+    def getWidgetConfig(self, key):
+        """
+        Get a current config value on the widget.
+        """
+        return self.widget[key]
+
+
+    # HERE ** Add button's click animation to this somehow so we need to generalize it
+    # We need to handle what happens when animations collide, now the hover animation breaks when clicked
+    # Maybe rainbow should also be animation?
+
+    def configOnHover(self, **parameters):
+        def enable():
+            for key, value in parameters.items():
+                self.originalParameters[key] = self.widget[key]
+            self.widgetConfig(overwriteOriginal=False, **parameters)
+
+        def disable():
+            self.widgetConfig(overwriteOriginal=False, **self.originalParameters)
+            self.originalParameters = {}
+
+        self.createBind("<Enter>", enable)
+        self.createBind("<Leave>", disable)
 
 
 

@@ -5,6 +5,7 @@ from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, Labe
 import tkinter as tk
 import inspect
 
+
 page = Page()
 # page = Page(height=400, width=400)
 
@@ -13,17 +14,27 @@ Label(page, "hello")
 OptionMenu(page, ["red", "green", "blue"], "hello")
 LabelCheckbutton(page, "yes")
 LabelEntry(page, "yes", "write")
-Button(page, "Click me")
+Button(page, "Click me", func=page.rainbow)
+Button(page, "Reset", func= lambda: page.rainbow(reset=True))
 
 
 spreadsheet = Spreadsheet(page)
 rows = []
-for _ in range(20):
+# for _ in range(20):
     # rows.append([1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2])
-    rows.append([1, 2, 1, "randoom", 1, 2, 1, 2, 1, 2, 1, 2])
+    # rows.append([1, 2, 1, "randoom", 1, 2, 1, 2, 1, 2, 1, 2])
 
-spreadsheet.headerRows(["this", "is"])
+rows.append(["red", "mandera", 9])
+rows.append(["yellow", "nick", 1337])
+
+spreadsheet.headerRows(["color", "n", "number"])
 spreadsheet.addRows(rows)
+
+# page.app.widget.update()
+spreadsheet.syncWidths()
+# page.app.widget.update()
+# spreadsheet.syncWidths()
+
 
 page.show()
 

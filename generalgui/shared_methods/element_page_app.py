@@ -2,24 +2,107 @@
 
 from generallibrary.types import typeChecker
 
+from generalvector import Vec
+
+from generalgui.shared_methods.decorators import ignore
+
 
 class Element_Page_App:
     """
     Pure methods that Element, Page and App all share.
     """
+    def rainbow(self, reset=False):
+        """
+        Give every widget and subwidget recursively a random background color.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        :param reset:
+        """
+        if typeChecker(self, "Element", error=False):
+            prevBG = getattr(self, "prevBG", False)
+            if reset:
+                if prevBG:
+                    self.widgetConfig(bg=prevBG)
+            else:
+                if not prevBG:
+                    setattr(self, "prevBG", self.getWidgetConfig("bg"))
+                self.widgetConfig(bg=Vec.random(50, 255).hex())
+
+        for element in self.getChildren(includeParts=True):
+            element.rainbow(reset=reset)
+
+    @ignore
+    def getChildren(self, includeParts=False, ignore=None):
+        """
+        Get children pages and elements that's one step below in hierarchy.
+
+        :param generalgui.page.Page or generalgui.app.App self: Page or App
+        :param includeParts: Whether to get page parts or one page
+        :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
+        :return: Children elements in list
+        :rtype: list[generalgui.element.Element or generalgui.page.Page]
+        """
+        children = []
+
+        if includeParts:
+            for widget in self.getTopWidget().winfo_children():
+                if getattr(widget, "element", None) is None:
+                    continue
+
+                part = widget.element
+                if part not in ignore:
+                    children.append(part)
+
+        else:
+            for widget in self.getBaseWidget().winfo_children():
+                if getattr(widget, "element", None) is None:
+                    continue
+
+                part = widget.element
+                if part.parentPage.topElement == part:
+                    part = part.parentPage
+                if widget.element not in ignore and part not in ignore:
+                    children.append(widget.element)
+
+        return children
+
+    def getBaseElement(self):
+        """
+        Get base element from a part.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        :rtype: generalgui.element.Element
+        """
+        if typeChecker(self, ("App", "Element"), error=False):
+            return self
+        else:
+            if self.baseElement is None:
+                return self.parentPage.getBaseElement()
+            else:
+                return self.baseElement
+
     def getBaseWidget(self):
         """
         Get base widget from a part.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
+        return self.getBaseElement().widget
+
+    def getTopElement(self):
+        """
+        Get top element from a part.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        :rtype: generalgui.element.Element
+        """
         if typeChecker(self, ("App", "Element"), error=False):
-            return self.widget
+            return self
         else:
-            if self.baseElement is None:
-                return self.parentPage.getBaseWidget()
+            if self.topElement is None:
+                return self.parentPage.getBaseElement()
             else:
-                return self.baseElement.widget
+                return self.topElement
 
     def getTopWidget(self):
         """
@@ -27,13 +110,7 @@ class Element_Page_App:
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        if typeChecker(self, ("App", "Element"), error=False):
-            return self.widget
-        else:
-            if self.topElement is None:
-                return self.parentPage.getTopWidget()
-            else:
-                return self.topElement.widget
+        return self.getTopElement().widget
 
     def isShown(self):
         """
@@ -61,22 +138,6 @@ class Element_Page_App:
         """
         self.getTopWidget().update()
         self.getTopWidget().destroy()
-
-    def widgetConfig(self, **kwargs):
-        """
-        Configure widget.
-
-        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        """
-        self.getBaseWidget().config(**kwargs)
-
-    def getWidgetConfigs(self):
-        """
-        Get all the keys we can use in method 'widgetConfig()' as a list.
-
-        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        """
-        return self.getBaseWidget().keys()
 
 
 
