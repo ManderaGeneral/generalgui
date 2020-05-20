@@ -10,6 +10,7 @@ from generallibrary.types import typeChecker
 
 from generalgui.shared_methods.element_page import Element_Page
 from generalgui.shared_methods.element_page_app import Element_Page_App
+from generalgui.shared_methods.styler import StyleHandler, Style
 
 
 class Element(Element_Page, Element_Page_App):
@@ -50,7 +51,7 @@ class Element(Element_Page, Element_Page_App):
         self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
         self.app = parentPage.app
         self.events = {}
-        self.originalParameters = {}
+        self.styleHandler = None
 
         configParameters = {}
         self.packParameters = {}
@@ -86,7 +87,7 @@ class Element(Element_Page, Element_Page_App):
         :return:
         """
         if func is None:
-            self.widget.unbind("<Button-1>")
+            self.widget.unbind(key)
             if key in self.events:
                 del self.events[key]
         else:
@@ -125,7 +126,7 @@ class Element(Element_Page, Element_Page_App):
         :param function or None func: Any function or None to unbind
         :param add: Whether to add to functions list or replace all
         """
-        self.createBind("<Button-1>", func, add)
+        self.createBind(key="<Button-1>", func=func, add=add)
     def click(self):
         """Manually call the function that is called when this element is left clicked."""
         return self._callBind("<Button-1>")
@@ -137,7 +138,7 @@ class Element(Element_Page, Element_Page_App):
         :param function or None func: Any function or None to unbind
         :param add: Whether to add to functions list or replace all
         """
-        self.createBind("<Button-3>", func, add)
+        self.createBind(key="<Button-3>", func=func, add=add)
 
     def rightClick(self):
         """Manually call the function that is called when this element is right clicked."""
@@ -148,10 +149,6 @@ class Element(Element_Page, Element_Page_App):
         """
         Configure widget.
         """
-        if overwriteOriginal:
-            for key, value in kwargs.items():
-                if key in self.originalParameters:
-                    self.originalParameters[key] = value
         self.widget.config(**kwargs)
 
     def getAllWidgetConfigs(self):
@@ -167,10 +164,23 @@ class Element(Element_Page, Element_Page_App):
         return self.widget[key]
 
 
-    # HERE ** Add button's click animation to this somehow so we need to generalize it
-    # We need to handle what happens when animations collide, now the hover animation breaks when clicked
-    # Maybe rainbow should also be animation?
 
+
+    def createStyle(self, name, hook=None, unhook=None, priority=None, **kwargs):
+        if self.styleHandler is None:
+            self.styleHandler = StyleHandler(lambda kwargs: self.widgetConfig(**kwargs), lambda key: self.getWidgetConfig(key))
+
+        style = self.styleHandler.createStyle(name=name, priority=priority, **kwargs)
+
+        if hook:
+            self.createBind(key=hook, func=style.enable, add=True)
+        if unhook:
+            self.createBind(key=unhook, func=style.disable, add=True)
+
+        return style
+
+
+    # Remvoe thise method
     def configOnHover(self, **parameters):
         def enable():
             for key, value in parameters.items():

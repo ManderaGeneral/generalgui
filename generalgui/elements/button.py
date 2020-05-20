@@ -23,7 +23,7 @@ class Button(Element):
         super().__init__(parentPage, tk.Button, text=value, cursor="hand2", **parameters)
 
 
-        self.configOnHover(bg="gray90")
+        self.createStyle(name="Hover", hook="<Enter>", unhook="<Leave>", bg="gray90")
         self.onClick(func)
 
     def click(self, animate=True):
