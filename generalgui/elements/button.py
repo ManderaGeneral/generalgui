@@ -30,13 +30,14 @@ class Button(Element):
         """
         Simple animation if button's click bind is called.
         """
+        # HERE ** Turn this into a style instead, so create a method to copy and extend a style?
         if animate:
-            self._callBind("<Enter>")
+            self.styleHandler.enable("Hover")
             self.widget.config(relief=tk.SUNKEN)
             self.app.widget.update()
             sleep(0.05)
             self.widget.config(relief=tk.RAISED)
-            self._callBind("<Leave>")
+            self.styleHandler.disable("Hover")
         return super().click()
 
     def setValue(self, value):

@@ -19,14 +19,10 @@ class Element_Page_App:
         :param reset:
         """
         if typeChecker(self, "Element", error=False):
-            prevBG = getattr(self, "prevBG", False)
             if reset:
-                if prevBG:
-                    self.widgetConfig(bg=prevBG)
+                self.styleHandler.disable("Rainbow")
             else:
-                if not prevBG:
-                    setattr(self, "prevBG", self.getWidgetConfig("bg"))
-                self.widgetConfig(bg=Vec.random(50, 255).hex())
+                self.createStyle("Rainbow", priority=0.1, bg=Vec.random(50, 255).hex()).enable()
 
         for element in self.getChildren(includeParts=True):
             element.rainbow(reset=reset)

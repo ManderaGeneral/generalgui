@@ -145,7 +145,7 @@ class Element(Element_Page, Element_Page_App):
         return self._callBind("<Button-3>")
 
 
-    def widgetConfig(self, overwriteOriginal=True, **kwargs):
+    def widgetConfig(self, **kwargs):
         """
         Configure widget.
         """
@@ -163,10 +163,16 @@ class Element(Element_Page, Element_Page_App):
         """
         return self.widget[key]
 
-
-
-
     def createStyle(self, name, hook=None, unhook=None, priority=None, **kwargs):
+        """
+        Create a new style and automatically add it to this StyleHandler.
+
+        :param str name: Name of new style
+        :param str hook: Bind this element with this key to enable this style.
+        :param str unhook: Bind this element with this key to disable this style.
+        :param float priority: Priority value, originalStyle has priority 0. If left as None then it becomes highestPriority + 1.
+        :param kwargs: Keys and values for new style.
+        """
         if self.styleHandler is None:
             self.styleHandler = StyleHandler(lambda kwargs: self.widgetConfig(**kwargs), lambda key: self.getWidgetConfig(key))
 
@@ -178,21 +184,6 @@ class Element(Element_Page, Element_Page_App):
             self.createBind(key=unhook, func=style.disable, add=True)
 
         return style
-
-
-    # Remvoe thise method
-    def configOnHover(self, **parameters):
-        def enable():
-            for key, value in parameters.items():
-                self.originalParameters[key] = self.widget[key]
-            self.widgetConfig(overwriteOriginal=False, **parameters)
-
-        def disable():
-            self.widgetConfig(overwriteOriginal=False, **self.originalParameters)
-            self.originalParameters = {}
-
-        self.createBind("<Enter>", enable)
-        self.createBind("<Leave>", disable)
 
 
 
