@@ -20,11 +20,16 @@ class Button(Element):
         :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        super().__init__(parentPage, tk.Button, text=value, cursor="hand2", **parameters)
+        super().__init__(parentPage, tk.Button, text=value, cursor="hand2", activebackground="green", **parameters)
 
+        print(self.getAllWidgetConfigs())
 
-        self.createStyle(name="Hover", hook="<Enter>", unhook="<Leave>", bg="gray90")
-        self.onClick(func)
+        self.disableActivationAnimation()
+
+        self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
+        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", font="bold")
+        self.onClick(func, add=True)
+        self.onClick(lambda: "break", add=True)
 
     def click(self, animate=True):
         """

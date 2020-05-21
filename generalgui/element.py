@@ -127,6 +127,7 @@ class Element(Element_Page, Element_Page_App):
         :param add: Whether to add to functions list or replace all
         """
         self.createBind(key="<Button-1>", func=func, add=add)
+
     def click(self):
         """Manually call the function that is called when this element is left clicked."""
         return self._callBind("<Button-1>")
@@ -163,27 +164,29 @@ class Element(Element_Page, Element_Page_App):
         """
         return self.widget[key]
 
-    def createStyle(self, name, hook=None, unhook=None, priority=None, **kwargs):
+    def createStyle(self, name, hookBindKey=None, unhookBindKey=None, style=None, priority=None, **kwargs):
         """
         Create a new style and automatically add it to this StyleHandler.
+        If hooks aren't used then you need to call enable and disable on the style object that's returned.
 
         :param str name: Name of new style
-        :param str hook: Bind this element with this key to enable this style.
-        :param str unhook: Bind this element with this key to disable this style.
+        :param str hookBindKey: Bind this element with this key to enable this style.
+        :param str unhookBindKey: Bind this element with this key to disable this style.
+        :param str or style style: Optional Style to inherit kwargs from.
         :param float priority: Priority value, originalStyle has priority 0. If left as None then it becomes highestPriority + 1.
         :param kwargs: Keys and values for new style.
         """
         if self.styleHandler is None:
             self.styleHandler = StyleHandler(lambda kwargs: self.widgetConfig(**kwargs), lambda key: self.getWidgetConfig(key))
 
-        style = self.styleHandler.createStyle(name=name, priority=priority, **kwargs)
+        newStyle = self.styleHandler.createStyle(name=name, style=style, priority=priority, **kwargs)
 
-        if hook:
-            self.createBind(key=hook, func=style.enable, add=True)
-        if unhook:
-            self.createBind(key=unhook, func=style.disable, add=True)
+        if hookBindKey:
+            self.createBind(key=hookBindKey, func=newStyle.enable, add=False)
+        if unhookBindKey:
+            self.createBind(key=unhookBindKey, func=newStyle.disable, add=False)
 
-        return style
+        return newStyle
 
 
 

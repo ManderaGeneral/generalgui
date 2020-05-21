@@ -1,12 +1,46 @@
+"""
+Styler for elements.
+Could be it's own package and be called Config and ConfigHandler instead.
+"""
 
 from generallibrary.iterables import SortedList
+from generallibrary.types import typeChecker
+from generallibrary.functions import getSignatureNames
 
-from generalgui.shared_methods.decorators import style
 
+
+def styleDecorator_helper(styleHandler, style):
+    """Helper for decorator."""
+    if isinstance(style, str):
+        if style in styleHandler.allStyles:
+            style = styleHandler.allStyles[style]
+        else:
+            raise AttributeError(f"Style with name {style} doesn't exist")
+    typeChecker(style, ("Style", None))
+    return style
+
+def styleDecorator(func):
+    """
+    Decorator function to replace style name with style, can only be used in StyleHandler class.
+    "Style" argument must not be passed through *args.
+
+    :param function func:
+    """
+    def f(styleHandler, *args, **kwargs):
+        """Wrapper func."""
+        if style := kwargs.get("style"):
+            kwargs["style"] = styleDecorator_helper(styleHandler, style)
+        elif "style" in (signatureNames := getSignatureNames(func)):
+            index = signatureNames.index("style") - 1
+            if len(args) > index:
+                args = list(args)
+                args[index] = styleDecorator_helper(styleHandler, args[index])
+        return func(styleHandler, *args, **kwargs)
+    return f
 
 class StyleHandler(list):
     """
-    Handles styles for an element, could be it's own package.
+    Handles styles for an element.
     """
     def __init__(self, changeFunc, getOriginalFunc):
         """
@@ -27,11 +61,13 @@ class StyleHandler(list):
         self.originalStyle = self.createStyle("Original", priority=0)
         self.originalStyle.enable()
 
-    def createStyle(self, name, priority=None, **kwargs):
+    @styleDecorator
+    def createStyle(self, name, style=None, priority=None, **kwargs):
         """
         Create a new style and automatically add it to this StyleHandler.
 
         :param str name: Name of new style
+        :param str or style style: Optional Style to inherit kwargs from.
         :param float priority: Priority value, originalStyle has priority 0. If left as None then it becomes highestPriority + 1.
         :param kwargs: Keys and values for new style.
         """
@@ -42,9 +78,9 @@ class StyleHandler(list):
         if name in self.allStyles:
             self.delete(name)
 
-        style = Style(self, name, priority, **kwargs)
-        self.allStyles[name] = style
-        return style
+        newStyle = Style(styleHandler=self, name=name, style=style, priority=priority, **kwargs)
+        self.allStyles[name] = newStyle
+        return newStyle
 
     def update(self):
         """
@@ -57,7 +93,7 @@ class StyleHandler(list):
                 kwargs[key] = value
         self.changeFunc(kwargs)
 
-    @style
+    @styleDecorator
     def delete(self, style):
         """
         Delete a style by name or style by disabling first and then deleting from allStyles.
@@ -67,7 +103,7 @@ class StyleHandler(list):
         style.disable()
         del self.allStyles[style.name]
 
-    @style
+    @styleDecorator
     def enable(self, style):
         """
         Enables a style by name or style.
@@ -82,7 +118,7 @@ class StyleHandler(list):
         self.styles.add(style)
         self.update()
 
-    @style
+    @styleDecorator
     def disable(self, style):
         """
         Disables a style by name or style.
@@ -95,11 +131,26 @@ class StyleHandler(list):
 
 class Style:
     """
-    A specific style.
+    A specific style. Initalized through StyleHandler.createStyle().
     """
-    def __init__(self, styler, name, priority, **kwargs):
-        self.styler = styler
+    def __init__(self, styleHandler, name, style, priority, **kwargs):
+        """
+        A style that has it's own kwargs.
+
+        :param StyleHandler styleHandler: StyleHandler that takes care of all different Styles.
+        :param str name: Required name of style.
+        :param str or Style style: Optional Style to inherit kwargs from.
+        :param float priority: Priority value for this style, higher is stronger. Original style has 0.
+        :param dict kwargs: Keys and values that this style want when enabled.
+        """
+        if style is not None:
+            copiedKwargs = style.kwargs.copy()
+            copiedKwargs.update(kwargs)
+            kwargs = copiedKwargs
+
+        self.styleHandler = styleHandler
         self.name = name
+        self.style = style
         self.priority = priority
         self.kwargs = kwargs
 
@@ -107,10 +158,13 @@ class Style:
         """
         Enables a style by name or style.
         """
-        self.styler.enable(self)
+        self.styleHandler.enable(self)
 
     def disable(self):
         """
         Disables a style by name or style.
         """
-        self.styler.disable(self)
+        self.styleHandler.disable(self)
+
+
+
