@@ -50,8 +50,9 @@ class Element(Element_Page, Element_Page_App):
         self.parentPage = parentPage
         self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
         self.app = parentPage.app
-        self.events = {}
         self.styleHandler = None
+        self.events = {}
+        self.disabledPropagations = []
 
         configParameters = {}
         self.packParameters = {}
@@ -69,12 +70,51 @@ class Element(Element_Page, Element_Page_App):
             self.pack()
 
     def makeBase(self):
+        """
+        Make this element the new base to the page it belongs to.
+        If page doesn't have a top then this one becomes it as well.
+        """
         self.parentPage.baseElement = self
         if self.parentPage.topElement is None:
             self.parentPage.topElement = self
 
     def _grid(self):
         self.widget.grid(**self.packParameters)
+
+    def setBindPropagation(self, key, enable):
+        """
+        Enabled or disable propagation for binds.
+        Can be used to disable click animations on buttons for example.
+        Make the last function called with this bind return "break" which tkinter listens to.
+        All propagations are enabled by default.
+
+        :param str key: Bind key, <Button-1> for example.
+        :param bool enable: Whether to enable propagation or not.
+        """
+        if enable:
+            if key in self.disabledPropagations:
+                self.disabledPropagations.remove(key)
+        else:
+            if key not in self.disabledPropagations:
+                self.disabledPropagations.append(key)
+
+    def _bindCaller(self, event, key):
+        """
+        Every bound key only has this function bound.
+        """
+        returns = []
+        for func in self.events[key]:
+            if leadingArgsCount(func):
+                value = func(event)
+                if value is not None:
+                    returns.append(value)
+            else:
+                value = func()
+                if value is not None:
+                    returns.append(value)
+        if key in self.disabledPropagations:
+            return "break"
+        return returns
 
     def createBind(self, key, func, add=False):
         """
@@ -86,20 +126,15 @@ class Element(Element_Page, Element_Page_App):
         :param bool add: Add to existing binds instead of overwriting
         :return:
         """
-        if func is None:
+        if func is None or not add:
             self.widget.unbind(key)
             if key in self.events:
                 del self.events[key]
-        else:
-            if leadingArgsCount(func) < 1:
-                oldFunc = func
-                func = lambda _: oldFunc()
 
-            if add:
-                addToListInDict(self.events, key, func)
-            else:
-                self.events[key] = [func]
-            self.widget.bind(key, func, add=add)
+        if func is not None:
+            if key not in self.events:
+                self.widget.bind(key, lambda event: self._bindCaller(event, key), add=False)
+            addToListInDict(self.events, key, func)
 
     def _callBind(self, key):
         """
@@ -144,6 +179,9 @@ class Element(Element_Page, Element_Page_App):
     def rightClick(self):
         """Manually call the function that is called when this element is right clicked."""
         return self._callBind("<Button-3>")
+
+    # def disableActivationAnimation(self):
+
 
 
     def widgetConfig(self, **kwargs):

@@ -18,7 +18,7 @@ class Checkbutton(Element):
         :param parameters: Both config and pack parameters together
         """
         self._boolVar = tk.BooleanVar(value=default)
-        super().__init__(parentPage, tk.Checkbutton, variable=self._boolVar, **parameters)
+        super().__init__(parentPage, tk.Checkbutton, variable=self._boolVar, cursor="hand2", **parameters)
         self.default = default
 
     def toggle(self):

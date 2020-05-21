@@ -1,6 +1,7 @@
 """Button class that inherits Element"""
 
 import tkinter as tk
+from tkinter import font
 
 from generallibrary.time import sleep
 from generallibrary.types import strToDynamicType
@@ -22,14 +23,14 @@ class Button(Element):
         """
         super().__init__(parentPage, tk.Button, text=value, cursor="hand2", activebackground="green", **parameters)
 
-        print(self.getAllWidgetConfigs())
+        # print(self.getWidgetConfig("font"))
+        # print(tk.font.nametofont("TkDefaultFont").actual())
 
-        self.disableActivationAnimation()
+        self.setBindPropagation("<Button-1>", False)
 
         self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
-        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", font="bold")
+        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", font=("Segoe UI", "8", "bold"))
         self.onClick(func, add=True)
-        self.onClick(lambda: "break", add=True)
 
     def click(self, animate=True):
         """
