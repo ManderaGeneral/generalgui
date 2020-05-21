@@ -25,7 +25,7 @@ class Button(Element):
         self.setBindPropagation("<Button-1>", False)
 
         self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
-        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40", bg="$Rainbow")
+        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
         self.onClick(func, add=True)
 
         self.createBind("<Return>", self.click)

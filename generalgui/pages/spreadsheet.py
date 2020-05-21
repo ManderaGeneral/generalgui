@@ -15,16 +15,22 @@ class Spreadsheet(Page):
     def __init__(self, parentPage=None, width=500, height=500, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, **parameters)
 
-        self.topPage = Page(self, pack=True, height=25, fill="x")
+        # self.topPage = Page(self, pack=True, scrollable=True, height=25, fill="x")
+        # self.headerPage = Page(self.topPage, pack=True, side="left")
 
-        self.headerPage = Page(self.topPage, pack=True, side="left", fill="both")
+        self.headerPage = Page(self, pack=True, hsb=True, height=78, fill="x", expand=True)
         # self.headerPage.getTopWidget().grid_propagate(0)
 
-        # self.headerPage = Page(self, fill="x", padx=2, pack=True)
+        # HERE ** Experimenting with mirrorCanvas
+        self.cellPage = Page(self, vsb=True, hsb=True, pack=True, mirrorCanvas=self.headerPage.canvas, fill="both", expand=True)
 
-        self.cellPage = Page(self, vsb=True, hsb=True, pack=True)
 
-        self.cellPage.baseElement.createBind("<Configure>", lambda event: self._configureBind(event), add=True)
+
+        # self.cellPage.baseElement.createBind("<Configure>", lambda event: self._configureBind(event), add=True)
+
+        # self.topPage.canvas.widgetConfig(xscrollcommand=self.cellPage.hsb.widget.set)
+        # print(self.headerPage.getTopElement().getAllWidgetConfigs())
+
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.columnKeys = Keys()
@@ -47,41 +53,21 @@ class Spreadsheet(Page):
         headerWidths = [header.widget.winfo_width() for header in headers]
         cellWidths = [cell.widget.winfo_width() for cell in cells]
 
-        print(headerWidths)
-        print(cellWidths)
 
         for column in range(len(headers)):
             if headerWidths[column] > cellWidths[column]:
-                print("cell", headerWidths[column] - cellWidths[column])
+                # print("cell", headerWidths[column] - cellWidths[column])
                 # cells[column].widgetConfig(padx=round((headerWidths[column] - cellWidths[column]) / 2))
                 cells[column].widgetConfig(width=headerWidths[column])
             elif cellWidths[column] > headerWidths[column]:
-                print("headers", cellWidths[column] - headerWidths[column])
+                # print("headers", cellWidths[column] - headerWidths[column])
                 # headers[column].widgetConfig(padx=round((cellWidths[column] - headerWidths[column]) / 2))
                 headers[column].widgetConfig(width=cellWidths[column])
 
-        # widget = cells[2].widget
-        # print(widget.winfo_width())
-        #
-        # widget.config(padx=13)
-        # self.app.widget.update()
-        # print(widget.winfo_width())
-        #
-        # widget.config(padx=50)
-        # self.app.widget.update()
-        # print(widget.winfo_width())
-
-        # print(headerWidths)
-        # print(cellWidths)
-
-
     def _configureBind(self, event):
         pass
-        # self.headerPage.widgetConfig(width=event.width)
-        # widget = self.headerPage.getChildren()[0].widget
-        # widget2 = self.headerPage.getChildren()[1].widget
-        # width = widget.winfo_width()
-        # widget.config(width=width)
+        # print(event.x)
+        # self.headerPage.getTopElement().widgetConfig(padx=(5, 5))
 
     def _addRows(self, obj, page):
         for rowI, row in enumerate(getRows(obj)):

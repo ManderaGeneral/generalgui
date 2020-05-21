@@ -12,7 +12,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, **parameters):
+    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, mirrorCanvas=None, **parameters):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
@@ -43,31 +43,42 @@ class Page(Element_Page, Element_Page_App, Page_App):
         self.baseElement = None
         self.topElement = None
 
-        frame = Frame(self, makeBase=True, **parameters)
-        if "width" in parameters or "height" in parameters:
-            frame.widget.pack_propagate(0)
+        # These elements attributes aren't meant to be intuitive
+        self.frame = None
+        self.canvas = None
+        self.vsb = None
+        self.hsb = None
+        self.canvasFrame = None
 
-        if vsb or hsb:
-            canvas = Canvas(self, pack=False, fill="both", side="left", expand=True)
-            canvas.widget.pack_propagate(0)
+        self.frame = Frame(self, makeBase=True, **parameters)
+        if "width" in parameters or "height" in parameters:
+            self.frame.widget.pack_propagate(0)
+
+        if vsb or hsb or scrollable:
+            self.canvas = Canvas(self, pack=False, fill="both", side="left", expand=True, bd=-2)
+            self.canvas.widget.pack_propagate(0)
 
             if vsb:
-                scrollbar = Scrollbar(self, orient="vertical", command=canvas.widget.yview, side="right", fill="y")
-                canvas.widgetConfig(yscrollcommand=scrollbar.widget.set)
+                self.vsb = Scrollbar(self, orient="vertical", command=self.canvas.widget.yview, side="right", fill="y")
+                self.canvas.widgetConfig(yscrollcommand=self.vsb.widget.set)
+                if mirrorCanvas:
+                    mirrorCanvas.widgetConfig(yscrollcommand=self.vsb.widget.set)
             if hsb:
-                scrollbar = Scrollbar(self, orient="horizontal", command=canvas.widget.xview, side="bottom", fill="x")
-                canvas.widgetConfig(xscrollcommand=scrollbar.widget.set)
+                self.hsb = Scrollbar(self, orient="horizontal", command=self.canvas.widget.xview, side="bottom", fill="x")
+                self.canvas.widgetConfig(xscrollcommand=self.hsb.widget.set)
+                if mirrorCanvas:
+                    mirrorCanvas.widgetConfig(xscrollcommand=self.hsb.widget.set)
 
-            canvas.pack()
-            canvas.makeBase()
+            self.canvas.pack()
+            self.canvas.makeBase()
 
-            frame = Frame(self, pack=False, makeBase=True)
-            windowId = canvas.widget.create_window(0, 0, window=frame.widget, anchor="nw")
+            self.canvasFrame = Frame(self, pack=False, makeBase=True, fill="both", expand=True)
+            windowId = self.canvas.widget.create_window(0, 0, window=self.canvasFrame.widget, anchor="nw")
 
             def _canvasConfigure(event):
-                canvas.widgetConfig(scrollregion=canvas.widget.bbox("all"))
-                # canvas.widget.itemconfig(windowId, width=event.width)
-            canvas.createBind("<Configure>", _canvasConfigure)
+                self.canvas.widgetConfig(scrollregion=self.canvas.widget.bbox("all"))
+                # self.canvas.widget.itemconfig(windowId, width=event.width)
+            self.canvas.createBind("<Configure>", _canvasConfigure)
 
         if pack:
             self.pack()
