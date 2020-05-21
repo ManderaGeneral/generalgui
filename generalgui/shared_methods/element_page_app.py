@@ -18,9 +18,11 @@ class Element_Page_App:
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param reset:
         """
+
         if typeChecker(self, "Element", error=False):
             if reset:
-                self.styleHandler.disable("Rainbow")
+                if self.styleHandler:
+                    self.styleHandler.disable("Rainbow")
             else:
                 self.createStyle("Rainbow", priority=0.1, bg=Vec.random(50, 255).hex()).enable()
 

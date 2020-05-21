@@ -15,12 +15,15 @@ def styleDecorator_helper(styleHandler, style):
         if style in styleHandler.allStyles:
             style = styleHandler.allStyles[style]
         else:
-            raise AttributeError(f"Style with name {style} doesn't exist")
+            return None
+            # raise AttributeError(f"Style with name {style} doesn't exist")
     typeChecker(style, ("Style", None))
     return style
 
 def styleDecorator(func):
     """
+    If style isn't found then functions is silently not called!
+
     Decorator function to replace style name with style, can only be used in StyleHandler class.
     "Style" argument must not be passed through *args.
 
@@ -30,18 +33,27 @@ def styleDecorator(func):
         """Wrapper func."""
         if style := kwargs.get("style"):
             kwargs["style"] = styleDecorator_helper(styleHandler, style)
+
+            if kwargs["style"] is None:
+                return None
+
         elif "style" in (signatureNames := getSignatureNames(func)):
             index = signatureNames.index("style") - 1
             if len(args) > index:
                 args = list(args)
                 args[index] = styleDecorator_helper(styleHandler, args[index])
+
+                if args[index] is None:
+                    return None
+
         return func(styleHandler, *args, **kwargs)
     return f
 
-class StyleHandler(list):
+class StyleHandler:
     """
     Handles styles for an element.
     """
+    prefix = "$"
     def __init__(self, changeFunc, getOriginalFunc):
         """
         :param function[dict] -> None changeFunc: Function that is called when a style is enabled or disabled.
@@ -69,7 +81,7 @@ class StyleHandler(list):
         :param str name: Name of new style
         :param str or style style: Optional Style to inherit kwargs from.
         :param float priority: Priority value, originalStyle has priority 0. If left as None then it becomes highestPriority + 1.
-        :param kwargs: Keys and values for new style.
+        :param kwargs: Keys and values for new style. [prefix][styleName] to copy another style's value at the time of update.
         """
         if priority is None:
             priority = self.highestPriority + 1
@@ -90,6 +102,11 @@ class StyleHandler(list):
         # Iterate normally, higher priority styles will overwrite lower ones
         for style in self.styles:
             for key, value in style.kwargs.items():
+                if value.startswith(self.prefix):
+                    if (copyStyle := self.getStyle(value[1:], onlyEnabled=True)) is None:
+                        value = self.originalStyle[key]
+                    else:
+                        value = copyStyle[key]
                 kwargs[key] = value
         self.changeFunc(kwargs)
 
@@ -113,7 +130,7 @@ class StyleHandler(list):
         for key, value in style.kwargs.items():
             if key not in self.originalStyle.kwargs:
                 originalValue = self.getOriginalFunc(key)
-                self.originalStyle.kwargs[key] = originalValue
+                self.originalStyle[key] = originalValue
 
         self.styles.add(style)
         self.update()
@@ -129,6 +146,15 @@ class StyleHandler(list):
             self.styles.remove(style)
         self.update()
 
+    def getStyle(self, style, onlyEnabled=False):
+        """
+        Get style if it exists otherwise None
+        """
+        style = self.allStyles.get(style)
+        if onlyEnabled and style is not None and not style.isEnabled():
+            return None
+        return style
+
 class Style:
     """
     A specific style. Initalized through StyleHandler.createStyle().
@@ -141,18 +167,26 @@ class Style:
         :param str name: Required name of style.
         :param str or Style style: Optional Style to inherit kwargs from.
         :param float priority: Priority value for this style, higher is stronger. Original style has 0.
-        :param dict kwargs: Keys and values that this style want when enabled.
+        :param dict kwargs: Keys and values that this style want when enabled. [prefix][styleName] to copy another style's value at the time of update.
         """
         if style is not None:
             copiedKwargs = style.kwargs.copy()
             copiedKwargs.update(kwargs)
             kwargs = copiedKwargs
 
+        # for key, value
+
         self.styleHandler = styleHandler
         self.name = name
         self.style = style
         self.priority = priority
         self.kwargs = kwargs
+
+    def __getitem__(self, item):
+        return self.kwargs[item]
+
+    def __setitem__(self, key, value):
+        self.kwargs[key] = value
 
     def enable(self):
         """
@@ -166,5 +200,9 @@ class Style:
         """
         self.styleHandler.disable(self)
 
-
+    def isEnabled(self):
+        """
+        Get whether style is enabled or not in StyleHandler.
+        """
+        return self in self.styleHandler.styles
 

@@ -3,7 +3,6 @@
 import tkinter as tk
 from tkinter import font
 
-from generallibrary.time import sleep
 from generallibrary.types import strToDynamicType
 
 from generalgui.element import Element
@@ -23,28 +22,13 @@ class Button(Element):
         """
         super().__init__(parentPage, tk.Button, text=value, cursor="hand2", activebackground="green", **parameters)
 
-        # print(self.getWidgetConfig("font"))
-        # print(tk.font.nametofont("TkDefaultFont").actual())
-
         self.setBindPropagation("<Button-1>", False)
 
         self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
-        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", font=("Segoe UI", "8", "bold"))
+        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40", bg="$Rainbow")
         self.onClick(func, add=True)
 
-    def click(self, animate=True):
-        """
-        Simple animation if button's click bind is called.
-        """
-        # HERE ** Turn this into a style instead, so create a method to copy and extend a style?
-        if animate:
-            self.styleHandler.enable("Hover")
-            self.widget.config(relief=tk.SUNKEN)
-            self.app.widget.update()
-            sleep(0.05)
-            self.widget.config(relief=tk.RAISED)
-            self.styleHandler.disable("Hover")
-        return super().click()
+        self.createBind("<Return>", self.click)
 
     def setValue(self, value):
         """

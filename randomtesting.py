@@ -6,6 +6,14 @@ import tkinter as tk
 import inspect
 
 
+x = {"a": 5}
+
+for key, value in x.items():
+    value = 3
+print(x)
+
+
+
 page = Page()
 # page = Page(height=400, width=400)
 
@@ -15,7 +23,8 @@ OptionMenu(page, ["red", "green", "blue"], "hello")
 LabelCheckbutton(page, "yes")
 LabelEntry(page, "yes", "write")
 Button(page, "Click me", func=page.rainbow)
-Button(page, "Reset", func= lambda: page.rainbow(reset=True))
+reset = Button(page, "Reset", func=lambda: page.rainbow(reset=True))
+Button(page, "click reset", func=reset.click)
 
 
 spreadsheet = Spreadsheet(page)

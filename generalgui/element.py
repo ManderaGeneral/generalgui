@@ -7,6 +7,7 @@ import tkinter as tk
 from generallibrary.functions import leadingArgsCount, getSignatureNames
 from generallibrary.iterables import addToListInDict
 from generallibrary.types import typeChecker
+from generallibrary.time import sleep
 
 from generalgui.shared_methods.element_page import Element_Page
 from generalgui.shared_methods.element_page_app import Element_Page_App
@@ -148,7 +149,7 @@ class Element(Element_Page, Element_Page_App):
             raise UserWarning(f"Key {key} is not bound to any function.")
 
         # Event is None when calling manually
-        results = tuple(func(None) for func in self.events[key])
+        results = tuple(func() for func in self.events[key])
         if len(results) == 1:
             return results[0]
         else:
@@ -163,9 +164,14 @@ class Element(Element_Page, Element_Page_App):
         """
         self.createBind(key="<Button-1>", func=func, add=add)
 
-    def click(self):
+    def click(self, animate=True):
         """Manually call the function that is called when this element is left clicked."""
-        return self._callBind("<Button-1>")
+        value = self._callBind("<Button-1>")
+        if animate:
+            self.app.widget.update()
+            sleep(0.15)
+            self._callBind("<ButtonRelease-1>")
+        return value
 
     def onRightClick(self, func, add=False):
         """
@@ -179,10 +185,6 @@ class Element(Element_Page, Element_Page_App):
     def rightClick(self):
         """Manually call the function that is called when this element is right clicked."""
         return self._callBind("<Button-3>")
-
-    # def disableActivationAnimation(self):
-
-
 
     def widgetConfig(self, **kwargs):
         """
@@ -212,12 +214,15 @@ class Element(Element_Page, Element_Page_App):
         :param str unhookBindKey: Bind this element with this key to disable this style.
         :param str or style style: Optional Style to inherit kwargs from.
         :param float priority: Priority value, originalStyle has priority 0. If left as None then it becomes highestPriority + 1.
-        :param kwargs: Keys and values for new style.
+        :param kwargs: Keys and values for new style. [prefix][styleName] to copy another style's value at the time of update.
         """
+
         if self.styleHandler is None:
+
             self.styleHandler = StyleHandler(lambda kwargs: self.widgetConfig(**kwargs), lambda key: self.getWidgetConfig(key))
 
         newStyle = self.styleHandler.createStyle(name=name, style=style, priority=priority, **kwargs)
+
 
         if hookBindKey:
             self.createBind(key=hookBindKey, func=newStyle.enable, add=False)
