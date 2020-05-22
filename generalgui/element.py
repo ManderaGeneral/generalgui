@@ -45,6 +45,7 @@ class Element(Element_Page, Element_Page_App):
             else:
                 raise AttributeError(f"Missing positional parameter that doesn't have a default value {parameterName} with kind {kind}")
 
+        self.parameters = parameters
         self.widget = widgetClass(*initArgs)
 
         setattr(self.widget, "element", self)
@@ -145,15 +146,17 @@ class Element(Element_Page, Element_Page_App):
         :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
         :return: Function's return value or functions' return values in tuple in the order they were binded.
         """
-        if key not in self.events:
-            raise UserWarning(f"Key {key} is not bound to any function.")
+        self._bindCaller(None, key)
 
-        # Event is None when calling manually
-        results = tuple(func() for func in self.events[key])
-        if len(results) == 1:
-            return results[0]
-        else:
-            return results
+        # if key not in self.events:
+        #     raise UserWarning(f"Key {key} is not bound to any function.")
+        #
+        # # Event is None when calling manually
+        # results = tuple(func() for func in self.events[key])
+        # if len(results) == 1:
+        #     return results[0]
+        # else:
+        #     return results
 
     def onClick(self, func, add=False):
         """

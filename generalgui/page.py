@@ -12,7 +12,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, mirrorCanvas=None, **parameters):
+    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, **parameters):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
@@ -39,7 +39,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
             self.parentPart = parentPage.baseElement
 
         self.app = parentPage.app
-
+        self.parameters = parameters
         self.baseElement = None
         self.topElement = None
 
@@ -61,21 +61,18 @@ class Page(Element_Page, Element_Page_App, Page_App):
             if vsb:
                 self.vsb = Scrollbar(self, orient="vertical", command=self.canvas.widget.yview, side="right", fill="y")
                 self.canvas.widgetConfig(yscrollcommand=self.vsb.widget.set)
-                if mirrorCanvas:
-                    mirrorCanvas.widgetConfig(yscrollcommand=self.vsb.widget.set)
             if hsb:
                 self.hsb = Scrollbar(self, orient="horizontal", command=self.canvas.widget.xview, side="bottom", fill="x")
                 self.canvas.widgetConfig(xscrollcommand=self.hsb.widget.set)
-                if mirrorCanvas:
-                    mirrorCanvas.widgetConfig(xscrollcommand=self.hsb.widget.set)
 
             self.canvas.pack()
             self.canvas.makeBase()
 
-            self.canvasFrame = Frame(self, pack=False, makeBase=True, fill="both", expand=True)
+            self.canvasFrame = Frame(self, pack=False, makeBase=True)
             windowId = self.canvas.widget.create_window(0, 0, window=self.canvasFrame.widget, anchor="nw")
 
             def _canvasConfigure(event):
+                # print(event)
                 self.canvas.widgetConfig(scrollregion=self.canvas.widget.bbox("all"))
                 # self.canvas.widget.itemconfig(windowId, width=event.width)
             self.canvas.createBind("<Configure>", _canvasConfigure)

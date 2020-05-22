@@ -15,18 +15,23 @@ class Spreadsheet(Page):
     def __init__(self, parentPage=None, width=500, height=500, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, **parameters)
 
-        # self.topPage = Page(self, pack=True, scrollable=True, height=25, fill="x")
-        # self.headerPage = Page(self.topPage, pack=True, side="left")
+        self.topPage = Page(self, pack=True, height=35, fill="x")
+        self.headerPage = Page(self.topPage, pack=True, side="left", scrollable=True, fill="x", expand=True)
+        Frame(self.topPage, side="left", width=21, fill="y")  # To fill out for existing VSB in cellPage
 
-        self.headerPage = Page(self, pack=True, hsb=True, height=78, fill="x", expand=True)
+        # self.headerPage = Page(self, pack=True, hsb=True, height=78, fill="x", expand=True)
         # self.headerPage.getTopWidget().grid_propagate(0)
 
-        # HERE ** Experimenting with mirrorCanvas
-        self.cellPage = Page(self, vsb=True, hsb=True, pack=True, mirrorCanvas=self.headerPage.canvas, fill="both", expand=True)
+        self.cellPage = Page(self, vsb=True, hsb=True, pack=True, fill="both", expand=True)
+        # self.cellPage.getTopWidget().grid_propagate(0)
 
 
+        # self.app.widget.update()
+        # self.cellPage.canvas._callBind("<Configure>")
 
         # self.cellPage.baseElement.createBind("<Configure>", lambda event: self._configureBind(event), add=True)
+
+        self.cellPage.hsb.createBind("<B1-Motion>", lambda event: self._configureBind(event), add=True)
 
         # self.topPage.canvas.widgetConfig(xscrollcommand=self.cellPage.hsb.widget.set)
         # print(self.headerPage.getTopElement().getAllWidgetConfigs())
@@ -37,6 +42,9 @@ class Spreadsheet(Page):
         self.rowKeys = Keys()
 
         self.pack()
+
+    def _configureBind(self, event):
+        self.headerPage.canvas.widget.xview_moveto(self.cellPage.canvas.widget.xview()[0])
 
     def syncWidths(self):
         headers = [child for child in self.headerPage.getChildren() if isinstance(child, Frame)]
@@ -64,10 +72,13 @@ class Spreadsheet(Page):
                 # headers[column].widgetConfig(padx=round((cellWidths[column] - headerWidths[column]) / 2))
                 headers[column].widgetConfig(width=cellWidths[column])
 
-    def _configureBind(self, event):
-        pass
-        # print(event.x)
-        # self.headerPage.getTopElement().widgetConfig(padx=(5, 5))
+        # Grid doesn't update for some reason when chaning width of cells manually, so force it to here
+        self.getTopElement().widgetConfig(width=0)
+        self.app.widget.update()
+        self.getTopElement().widgetConfig(width=self.parameters["width"])
+
+        # self.cellPage.getBaseElement().getChildren()[0]._grid()
+        # self.cellPage.canvas._callBind("<Configure>")
 
     def _addRows(self, obj, page):
         for rowI, row in enumerate(getRows(obj)):
@@ -83,7 +94,8 @@ class Spreadsheet(Page):
                 #     page.getBaseWidget().columnconfigure(colI, weight=1)
 
 
-        # self.cellPage.widget.configure(scrollregion=self.cellPage.widget.bbox("all"))
+        # self.cellPage.canvas.widget.configure(scrollregion=self.cellPage.canvas.widget.bbox("all"))
+        # self.cellPage.canvas._callBind("<Configure>")
 
     def addRows(self, obj):
         self._addRows(obj, self.cellPage)

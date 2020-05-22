@@ -26,14 +26,20 @@ rows = []
     # rows.append([1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2])
     # rows.append([1, 2, 1, "randoom", 1, 2, 1, 2, 1, 2, 1, 2])
 
-rows.append(["red", "mandera", 9, "red", "mandera", 9, "red", "manderamanderamandera", 9])
-rows.append(["yellow", "nick", 1337, "yellow", "nick", 1337, "yellow", "nick", 1337])
+
+for i in range(20):
+    rows.append(["red", "mandera", 9, "red", "mandera", 9, "red", "manderamanderamandera", 9])
+    rows.append(["yellow", "nick", 1337, "yellow", "nick", 1337, "yellow", "nick", 1337])
 
 spreadsheet.headerRows(["coasdfsf asdfs lor", "n", "number", "coasasdadadsasdalor", "n", "asdasdaasdhfakhdskadsa", "color", "n", "number"])
 spreadsheet.addRows(rows)
 
 # page.app.widget.update()
 spreadsheet.syncWidths()
+
+# spreadsheet.headerPage.canvas.widget.xview_scroll(1000, "units")
+
+
 # page.app.widget.update()
 # spreadsheet.syncWidths()
 
