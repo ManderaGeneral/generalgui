@@ -68,7 +68,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
             self.canvas.pack()
             self.canvas.makeBase()
 
-            self.canvasFrame = Frame(self, pack=False, makeBase=True)
+            self.canvasFrame = Frame(self, pack=False, makeBase=True, padx=2, pady=2)
             self.canvas.widget.create_window(0, 0, window=self.canvasFrame.widget, anchor="nw")
 
             def _canvasConfigure(event):
