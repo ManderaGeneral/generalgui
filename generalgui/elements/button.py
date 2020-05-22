@@ -1,7 +1,6 @@
 """Button class that inherits Element"""
 
 import tkinter as tk
-from tkinter import font
 
 from generallibrary.types import strToDynamicType
 

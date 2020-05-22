@@ -2,24 +2,23 @@
 
 import inspect
 
-import tkinter as tk
-
-from generallibrary.functions import leadingArgsCount, getSignatureNames
-from generallibrary.iterables import addToListInDict
 from generallibrary.types import typeChecker
 from generallibrary.time import sleep
 
+
 from generalgui.shared_methods.element_page import Element_Page
 from generalgui.shared_methods.element_page_app import Element_Page_App
-from generalgui.shared_methods.styler import StyleHandler, Style
+from generalgui.shared_methods.element_app import Element_App
+from generalgui.shared_methods.styler import StyleHandler
 
 
-class Element(Element_Page, Element_Page_App):
+class Element(Element_Page, Element_App, Element_Page_App):
     """
     Element is inherited by all tkinter widgets exluding App and Page.
     Shown by default. So when it's page is shown then all of page's children are shown automatically.
     """
     def __init__(self, parentPage, widgetClass, pack=True, makeBase=False, **parameters):
+        super().__init__()
         typeChecker(parentPage, "Page")
 
         parameters["master"] = parentPage.getBaseWidget()
@@ -53,8 +52,6 @@ class Element(Element_Page, Element_Page_App):
         self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
         self.app = parentPage.app
         self.styleHandler = None
-        self.events = {}
-        self.disabledPropagations = []
 
         configParameters = {}
         self.packParameters = {}
@@ -82,81 +79,6 @@ class Element(Element_Page, Element_Page_App):
 
     def _grid(self):
         self.widget.grid(**self.packParameters)
-
-    def setBindPropagation(self, key, enable):
-        """
-        Enabled or disable propagation for binds.
-        Can be used to disable click animations on buttons for example.
-        Make the last function called with this bind return "break" which tkinter listens to.
-        All propagations are enabled by default.
-
-        :param str key: Bind key, <Button-1> for example.
-        :param bool enable: Whether to enable propagation or not.
-        """
-        if enable:
-            if key in self.disabledPropagations:
-                self.disabledPropagations.remove(key)
-        else:
-            if key not in self.disabledPropagations:
-                self.disabledPropagations.append(key)
-
-    def _bindCaller(self, event, key):
-        """
-        Every bound key only has this function bound.
-        """
-        returns = []
-        for func in self.events[key]:
-            if leadingArgsCount(func):
-                value = func(event)
-                if value is not None:
-                    returns.append(value)
-            else:
-                value = func()
-                if value is not None:
-                    returns.append(value)
-        if key in self.disabledPropagations:
-            return "break"
-        return returns
-
-    def createBind(self, key, func, add=False):
-        """
-        Binds a key to a function using tkinter's bind function.
-        Not used directly.
-
-        :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
-        :param function or None func: A function to be called or None to unbind
-        :param bool add: Add to existing binds instead of overwriting
-        :return:
-        """
-        if func is None or not add:
-            self.widget.unbind(key)
-            if key in self.events:
-                del self.events[key]
-
-        if func is not None:
-            if key not in self.events:
-                self.widget.bind(key, lambda event: self._bindCaller(event, key), add=False)
-            addToListInDict(self.events, key, func)
-
-    def _callBind(self, key):
-        """
-        Calls a binded key's function(s) manually.
-        Not used directly.
-
-        :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
-        :return: Function's return value or functions' return values in tuple in the order they were binded.
-        """
-        self._bindCaller(None, key)
-
-        # if key not in self.events:
-        #     raise UserWarning(f"Key {key} is not bound to any function.")
-        #
-        # # Event is None when calling manually
-        # results = tuple(func() for func in self.events[key])
-        # if len(results) == 1:
-        #     return results[0]
-        # else:
-        #     return results
 
     def onClick(self, func, add=False):
         """

@@ -69,13 +69,16 @@ class Page(Element_Page, Element_Page_App, Page_App):
             self.canvas.makeBase()
 
             self.canvasFrame = Frame(self, pack=False, makeBase=True)
-            windowId = self.canvas.widget.create_window(0, 0, window=self.canvasFrame.widget, anchor="nw")
+            self.canvas.widget.create_window(0, 0, window=self.canvasFrame.widget, anchor="nw")
 
             def _canvasConfigure(event):
-                # print(event)
                 self.canvas.widgetConfig(scrollregion=self.canvas.widget.bbox("all"))
-                # self.canvas.widget.itemconfig(windowId, width=event.width)
+
             self.canvas.createBind("<Configure>", _canvasConfigure)
+            self.canvas.createBind("<Enter>", lambda: self.app.setScrollTarget(self.canvas))
+            self.canvas.createBind("<Leave>", lambda: self.app.removeScrollTarget(self.canvas))
+            self.canvas.widgetConfig(yscrollincrement="1")
+            self.canvas.widgetConfig(xscrollincrement="1")
 
         if pack:
             self.pack()
