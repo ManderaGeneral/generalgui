@@ -31,6 +31,7 @@ class App(Element_Page_App, Element_App, Page_App):
         self.scrollWheelTarget = None
         self.scrollButtonEnabled = False
         self.startCoords = None
+        self.startFraction = None
         self.createBind("<MouseWheel>", self.scrollWheel)
         self.createBind("<Button-3>", self.scrollButton)
         self.createBind("<ButtonRelease-3>", self.scrollButtonRelease)
@@ -38,6 +39,7 @@ class App(Element_Page_App, Element_App, Page_App):
 
     def scrollButton(self, event):
         self.startCoords = Vec2(event.x_root, event.y_root)
+        self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
         if self.scrollWheelTarget is not None:
             self.scrollButtonEnabled = True
 
@@ -48,11 +50,18 @@ class App(Element_Page_App, Element_App, Page_App):
         if self.scrollButtonEnabled:
             coords = Vec2(event.x_root, event.y_root)
             mouseDiff = coords - self.startCoords
-            self.startCoords = coords
+            canvasSize = Vec2(self.scrollWheelTarget.widget.winfo_width(), self.scrollWheelTarget.widget.winfo_height())
+            scrollRegions = self.scrollWheelTarget.getWidgetConfig("scrollregion").split(" ")
+            scrollSize = Vec2(int(scrollRegions[2]), int(scrollRegions[3]))
+            fractionMouseDiff = mouseDiff / canvasSize
+            visibleFraction = canvasSize / scrollSize
 
-            self.scrollWheelTarget.widget.xview_scroll(-mouseDiff.x, "units")
-            self.scrollWheelTarget.widget.yview_scroll(-mouseDiff.y, "units")
+            newFraction = self.startFraction - fractionMouseDiff * visibleFraction
 
+            if visibleFraction.x < 1:
+                self.scrollWheelTarget.widget.xview_moveto(newFraction.x)
+            if visibleFraction.y < 1:
+                self.scrollWheelTarget.widget.yview_moveto(newFraction.y)
 
     def scrollWheel(self, event):
         """
@@ -64,6 +73,8 @@ class App(Element_Page_App, Element_App, Page_App):
     def setScrollTarget(self, element):
         """
         Targets an element to be scrolled if mousewheel is moved
+
+        :param generalgui.element.Element element:
         """
         self.scrollWheelTarget = element
 
@@ -71,6 +82,7 @@ class App(Element_Page_App, Element_App, Page_App):
         """
         Removes mouse wheel target
         """
+
         if element == self.scrollWheelTarget:
             self.scrollWheelTarget = None
 

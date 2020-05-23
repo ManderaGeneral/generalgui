@@ -12,7 +12,7 @@ class Spreadsheet(Page):
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
-    def __init__(self, parentPage=None, width=500, height=500, **parameters):
+    def __init__(self, parentPage=None, width=600, height=600, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, **parameters)
 
         self.topPage = Page(self, pack=True, height=30, fill="x", cursor="hand2")
