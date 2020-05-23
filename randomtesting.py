@@ -5,10 +5,11 @@ from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, Labe
 import tkinter as tk
 import inspect
 
+import pandas as pd
+
 
 
 page = Page()
-# page = Page(height=400, width=400)
 
 
 Label(page, "hello")
@@ -20,34 +21,19 @@ reset = Button(page, "Reset", func=lambda: page.rainbow(reset=True))
 Button(page, "click reset", func=reset.click)
 
 
-spreadsheet = Spreadsheet(page, cellVSB=True, cellHSB=True)
+spreadsheet = Spreadsheet(page, cellVSB=False, cellHSB=False)
+
 rows = []
-# for _ in range(20):
-    # rows.append([1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2])
-    # rows.append([1, 2, 1, "randoom", 1, 2, 1, 2, 1, 2, 1, 2])
+# for i in range(20):
+#     rows.append(["red", "mandera", 9, "red", "mandera", 9, "red", "manderamanderamandera", 9])
+#     rows.append(["yellow", "nick", 1337, "yellow", "nick", 1337, "yellow", "nick", 1337])
 
+rows.append(["red", 5, "mandera"])
+rows.append(["yellow", 2, "nick"])
 
-for i in range(20):
-    rows.append(["red", "mandera", 9, "red", "mandera", 9, "red", "manderamanderamandera", 9])
-    rows.append(["yellow", "nick", 1337, "yellow", "nick", 1337, "yellow", "nick", 1337])
-
-spreadsheet.addRows(rows)
-
-# page.app.widget.update()
-
-
-
-
-
+spreadsheet.loadDataFrame(pd.DataFrame(rows))
 
 # Label(page, "Menu").widget.place(x=100, y=250)
-
-# spreadsheet.headerPage.canvas.widget.xview_scroll(1000, "units")
-
-
-# page.app.widget.update()
-# spreadsheet.syncWidths()
-
 
 page.show()
 

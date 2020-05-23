@@ -63,7 +63,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
                 self.packParameters[key] = value
         self.widgetConfig(**configParameters)
 
-        self.onClick(lambda: print(self))
+        # self.onClick(lambda: print(self))
 
         if makeBase:
             self.makeBase()
