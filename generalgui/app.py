@@ -38,16 +38,17 @@ class App(Element_Page_App, Element_App, Page_App):
         self.createBind("<B3-Motion>", self.scrollButtonMove)
 
     def scrollButton(self, event):
-        self.startCoords = Vec2(event.x_root, event.y_root)
-        self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
-        if self.scrollWheelTarget is not None:
-            self.scrollButtonEnabled = True
+        if self.scrollWheelTarget:
+            self.startCoords = Vec2(event.x_root, event.y_root)
+            self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
+            if self.scrollWheelTarget is not None:
+                self.scrollButtonEnabled = True
 
     def scrollButtonRelease(self, event):
         self.scrollButtonEnabled = False
 
     def scrollButtonMove(self, event):
-        if self.scrollButtonEnabled:
+        if self.scrollButtonEnabled and self.scrollWheelTarget:
             coords = Vec2(event.x_root, event.y_root)
             mouseDiff = coords - self.startCoords
             canvasSize = Vec2(self.scrollWheelTarget.widget.winfo_width(), self.scrollWheelTarget.widget.winfo_height())
