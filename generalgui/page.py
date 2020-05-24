@@ -12,7 +12,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, **parameters):
+    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, disableMouseScroll=False, **parameters):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
@@ -48,15 +48,16 @@ class Page(Element_Page, Element_Page_App, Page_App):
         self.canvas = None
         self.vsb = None
         self.hsb = None
+        self.scrollable = scrollable
         self.canvasFrame = None
 
-        self.frame = Frame(self, makeBase=True, **parameters)
+        self.frame = Frame(self, pack=False, makeBase=True, **parameters)
         if "width" in parameters or "height" in parameters:
             self.frame.widget.pack_propagate(0)
 
-        if vsb or hsb or scrollable:
+        if self.isScrollable():
             self.canvas = Canvas(self, pack=False, fill="both", side="left", expand=True, bd=-2)
-            self.canvas.widget.pack_propagate(0)
+            self.canvas.widget.pack_propagate(0)  # Not sure why we need it
 
             if vsb:
                 self.vsb = Scrollbar(self, orient="vertical", command=self.canvas.widget.yview, side="right", fill="y")
@@ -72,16 +73,23 @@ class Page(Element_Page, Element_Page_App, Page_App):
             self.canvas.widget.create_window(0, 0, window=self.canvasFrame.widget, anchor="nw")
 
             def _canvasConfigure(event):
+                # print(self.canvasFrame.widget.winfo_height(), self.canvas.widget.winfo_height())
                 self.canvas.widgetConfig(scrollregion=self.canvas.widget.bbox("all"))
 
             self.canvas.createBind("<Configure>", _canvasConfigure)
-            self.canvas.createBind("<Enter>", lambda: self.app.setScrollTarget(self.canvas))
-            self.canvas.createBind("<Leave>", lambda: self.app.removeScrollTarget(self.canvas))
-            self.canvas.widgetConfig(yscrollincrement="1")
-            self.canvas.widgetConfig(xscrollincrement="1")
+
+            if not disableMouseScroll:
+                self.canvas.createBind("<Enter>", lambda: self.app.setScrollTarget(self.canvas))
+                self.canvas.createBind("<Leave>", lambda: self.app.removeScrollTarget(self.canvas))
+
+                self.canvas.widgetConfig(yscrollincrement="1")
+                self.canvas.widgetConfig(xscrollincrement="1")
 
         if pack:
             self.pack()
+
+    def isScrollable(self):
+        return self.vsb or self.hsb or self.scrollable
 
 
 

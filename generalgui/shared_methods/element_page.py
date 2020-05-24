@@ -4,6 +4,8 @@ from generallibrary.types import typeChecker
 
 from generalgui.shared_methods.decorators import ignore
 
+from generalvector import Vec
+
 
 class Element_Page:
     """
@@ -19,12 +21,16 @@ class Element_Page:
             if self.topElement is None:
                 raise AttributeError("Cannot pack Page without a topElement.")
             self.topElement.pack()
-
         else:
             if "column" in self.packParameters and "row" in self.packParameters:
                 self._grid()
             else:
                 self.widget.pack(**self.packParameters)
+
+            if self.parentPage.isScrollable():
+                # self.parentPage.canvas.widgetConfig(bg=Vec.random(0, 255).hex())
+                self.app.widget.update()  # To get correct scroll region
+                self.parentPage.canvas.callBind("<Configure>")  # Update canvas scroll region manually
 
     def getParentPages(self, includeSelf=False):
         """

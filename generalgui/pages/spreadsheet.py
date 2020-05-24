@@ -15,32 +15,32 @@ class Spreadsheet(Page):
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
-    def __init__(self, parentPage=None, width=600, height=600, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
+    def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, **parameters)
 
         self.columnKeys = columnKeys
         self.rowKeys = rowKeys
 
         if self.columnKeys:
-            self.columnKeysPageContainer = Page(self, pack=True, height=30, fill="x")
-            self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")  # To fill out for existing rowHeaderPage
-            self.columnKeysPage = Page(self.columnKeysPageContainer, pack=True, side="left", scrollable=True, fill="x", expand=True, cursor="hand2")
+            self.columnKeysPageContainer = Page(self, pack=True, fill="x")
+            self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
+            self.columnKeysPage = Page(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, disableMouseScroll=True, fill="x", expand=True)
 
         if self.rowKeys:
-            self.rowKeysPageContainer = Page(self, pack=True, height=200, side="left", fill="y")
-            self.rowKeysPage = Page(self.rowKeysPageContainer, pack=True, side="top", scrollable=True, fill="both", expand=True, cursor="hand2")
+            self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
+            self.rowKeysPage = Page(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, disableMouseScroll=True, fill="both", expand=True)
 
         self.cellPage = Page(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
-
 
         if columnKeys:
             self.columnSorter = Sorter(self.columnKeysPage)
             if cellVSB:
                 Frame(self.columnKeysPageContainer, side="left", width=21, fill="y")  # To fill out for existing VSB in cellPage
+
         if self.rowKeys:
             self.rowSorter = Sorter(self.rowKeysPage)
             if cellHSB:
-                Frame(self.rowKeysPageContainer, side="top", height=21, fill="x")  # To fill out for existing HSB in cellPage
+                Frame(self.rowKeysPageContainer, side="top", height=20, fill="x")  # To fill out for existing HSB in cellPage. Height -1 for pady=1 in container.
 
         # Update headers whenever canvas moves (Manual scrollbar, mousewheel and right-click drag)
         if self.rowKeys or self.columnKeys:
@@ -55,6 +55,7 @@ class Spreadsheet(Page):
         if self.columnKeys:
             self.columnKeysPage.canvas.widget.xview_moveto(self.cellPage.canvas.widget.xview()[0])
         if self.rowKeys:
+            # print(self.cellPage.canvas.widget.yview()[0])
             self.rowKeysPage.canvas.widget.yview_moveto(self.cellPage.canvas.widget.yview()[0])
 
     def _syncColumnKeysWidth(self):
@@ -83,17 +84,19 @@ class Spreadsheet(Page):
             elif cellWidths[column] > headerWidths[column]:
                 headers[column].widgetConfig(width=cellWidths[column])
 
-        # Grid doesn't update for some reason when chaning width of cells manually, so force it to here
-        self.getTopElement().widgetConfig(width=0)
-        self.app.widget.update()
-        self.getTopElement().widgetConfig(width=self.parameters["width"])
+        # Grid doesn't update automatically for some reason
+        # self.cellPage.canvas.callBind("<Configure>")
 
     def _syncRowKeysWidth(self):
         if not self.rowKeys:
             return
 
+        self.app.widget.update()  # To get right width
         rowTitleWidth = self.rowKeysPage.getChildren()[0].widget.winfo_width() + 4
         self.rowKeysPageContainer.getTopElement().widgetConfig(width=rowTitleWidth)
+
+        # Grid doesn't update automatically for some reason
+        # self.rowKeysPage.canvas.callBind("<Configure>")
 
         if self.columnKeys:
             self.columnKeysFillerLeft.widgetConfig(width=rowTitleWidth)
@@ -101,7 +104,7 @@ class Spreadsheet(Page):
     def createCell(self, page, colI, rowI, value):
         label = Label(page, value, column=colI, row=rowI, padx=5, sticky="NSEW", relief="groove", bg="gray85")
         label.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
-        label.createBind("<Button-1>", lambda event: print(event))
+        # label.createBind("<Button-1>", lambda event: print(event))
 
 
     def loadDataFrame(self, df):
@@ -138,10 +141,7 @@ class Spreadsheet(Page):
         if self.rowKeys:
             for i in range(len(self.dataFrame.index) - existingRows):
                 keyValue = self.dataFrame.index[existingRows + i]
-                # HERE ** Dunno why cell has 0 width first time
-                print(keyValue)
                 self.createCell(self.rowKeysPage, 0, existingRows + i, keyValue)
-
 
         for rowI, row in enumerate(df.itertuples(index=False)):
             for colI, value in enumerate(row):
@@ -149,7 +149,7 @@ class Spreadsheet(Page):
 
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()
-
+        self.app.widget.update()
 
 
 

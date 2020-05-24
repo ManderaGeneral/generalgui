@@ -93,11 +93,11 @@ class Element(Element_Page, Element_App, Element_Page_App):
 
     def click(self, animate=True):
         """Manually call the function that is called when this element is left clicked."""
-        value = self._callBind("<Button-1>")
+        value = self.callBind("<Button-1>")
         if animate:
             self.app.widget.update()
             sleep(0.15)
-            self._callBind("<ButtonRelease-1>")
+            self.callBind("<ButtonRelease-1>")
         return value
 
     def onRightClick(self, func, add=False):
@@ -111,7 +111,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
 
     def rightClick(self):
         """Manually call the function that is called when this element is right clicked."""
-        return self._callBind("<Button-3>")
+        return self.callBind("<Button-3>")
 
     def widgetConfig(self, **kwargs):
         """

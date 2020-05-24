@@ -30,26 +30,6 @@ class Element_App:
             if key not in self.disabledPropagations:
                 self.disabledPropagations.append(key)
 
-    def _bindCaller(self, event, key):
-        """
-        Every bound key only has this function bound.
-
-        :param generalgui.Element or generalgui.App self:
-        """
-        returns = []
-        for func in self.events[key]:
-            if leadingArgsCount(func):
-                value = func(event)
-                if value is not None:
-                    returns.append(value)
-            else:
-                value = func()
-                if value is not None:
-                    returns.append(value)
-        if key in self.disabledPropagations:
-            return "break"
-        return returns
-
     def createBind(self, key, func, add=True):
         """
         Binds a key to a function using tkinter's bind function.
@@ -71,26 +51,38 @@ class Element_App:
                 self.widget.bind(key, lambda event: self._bindCaller(event, key), add=False)
             addToListInDict(self.events, key, func)
 
-    def _callBind(self, key):
+    def _bindCaller(self, event, key):
+        """
+        Every bound key only has this function bound.
+
+        :param generalgui.Element or generalgui.App self:
+        """
+        if key not in self.events:
+            return None
+
+        returns = []
+        for func in self.events[key]:
+            if leadingArgsCount(func):
+                value = func(event)
+                if value is not None:
+                    returns.append(value)
+            else:
+                value = func()
+                if value is not None:
+                    returns.append(value)
+        if key in self.disabledPropagations:
+            return "break"
+        return returns
+
+    def callBind(self, key):
         """
         Calls a binded key's function(s) manually.
-        Not used directly.
 
         :param generalgui.Element or generalgui.App self:
         :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
         :return: Function's return value or functions' return values in tuple in the order they were binded.
         """
         self._bindCaller(None, key)
-
-        # if key not in self.events:
-        #     raise UserWarning(f"Key {key} is not bound to any function.")
-        #
-        # # Event is None when calling manually
-        # results = tuple(func() for func in self.events[key])
-        # if len(results) == 1:
-        #     return results[0]
-        # else:
-        #     return results
 
 
 

@@ -9,6 +9,15 @@ import pandas as pd
 
 
 
+def debug():
+    pass
+
+
+def ss(func):
+    for spreadsheet in spreadsheets:
+        func(spreadsheet)
+
+
 page = Page()
 
 
@@ -21,11 +30,23 @@ reset = Button(page, "Reset", func=lambda: page.rainbow(reset=True))
 Button(page, "click reset", func=reset.click)
 
 columnKeys = ("color", "number", "name")
-Button(page, "Add row", func=lambda: spreadsheet.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys)))
-Button(page, "Add indexed row", func=lambda: spreadsheet.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys, index=["hello"])))
+Button(page, "Add row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
+Button(page, "Add indexed row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"]], columns=columnKeys, index=["hello"]))))
+Button(page, "Small", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
+Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=400, width=400)))
+Button(page, "Debug", func=debug)
 
 
-spreadsheet = Spreadsheet(page, cellVSB=False, cellHSB=False, columnKeys=False, rowKeys=True)
+spreadsheets = []
+spreadsheetPage = Page(page, pack=True)
+
+for one in range(2):
+    for two in range(2):
+        rowPage = Page(spreadsheetPage, pack=True)
+        for three in range(2):
+            for four in range(2):
+                spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
+
 
 
 # rows = []

@@ -37,6 +37,27 @@ class App(Element_Page_App, Element_App, Page_App):
         self.createBind("<ButtonRelease-3>", self.scrollButtonRelease)
         self.createBind("<B3-Motion>", self.scrollButtonMove)
 
+
+        def debug(widget):
+            print(
+                widget.winfo_height(),
+                widget.bbox("all"),
+                widget["scrollregion"],
+                widget,
+            )
+        # self.createBind("<Button-1>", lambda event: debug(event.widget))
+
+        # With this we can create a resizable function for elements
+        # self.createBind("<Button-1>", lambda event: print(event.widget))
+        # self.createBind("<Configure>", lambda event: print("moved"))
+
+    def getVisibleFraction(self, element):
+        canvasSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
+        scrollRegions = element.getWidgetConfig("scrollregion").split(" ")
+        scrollSize = Vec2(int(scrollRegions[2]), int(scrollRegions[3]))
+        visibleFraction = canvasSize / scrollSize
+        return visibleFraction
+
     def scrollButton(self, event):
         if self.scrollWheelTarget:
             self.startCoords = Vec2(event.x_root, event.y_root)
@@ -52,11 +73,9 @@ class App(Element_Page_App, Element_App, Page_App):
             coords = Vec2(event.x_root, event.y_root)
             mouseDiff = coords - self.startCoords
             canvasSize = Vec2(self.scrollWheelTarget.widget.winfo_width(), self.scrollWheelTarget.widget.winfo_height())
-            scrollRegions = self.scrollWheelTarget.getWidgetConfig("scrollregion").split(" ")
-            scrollSize = Vec2(int(scrollRegions[2]), int(scrollRegions[3]))
             fractionMouseDiff = mouseDiff / canvasSize
-            visibleFraction = canvasSize / scrollSize
 
+            visibleFraction = self.getVisibleFraction(self.scrollWheelTarget)
             newFraction = self.startFraction - fractionMouseDiff * visibleFraction
 
             if visibleFraction.x < 1:
@@ -69,6 +88,10 @@ class App(Element_Page_App, Element_App, Page_App):
         When scrolling anywhere on App
         """
         if self.scrollWheelTarget is not None:
+            visibleFraction = self.getVisibleFraction(self.scrollWheelTarget)
+            if visibleFraction.y >= 1:
+                return
+
             self.scrollWheelTarget.widget.yview_scroll(round(event.delta / -1), "units")
 
     def setScrollTarget(self, element):

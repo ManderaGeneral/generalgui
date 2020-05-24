@@ -81,7 +81,7 @@ class EntryTest(unittest.TestCase):
         entry.setDefault("test")
         self.assertEqual("", entry.getValue())
 
-        entry._callBind("<FocusOut>")
+        entry.callBind("<FocusOut>")
         self.assertEqual("test", entry.getValue())
 
         entry.clearIfDefault()
@@ -94,14 +94,14 @@ class EntryTest(unittest.TestCase):
         self.assertEqual("hello", entry.getValue())
 
         entry.setValue("not default")
-        entry._callBind("<FocusOut>")
+        entry.callBind("<FocusOut>")
         self.assertEqual("not default", entry.getValue())
 
         entry.setDefault("not default")
         entry.clearIfDefault()
         self.assertEqual("", entry.getValue())
 
-        entry._callBind("<FocusOut>")
+        entry.callBind("<FocusOut>")
         self.assertEqual("not default", entry.getValue())
 
         entry.setDefault(True)
