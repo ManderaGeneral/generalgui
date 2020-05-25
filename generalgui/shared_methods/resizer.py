@@ -18,8 +18,9 @@ class Resizer:
         self.resizeHoverElement = None
         self.resizeMouseStart = None
         self.resizeElementSize = None
-        self.checkCD = Timer()
-        self.resizeCD = Timer()
+        self.checkTimer = Timer()
+        self.resizeTimer = Timer()
+        self.resizeAfterID = None
 
         self.createBind("<Button-1>", lambda event: self.startResize(event))
         self.createBind("<ButtonRelease-1>", lambda event: self.stopResize(event))
@@ -38,25 +39,33 @@ class Resizer:
         if element not in self.resizeables:
             self.resizeables.append(element)
 
+    resizeCD = 0.1
+    checkCD = 0.05
     def checkIfResize(self, event):
         """
         :param event:
         :param generalgui.app.App self:
         """
-
         mouse = self.getMouse(event)
+
+        if self.resizeAfterID:
+            self.app.widget.after_cancel(self.resizeAfterID)
+            self.resizeAfterID = None
+
         if self.resizeElement:
-            if self.resizeCD.seconds() < 0.05:
+            if self.resizeTimer.seconds() < self.resizeCD:
+                msDelay = round((self.resizeCD - self.resizeTimer.seconds()) / 1000) + 10
+                self.resizeAfterID = self.app.widget.after(msDelay, self.checkIfResize, event)
                 return
-            self.resizeCD = Timer()
+            self.resizeTimer = Timer()
 
             newSize = (self.resizeElementSize + mouse - self.resizeMouseStart).max(Vec2(10))
             self.resizeElement.widgetConfig(width=newSize.x, height=newSize.y)
 
         else:
-            if self.checkCD.seconds() < 0.05:
+            if self.checkTimer.seconds() < self.checkCD:
                 return
-            self.checkCD = Timer()
+            self.checkTimer = Timer()
 
             hoveringEle = None
             for element in self.resizeables:
