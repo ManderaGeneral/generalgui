@@ -75,7 +75,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
             self.resizeable()
 
     def resizeable(self):
-        self.app.resizeable(self)
+        self.app.makeResizeable(self)
 
     def makeBase(self):
         """

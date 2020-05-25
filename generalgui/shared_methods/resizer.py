@@ -1,6 +1,8 @@
 
 from generalvector import Vec2
 
+from generallibrary.time import Timer
+
 
 class Resizer:
     """
@@ -13,16 +15,22 @@ class Resizer:
         """
         self.resizeables = []
         self.resizeElement = None
-        self.motionBind = None
+        self.resizeHoverElement = None
         self.resizeMouseStart = None
-        self.resizeSizeStart = None
+        self.resizeElementSize = None
+        self.checkCD = Timer()
+        self.resizeCD = Timer()
 
         self.createBind("<Button-1>", lambda event: self.startResize(event))
-        self.createBind("<ButtonRelease-1>", lambda event: self.stopResize())
+        self.createBind("<ButtonRelease-1>", lambda event: self.stopResize(event))
+        self.motionBind = self.createBind("<Motion>", lambda event: self.checkIfResize(event), add=False)
 
         self.resizeStyle = self.createStyle("Resize", cursor="sizing")
 
-    def resizeable(self, element):
+    def getMouse(self, event):
+        return Vec2(event.x_root, event.y_root)
+
+    def makeResizeable(self, element):
         """
         :param generalgui.element.Element element:
         :param generalgui.app.App self:
@@ -30,49 +38,62 @@ class Resizer:
         if element not in self.resizeables:
             self.resizeables.append(element)
 
-    def resize(self, event):
+    def checkIfResize(self, event):
         """
         :param event:
         :param generalgui.app.App self:
         """
-        print(event)
-        mouse = Vec2(event.x_root, event.y_root)
-        newSize = (self.resizeSizeStart + mouse - self.resizeMouseStart).max(Vec2(10))
-        self.resizeElement.widgetConfig(width=newSize.x, height=newSize.y)
+
+        mouse = self.getMouse(event)
+        if self.resizeElement:
+            if self.resizeCD.seconds() < 0.05:
+                return
+            self.resizeCD = Timer()
+
+            newSize = (self.resizeElementSize + mouse - self.resizeMouseStart).max(Vec2(10))
+            self.resizeElement.widgetConfig(width=newSize.x, height=newSize.y)
+
+        else:
+            if self.checkCD.seconds() < 0.05:
+                return
+            self.checkCD = Timer()
+
+            hoveringEle = None
+            for element in self.resizeables:
+                elePos = Vec2(element.widget.winfo_rootx(), element.widget.winfo_rooty())
+                self.resizeElementSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
+                eleLowerRight = elePos + self.resizeElementSize
+
+                if eleLowerRight - Vec2(20) < mouse < eleLowerRight + Vec2(10):
+                    hoveringEle = element
+                    break
+
+            if hoveringEle != self.resizeHoverElement:
+                self.resizeHoverElement = hoveringEle
+                if hoveringEle:
+                    self.resizeStyle.enable()
+                else:
+                    self.resizeStyle.disable()
 
     def startResize(self, event):
         """
         :param event:
         :param generalgui.app.App self:
         """
-        for element in self.resizeables:
-            mouse = Vec2(event.x_root, event.y_root)
-            elePos = Vec2(element.widget.winfo_rootx(), element.widget.winfo_rooty())
-            eleSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
-            eleLowerRight = elePos + eleSize
-            relativeMouse = eleLowerRight - mouse
+        self.checkIfResize(event)  # If moved to fast for cooldown
+        if self.resizeHoverElement:
+            self.resizeElement = self.resizeHoverElement
+            self.resizeMouseStart = self.getMouse(event)
 
-            if relativeMouse.length() < 10:
-                self.resizeElement = element
-                # HERE ** Always have this motion bind active so we can change cursor before clicking
-                self.motionBind = self.createBind("<Motion>", lambda event: self.resize(event), add=False)
-                self.resizeMouseStart = mouse
-                self.resizeSizeStart = eleSize
 
-                self.resizeStyle.enable()
-
-    def stopResize(self):
+    def stopResize(self, event):
         """
+        :param event:
         :param generalgui.app.App self:
         """
-        if self.resizeElement:
-            self.resizeStyle.disable()
-            self.resizeElement = None
-
-        if self.motionBind is not None:
-            self.removeBind("<Motion>", self.motionBind)
-            self.motionBind = None
-
+        self.checkIfResize(event)  # To update cursor if not moving
+        self.resizeElement = None
+        self.checkIfResize(event)  # To update cursor if not moving
 
 
 
