@@ -6,36 +6,36 @@ from tkinter import font
 from generalgui.shared_methods.element_page_app import Element_Page_App
 from generalgui.shared_methods.element_app import Element_App
 from generalgui.shared_methods.page_app import Page_App
+from generalgui.shared_methods.scroller import Scroller
+from generalgui.shared_methods.resizer import Resizer
+
 
 from generalvector import Vec2
 
 from generallibrary.time import Timer
 
 
-class App(Element_Page_App, Element_App, Page_App):
+class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer):
     """
     Controls one tkinter Tk object and adds a lot of convenient features.
     """
     def __init__(self):
-        super().__init__()
+        Element_App.__init__(self)
+
         self.widget = Tk()
         setattr(self.widget, "element", self)
         self.app = self
         self.mainlooped = False
+
 
         default_font = font.nametofont("TkDefaultFont")
         default_font.configure(size=10, family="Helvetica")
         self.widget.option_add("*Font", default_font)
         # print(default_font.actual())
 
-        self.scrollWheelTarget = None
-        self.scrollButtonEnabled = False
-        self.startCoords = None
-        self.startFraction = None
-        self.createBind("<MouseWheel>", self.scrollWheel)
-        self.createBind("<Button-3>", self.scrollButton)
-        self.createBind("<ButtonRelease-3>", self.scrollButtonRelease)
-        self.createBind("<B3-Motion>", self.scrollButtonMove)
+
+        Scroller.__init__(self)
+        Resizer.__init__(self)
 
 
         def debug(widget):
@@ -45,70 +45,8 @@ class App(Element_Page_App, Element_App, Page_App):
                 widget["scrollregion"],
                 widget,
             )
+
         # self.createBind("<Button-1>", lambda event: debug(event.widget))
-
-        # With this we can create a resizable function for elements
-        # self.createBind("<Button-1>", lambda event: print(event.widget))
-        # self.createBind("<Configure>", lambda event: print("moved"))
-
-    def getVisibleFraction(self, element):
-        canvasSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
-        scrollRegions = element.getWidgetConfig("scrollregion").split(" ")
-        scrollSize = Vec2(int(scrollRegions[2]), int(scrollRegions[3]))
-        visibleFraction = canvasSize / scrollSize
-        return visibleFraction
-
-    def scrollButton(self, event):
-        if self.scrollWheelTarget:
-            self.startCoords = Vec2(event.x_root, event.y_root)
-            self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
-            if self.scrollWheelTarget is not None:
-                self.scrollButtonEnabled = True
-
-    def scrollButtonRelease(self, event):
-        self.scrollButtonEnabled = False
-
-    def scrollButtonMove(self, event):
-        if self.scrollButtonEnabled and self.scrollWheelTarget:
-            coords = Vec2(event.x_root, event.y_root)
-            mouseDiff = coords - self.startCoords
-            canvasSize = Vec2(self.scrollWheelTarget.widget.winfo_width(), self.scrollWheelTarget.widget.winfo_height())
-            fractionMouseDiff = mouseDiff / canvasSize
-
-            visibleFraction = self.getVisibleFraction(self.scrollWheelTarget)
-            newFraction = self.startFraction - fractionMouseDiff * visibleFraction
-
-            if visibleFraction.x < 1:
-                self.scrollWheelTarget.widget.xview_moveto(newFraction.x)
-            if visibleFraction.y < 1:
-                self.scrollWheelTarget.widget.yview_moveto(newFraction.y)
-
-    def scrollWheel(self, event):
-        """
-        When scrolling anywhere on App
-        """
-        if self.scrollWheelTarget is not None:
-            visibleFraction = self.getVisibleFraction(self.scrollWheelTarget)
-            if visibleFraction.y >= 1:
-                return
-
-            self.scrollWheelTarget.widget.yview_scroll(round(event.delta / -1), "units")
-
-    def setScrollTarget(self, element):
-        """
-        Targets an element to be scrolled if mousewheel is moved
-
-        :param generalgui.element.Element element:
-        """
-        self.scrollWheelTarget = element
-
-    def removeScrollTarget(self, element):
-        """
-        Removes mouse wheel target
-        """
-
-        if element == self.scrollWheelTarget:
-            self.scrollWheelTarget = None
 
     def mainloop(self):
         """

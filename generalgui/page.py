@@ -12,7 +12,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, disableMouseScroll=False, **parameters):
+    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, disableMouseScroll=False, resizeable=False, **parameters):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
@@ -51,7 +51,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
         self.scrollable = scrollable
         self.canvasFrame = None
 
-        self.frame = Frame(self, pack=False, makeBase=True, **parameters)
+        self.frame = Frame(self, pack=False, makeBase=True, resizeable=resizeable, **parameters)
         if "width" in parameters or "height" in parameters:
             self.frame.widget.pack_propagate(0)
 

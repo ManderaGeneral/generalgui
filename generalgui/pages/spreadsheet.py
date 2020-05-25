@@ -16,7 +16,7 @@ class Spreadsheet(Page):
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
-        super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, **parameters)
+        super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
 
         self.columnKeys = columnKeys
         self.rowKeys = rowKeys
