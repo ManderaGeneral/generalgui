@@ -65,6 +65,8 @@ class Element_App:
         """
         if key in self.events and bindIndex in self.events[key]:
             del self.events[key][bindIndex]
+            if not len(self.events[key]):
+                del self.events[key]
 
     def _bindCaller(self, event, key):
         """
@@ -85,7 +87,7 @@ class Element_App:
                 value = func()
                 if value is not None:
                     returns.append(value)
-        if key in self.disabledPropagations:
+        if event and key in self.disabledPropagations:
             return "break"
         return returns
 
@@ -97,7 +99,7 @@ class Element_App:
         :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
         :return: Function's return value or functions' return values in tuple in the order they were binded.
         """
-        self._bindCaller(None, key)
+        return self._bindCaller(None, key)
 
     def widgetConfig(self, **kwargs):
         """

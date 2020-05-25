@@ -7,7 +7,7 @@ from generalgui import Page, Label
 
 class LabelTest(unittest.TestCase):
     def test_label(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             label = Label(page, "hello")
             self.assertEqual(label.parentPage, page)
             self.assertIs(label.widget.element, label)

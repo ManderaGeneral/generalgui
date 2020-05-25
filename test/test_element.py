@@ -7,7 +7,7 @@ from generalgui import Page, Label, Button, Checkbutton
 
 class ElementTest(unittest.TestCase):
     def test_siblings(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             text1 = Label(page, "hi")
             text2 = Label(page, "hello")
             self.assertEqual(text1.getSiblings(), [text2])
@@ -50,12 +50,13 @@ class ElementTest(unittest.TestCase):
         self.assertEqual(button.previousSibling(), checkbutton)
 
     def test_children(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             text1 = Label(page, "hello")
             text2 = Label(page, "there")
             page2 = Page(page)
             text3 = Label(page2, "in page 2")
 
+            # print(page.isScrollable(), page.getChildren())
             self.assertEqual(page.getChildren(), [text1, text2, page2])
 
             self.assertFalse(text1.isShown())
@@ -90,7 +91,7 @@ class ElementTest(unittest.TestCase):
             page.app.remove()
 
     def test_parents(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             Label(page, "hello")
             Label(page, "there")
             page2 = Page(page)
@@ -103,28 +104,28 @@ class ElementTest(unittest.TestCase):
     def test_textOnClick(self):
         text = Label(Page(), "hello")
         text.onClick(lambda: 1)
-        self.assertEqual(text.click(), 1)
+        self.assertEqual([1], text.click())
         text.onClick(lambda: 2)
-        self.assertEqual(text.click(), 2)
+        self.assertEqual([2], text.click())
         text.onClick(lambda: 3, add=True)
-        self.assertEqual(text.click(), (2, 3))
+        self.assertEqual([2, 3], text.click())
         text.onClick(lambda: 4, add=True)
-        self.assertEqual(text.click(), (2, 3, 4))
+        self.assertEqual([2, 3, 4], text.click())
         text.onClick(lambda: 5)
-        self.assertEqual(text.click(), 5)
+        self.assertEqual([5], text.click())
 
     def test_buttonOnRightClick(self):
         button = Button(Page(), "hello")
         button.onRightClick(lambda: 1)
-        self.assertEqual(button.rightClick(), 1)
+        self.assertEqual([1], button.rightClick())
         button.onRightClick(lambda: 2)
-        self.assertEqual(button.rightClick(), 2)
+        self.assertEqual([2], button.rightClick())
         button.onRightClick(lambda: 3, add=True)
-        self.assertEqual(button.rightClick(), (2, 3))
+        self.assertEqual([2, 3], button.rightClick())
         button.onRightClick(lambda: 4, add=True)
-        self.assertEqual(button.rightClick(), (2, 3, 4))
+        self.assertEqual([2, 3, 4], button.rightClick())
         button.onRightClick(lambda: 5)
-        self.assertEqual(button.rightClick(), 5)
+        self.assertEqual([5], button.rightClick())
 
 
 

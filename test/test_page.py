@@ -7,13 +7,13 @@ from generalgui import Page
 
 class PageTest(unittest.TestCase):
     def test_init(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             self.assertIs(page.parentPage, page.app)
-            self.assertIs(page.widget.element, page)
+            self.assertIs(page.topElement.parentPage, page)
             page.remove()
 
     def test_siblings(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             self.assertEqual(page.getChildren(), [])
             self.assertEqual(page.getParentPages(), [])
             self.assertEqual(page.getParentPages(includeSelf=True), [page])
@@ -66,7 +66,7 @@ class PageTest(unittest.TestCase):
         self.assertEqual(page1.previousSibling(), page3)
 
     def test_children(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             self.assertEqual(page.getChildren(), [])
             page.showChildren(mainloop=False)
             page.hideChildren()
@@ -117,7 +117,7 @@ class PageTest(unittest.TestCase):
             self.assertRaises(tk.TclError, page.isShown)
 
     def test_parents(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             page2 = Page(page)
             page3 = Page(page2)
             self.assertEqual(page3.getParentPages(), [page2, page])

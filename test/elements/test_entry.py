@@ -10,9 +10,13 @@ class EntryTest(unittest.TestCase):
         page = Page()
         entry = Entry(page, "hello")
         Label(page, "random")
-        Button(page, "no click")
         Button(page, "Change default", lambda: 5)
-        self.assertEqual(5, entry._clickNextButton())
+        self.assertEqual([5], entry._clickNextButton())
+
+        entry2 = Entry(page, "hello")
+        Button(page, "Change default", lambda: 3)
+        self.assertEqual([3], entry2._clickNextButton())
+
         page.app.remove()
 
     def test__removeWord(self):

@@ -59,8 +59,9 @@ class Element_Page_App:
                 part = widget.element
                 if part.parentPage.topElement == part:
                     part = part.parentPage
+
                 if widget.element not in ignore and part not in ignore:
-                    children.append(widget.element)
+                    children.append(part)
 
         return children
 

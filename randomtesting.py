@@ -8,48 +8,13 @@ import inspect
 import pandas as pd
 
 
-def debug():
-    pass
+page = Page(width=200, height=100)
 
+label1 = Label(page, "hi")
+label2 = Label(page, "hi")
 
-def ss(func):
-    for spreadsheet in spreadsheets:
-        func(spreadsheet)
+# label1.showSiblings(mainloop=False)
+page.show(mainloop=False)
 
-page = Page()
-
-Button(page, "Rainbow", func=page.rainbow)
-reset = Button(page, "Reset", func=lambda: page.rainbow(reset=True))
-
-columnKeys = ("color", "number", "name")
-Button(page, "Add row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
-Button(page, "Add indexed row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"]], columns=columnKeys, index=["hello"]))))
-Button(page, "Small", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
-Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=400, width=400)))
-Button(page, "Debug", func=debug)
-
-
-spreadsheets = []
-spreadsheetPage = Page(page, pack=True)
-
-for one in range(2):
-    for two in range(2):
-        rowPage = Page(spreadsheetPage, pack=True)
-        for three in range(2):
-            for four in range(2):
-                spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
-
-
-
-# rows = []
-# for i in range(20):
-#     rows.append(["red", "mandera", 9, "red", "mandera", 9, "red", "manderamanderamandera", 9])
-#     rows.append(["yellow", "nick", 1337, "yellow", "nick", 1337, "yellow", "nick", 1337])
-# spreadsheet.loadDataFrame(pd.DataFrame(rows))
-
-# Label(page, "Menu").widget.place(x=100, y=250)
 
 page.show()
-
-
-

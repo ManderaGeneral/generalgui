@@ -35,16 +35,19 @@ class Entry(Element):
     def _clickNextButton(self):
         """
         Click the first sibling that's a button when Enter key is pressed.
+
         :return: Click's return value or False if no button was found
         """
         for parentPage in self.getParentPages():
-            for sibling in parentPage.getChildren(ignore=self):
-                if typeChecker(sibling, "Button", error=False):
-                    # See if click is bound
-                    try:
-                        return sibling.click()
-                    except UserWarning:
-                        pass
+
+            if self.parentPage == parentPage:
+                elements = self.getSiblings()
+            else:
+                elements = parentPage.getChildren(ignore=self)
+
+            for element in elements:
+                if typeChecker(element, "Button", error=False):
+                    return element.click()
         return False
 
     def _removeWord(self, delete=False):

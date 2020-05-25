@@ -8,7 +8,6 @@ from generalgui import App, Page
 class AppTest(unittest.TestCase):
     def test_init(self):
         app = App()
-        self.assertIsNone(app.parentPage)
         self.assertIs(app.app, app)
         self.assertTrue(isinstance(app.widget, tk.Tk))
         self.assertIs(app.widget.element, app)

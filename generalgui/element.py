@@ -74,6 +74,9 @@ class Element(Element_Page, Element_App, Element_Page_App):
         if resizeable:
             self.resizeable()
 
+    def __repr__(self):
+        return f"Element: {self.__class__.__name__} {self.widget}"
+
     def resizeable(self):
         self.app.makeResizeable(self)
 

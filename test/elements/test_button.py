@@ -7,7 +7,7 @@ from generalgui import Page, Button
 
 class ButtonTest(unittest.TestCase):
     def test_button(self):
-        for page in Page(), Page(width=200):
+        for page in Page(), Page(width=200, height=200):
             button = Button(page, "hello", lambda: 5)
             self.assertEqual(button.parentPage, page)
             self.assertIs(button.widget.element, button)
@@ -16,7 +16,7 @@ class ButtonTest(unittest.TestCase):
             button.show(mainloop=False)
             self.assertTrue(button.isShown())
 
-            self.assertEqual(button.click(), 5)
+            self.assertEqual([5], button.click())
 
             page.app.remove()
             self.assertRaises(tk.TclError, button.isShown)
