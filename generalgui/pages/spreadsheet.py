@@ -11,6 +11,8 @@ import pandas as pd
 class Spreadsheet(Page):
     """
     Controls elements in a grid
+    Todo: 'add' option for loadDataFrame, default to False probably
+    Todo: Allow changing dataframe directly and then add a function to refresh spreadsheet
 
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
@@ -106,7 +108,6 @@ class Spreadsheet(Page):
         label.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
         # label.createBind("<Button-1>", lambda event: print(event))
 
-
     def loadDataFrame(self, df):
         """
         We can add an option to load df to columns instead of rows as well, then the rowKeys need to match instead of columnKeys
@@ -127,7 +128,9 @@ class Spreadsheet(Page):
 
         else:
             if list(df.columns) != list(self.dataFrame.columns):
-                raise AttributeError(f"Columns mismatch {df.columns} != {self.dataFrame.columns}")
+                raise AttributeError(f"Columns mismatch: {df.columns} != {self.dataFrame.columns}")
+            if df.shape[0] != self.dataFrame.shape[0]:  # Probably not needed
+                raise AttributeError(f"Columns shape mismatch: {df.shape[0]} != {self.dataFrame.shape[0]}")
 
             existingRows = self.dataFrame.shape[0]
 
@@ -150,36 +153,6 @@ class Spreadsheet(Page):
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()
         self.app.widget.update()
-
-
-
-
-    def addRows(self, obj):
-        """
-        Add rows to cells
-        """
-        rows = getRows(obj)
-        self._addRowsToPage(rows, self.cellPage)
-
-        headers = [[i for i in range(len(rows[0]))]]
-        rowTitles = [[i] for i in range(len(rows))]
-
-        self._addRowsToPage(headers, self.columnKeysPage)
-        self._addRowsToPage(rowTitles, self.rowKeysPage)
-
-        self._syncColumnKeysWidth()
-        self._syncRowKeysWidth()
-
-    def _addRowsToPage(self, rows, page):
-        for rowI, row in enumerate(rows):
-            for colI, value in enumerate(row):
-                label = Label(page, value, column=colI, row=rowI + 1, padx=5, sticky="NSEW", relief="groove", bg="gray85")
-                label.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
-                label.createBind("<Button-1>", lambda event: print(event))
-
-                # Fix this. It stacks atm
-                if rowI == 0:
-                    Frame(page, column=colI, row=0, height=0, sticky="NSEW")
 
 class Sorter:
     """
