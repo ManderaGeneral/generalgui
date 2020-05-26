@@ -14,6 +14,12 @@ class Styler:
     def __init__(self):
         self.styleHandler = None
 
+    def cleanup_styler(self):
+        if self.styleHandler:
+            for style in self.styleHandler.allStyles:
+                self.styleHandler.delete(style)
+        Styler.__init__(self)
+
     def createStyle(self, name, hookBindKey=None, unhookBindKey=None, style=None, priority=None, **kwargs):
         """
         Create a new style and automatically add it to this StyleHandler.

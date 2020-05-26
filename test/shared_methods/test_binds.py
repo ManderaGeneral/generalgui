@@ -29,5 +29,10 @@ class FrameTest(unittest.TestCase):
         label.createBind("<Button-1>", lambda: 3, add=False)
         self.assertEqual([3], label.callBind("<Button-1>"))
 
+        # label.remove()
+        # self.assertEqual([], label.callBind("<Button-1>"))
+
+
+
 
 

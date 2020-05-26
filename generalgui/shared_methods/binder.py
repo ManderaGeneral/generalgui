@@ -15,6 +15,9 @@ class Binder:
         self.events = {}
         self.disabledPropagations = []
 
+    def cleanup_binder(self):
+        Binder.__init__(self)
+
     def setBindPropagation(self, key, enable):
         """
         Enabled or disable propagation for binds.
@@ -152,10 +155,10 @@ class Binder:
         :param generalgui.Element or generalgui.App self:
         :param animate: Whether to animate or not
         """
-        value = self.callBind("<Button-1>")
+        value = self.callBind("<Button-3>")
 
         if animate:
-            self.widget.after(250, lambda: self.callBind("<ButtonRelease-1>"))
+            self.widget.after(250, lambda: self.callBind("<ButtonRelease-3>"))
         else:
             self.callBind("<Button-3>")
 

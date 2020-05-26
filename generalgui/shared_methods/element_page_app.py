@@ -138,5 +138,11 @@ class Element_Page_App:
         self.getTopWidget().update()
         self.getTopWidget().destroy()
 
+        # cls = self.__class__
+        # for func in dir(cls):
+        #     if func.startswith("cleanup_"):
+        #         getattr(cls, func)(self)
+
+
 
 

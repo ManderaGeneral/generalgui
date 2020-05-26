@@ -20,6 +20,8 @@ class Spreadsheet(Page):
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
 
+        self.cellHSB = cellHSB
+        self.cellVSB = cellVSB
         self.columnKeys = columnKeys
         self.rowKeys = rowKeys
 
@@ -57,7 +59,6 @@ class Spreadsheet(Page):
         if self.columnKeys:
             self.columnKeysPage.canvas.widget.xview_moveto(self.cellPage.canvas.widget.xview()[0])
         if self.rowKeys:
-            # print(self.cellPage.canvas.widget.yview()[0])
             self.rowKeysPage.canvas.widget.yview_moveto(self.cellPage.canvas.widget.yview()[0])
 
     def _syncColumnKeysWidth(self):
@@ -86,9 +87,6 @@ class Spreadsheet(Page):
             elif cellWidths[column] > headerWidths[column]:
                 headers[column].widgetConfig(width=cellWidths[column])
 
-        # Grid doesn't update automatically for some reason
-        # self.cellPage.canvas.callBind("<Configure>")
-
     def _syncRowKeysWidth(self):
         if not self.rowKeys:
             return
@@ -96,9 +94,6 @@ class Spreadsheet(Page):
         self.app.widget.update()  # To get right width
         rowTitleWidth = self.rowKeysPage.getChildren()[0].widget.winfo_width() + 4
         self.rowKeysPageContainer.getTopElement().widgetConfig(width=rowTitleWidth)
-
-        # Grid doesn't update automatically for some reason
-        # self.rowKeysPage.canvas.callBind("<Configure>")
 
         if self.columnKeys:
             self.columnKeysFillerLeft.widgetConfig(width=rowTitleWidth)
@@ -108,14 +103,15 @@ class Spreadsheet(Page):
         label.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
         # label.createBind("<Button-1>", lambda event: print(event))
 
-    def loadDataFrame(self, df):
+    def loadDataFrame(self, df, add=True):
         """
         We can add an option to load df to columns instead of rows as well, then the rowKeys need to match instead of columnKeys
 
         :param pandas.DataFrame df:
+        :param add:
         """
 
-        # print(df.index, df.columns)
+        existingRows = 0
 
         if self.dataFrame is None:
             if self.columnKeys:
@@ -123,23 +119,25 @@ class Spreadsheet(Page):
                     Frame(self.cellPage, column=i, row=0, height=0, sticky="NSEW")
                     Frame(self.columnKeysPage, column=i, row=0, height=0, sticky="NSEW")
                     self.createCell(self.columnKeysPage, i, 1, keyValue)
-            existingRows = 0
             self.dataFrame = df
 
         else:
-            if list(df.columns) != list(self.dataFrame.columns):
-                raise AttributeError(f"Columns mismatch: {df.columns} != {self.dataFrame.columns}")
-            if df.shape[1] != self.dataFrame.shape[1]:  # Probably not needed
-                raise AttributeError(f"Columns shape mismatch: {df.shape[1]} != {self.dataFrame.shape[1]}")
+            if add:
+                if list(df.columns) != list(self.dataFrame.columns):
+                    raise AttributeError(f"Columns mismatch: {df.columns} != {self.dataFrame.columns}")
+                if df.shape[1] != self.dataFrame.shape[1]:  # Probably not needed
+                    raise AttributeError(f"Columns shape mismatch: {df.shape[1]} != {self.dataFrame.shape[1]}")
 
-            existingRows = self.dataFrame.shape[0]
+                existingRows = self.dataFrame.shape[0]
 
-            if typeChecker(self.dataFrame.index, "RangeIndex", error=False) and typeChecker(df.index, "RangeIndex", error=False):
-                ignoreIndex = True
+                if typeChecker(self.dataFrame.index, "RangeIndex", error=False) and typeChecker(df.index, "RangeIndex", error=False):
+                    ignoreIndex = True
+                else:
+                    ignoreIndex = False
+
+                self.dataFrame = self.dataFrame.append(df, ignore_index=ignoreIndex)
             else:
-                ignoreIndex = False
-
-            self.dataFrame = self.dataFrame.append(df, ignore_index=ignoreIndex)
+                self.clearSpreadsheet()
 
         if self.rowKeys:
             for i in range(len(self.dataFrame.index) - existingRows):
@@ -153,6 +151,11 @@ class Spreadsheet(Page):
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()
         self.app.widget.update()
+
+    def clearSpreadsheet(self):
+        return
+        self.frame.remove()
+        self.__init__(self.parentPage, width=self.frame.getWidgetConfig("width"), height=self.frame.getWidgetConfig("height"), cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True,)
 
 class Sorter:
     """

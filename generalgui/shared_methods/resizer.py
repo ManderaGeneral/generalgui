@@ -7,6 +7,9 @@ from generalvector import Vec2
 from generallibrary.time import Timer
 
 
+# class ResizerElement:
+#     def
+
 class Resizer:
     """
     Scroller feature for App.
