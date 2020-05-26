@@ -3,7 +3,6 @@
 import inspect
 
 from generallibrary.types import typeChecker
-from generallibrary.time import sleep
 
 
 from generalgui.shared_methods.element_page import Element_Page
@@ -92,36 +91,6 @@ class Element(Element_Page, Element_App, Element_Page_App):
     def _grid(self):
         self.widget.grid(**self.packParameters)
 
-    def onClick(self, func, add=False):
-        """
-        Call a function when this element is left clicked.
-
-        :param function or None func: Any function or None to unbind
-        :param add: Whether to add to functions list or replace all
-        """
-        self.createBind(key="<Button-1>", func=func, add=add)
-
-    def click(self, animate=True):
-        """Manually call the function that is called when this element is left clicked."""
-        value = self.callBind("<Button-1>")
-        if animate:
-            self.app.widget.update()
-            sleep(0.15)
-            self.callBind("<ButtonRelease-1>")
-        return value
-
-    def onRightClick(self, func, add=False):
-        """
-        Call a function when this element is right clicked.
-
-        :param function or None func: Any function or None to unbind
-        :param add: Whether to add to functions list or replace all
-        """
-        self.createBind(key="<Button-3>", func=func, add=add)
-
-    def rightClick(self):
-        """Manually call the function that is called when this element is right clicked."""
-        return self.callBind("<Button-3>")
 
 
 

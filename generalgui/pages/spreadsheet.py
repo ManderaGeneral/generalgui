@@ -129,8 +129,8 @@ class Spreadsheet(Page):
         else:
             if list(df.columns) != list(self.dataFrame.columns):
                 raise AttributeError(f"Columns mismatch: {df.columns} != {self.dataFrame.columns}")
-            if df.shape[0] != self.dataFrame.shape[0]:  # Probably not needed
-                raise AttributeError(f"Columns shape mismatch: {df.shape[0]} != {self.dataFrame.shape[0]}")
+            if df.shape[1] != self.dataFrame.shape[1]:  # Probably not needed
+                raise AttributeError(f"Columns shape mismatch: {df.shape[1]} != {self.dataFrame.shape[1]}")
 
             existingRows = self.dataFrame.shape[0]
 

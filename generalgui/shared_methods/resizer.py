@@ -1,3 +1,6 @@
+"""
+Resizer for app.
+"""
 
 from generalvector import Vec2
 

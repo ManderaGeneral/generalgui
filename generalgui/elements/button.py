@@ -19,7 +19,7 @@ class Button(Element):
         :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        super().__init__(parentPage, tk.Button, text=value, cursor="hand2", activebackground="green", **parameters)
+        super().__init__(parentPage, tk.Button, text=value, cursor="hand2", **parameters)
 
         self.setBindPropagation("<Button-1>", False)
 

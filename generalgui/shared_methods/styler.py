@@ -1,6 +1,5 @@
 """
-Styler for elements.
-Could be it's own package and be called Config and ConfigHandler instead.
+Styler for app and elements.
 """
 
 from generallibrary.iterables import SortedList
@@ -8,6 +7,37 @@ from generallibrary.types import typeChecker
 from generallibrary.functions import getSignatureNames
 
 
+class Styler:
+    """
+    Styler feature for App and Element.
+    """
+    def __init__(self):
+        self.styleHandler = None
+
+    def createStyle(self, name, hookBindKey=None, unhookBindKey=None, style=None, priority=None, **kwargs):
+        """
+        Create a new style and automatically add it to this StyleHandler.
+        If hooks aren't used then you need to call enable and disable on the style object that's returned.
+
+        :param generalgui.Element or generalgui.App self:
+        :param str name: Name of new style
+        :param str hookBindKey: Bind this element with this key to enable this style.
+        :param str unhookBindKey: Bind this element with this key to disable this style.
+        :param str or style style: Optional Style to inherit kwargs from.
+        :param float priority: Priority value, originalStyle has priority 0. If left as None then it becomes highestPriority + 1.
+        :param kwargs: Keys and values for new style. [prefix][styleName] to copy another style's value at the time of update.
+        """
+        if self.styleHandler is None:
+            self.styleHandler = StyleHandler(lambda kwargs: self.widgetConfig(**kwargs), lambda key: self.getWidgetConfig(key))
+
+        newStyle = self.styleHandler.createStyle(name=name, style=style, priority=priority, **kwargs)
+
+        if hookBindKey:
+            self.createBind(key=hookBindKey, func=newStyle.enable)
+        if unhookBindKey:
+            self.createBind(key=unhookBindKey, func=newStyle.disable)
+
+        return newStyle
 
 def styleDecorator_helper(styleHandler, style):
     """Helper for decorator."""
@@ -17,6 +47,10 @@ def styleDecorator_helper(styleHandler, style):
         else:
             return None
             # raise AttributeError(f"Style with name {style} doesn't exist")
+    if isinstance(style, Style):
+        if style.name not in styleHandler.allStyles:
+            raise AttributeError(f"Style with name {style.name} has been deleted")
+
     typeChecker(style, ("Style", None))
     return style
 
@@ -25,7 +59,6 @@ def styleDecorator(func):
     If style isn't found then functions is silently not called!
 
     Decorator function to replace style name with style, can only be used in StyleHandler class.
-    "Style" argument must not be passed through *args.
 
     :param function func:
     """
@@ -148,7 +181,11 @@ class StyleHandler:
 
     def getStyle(self, style, onlyEnabled=False):
         """
-        Get style if it exists otherwise None
+        Get style if it exists otherwise None.
+
+        :param str style: Name of style
+        :param onlyEnabled: Whether only to enable style if it's enabled also.
+        :rtype: Style
         """
         style = self.allStyles.get(style)
         if onlyEnabled and style is not None and not style.isEnabled():
@@ -206,3 +243,8 @@ class Style:
         """
         return self in self.styleHandler.styles
 
+    def delete(self):
+        """
+        Delete style
+        """
+        self.styleHandler.delete(self)
