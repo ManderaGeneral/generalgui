@@ -9,7 +9,8 @@ import pandas as pd
 
 
 def debug():
-    pass
+    spreadsheets[0].remove()
+    del spreadsheets[0]
 
 
 def ss(func):

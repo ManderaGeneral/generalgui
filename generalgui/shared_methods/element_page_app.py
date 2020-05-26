@@ -1,5 +1,7 @@
 """Shared methods by Element, Page and App"""
 
+import tkinter as tk
+
 from generallibrary.types import typeChecker
 
 from generalvector import Vec
@@ -111,21 +113,35 @@ class Element_Page_App:
         """
         return self.getTopElement().widget
 
-    def isShown(self):
+    def isShown(self, error=True):
         """
         Get whether an element's widget is shown or not.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        :rtype: bool
+        :param error: Whether to raise error if widget is destroyed or not
         """
-        return not not self.getTopWidget().winfo_ismapped()
+        try:
+            isMapped = not not self.getTopWidget().winfo_ismapped()
+        except tk.TclError as e:
+            if error:
+                raise e
+            else:
+                return False
+        return isMapped
+
+    def exists(self):
+        """
+        Get whether an element's widget is shown or not.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        return not not self.getTopWidget().winfo_exists()
 
     def isPacked(self):
         """
         Get whether an element's widget is packed or not.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        :rtype: bool
         """
         return self.getTopWidget().winfo_manager() != ""
 
@@ -137,11 +153,6 @@ class Element_Page_App:
         """
         self.getTopWidget().update()
         self.getTopWidget().destroy()
-
-        # cls = self.__class__
-        # for func in dir(cls):
-        #     if func.startswith("cleanup_"):
-        #         getattr(cls, func)(self)
 
 
 

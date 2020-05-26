@@ -7,9 +7,6 @@ from generalvector import Vec2
 from generallibrary.time import Timer
 
 
-# class ResizerElement:
-#     def
-
 class Resizer:
     """
     Scroller feature for App.
@@ -45,6 +42,16 @@ class Resizer:
         if element not in self.resizeables:
             self.resizeables.append(element)
 
+    def _scrubEle(self, element, scrubHidden=True):
+        if element is None:
+            return False
+        if not element.exists():
+            return True
+        if scrubHidden and not element.isShown():
+            return True
+
+        return False
+
     resizeCD = 0.1
     checkCD = 0.05
     def checkIfResize(self, event):
@@ -52,6 +59,11 @@ class Resizer:
         :param event:
         :param generalgui.app.App self:
         """
+        if self.resizeHoverElement and not self.resizeHoverElement.isShown(error=False):
+            self.resizeHoverElement = None
+            self.resizeElement = None
+            self.resizeStyle.disable()
+
         mouse = self.getMouse(event)
 
         if self.resizeAfterID:
@@ -74,7 +86,14 @@ class Resizer:
             self.checkTimer = Timer()
 
             hoveringEle = None
+            removedElements = []
             for element in self.resizeables:
+                if not element.exists():
+                    removedElements.append(element)
+                    continue
+                if not element.isShown():
+                    continue
+
                 elePos = Vec2(element.widget.winfo_rootx(), element.widget.winfo_rooty())
                 self.resizeElementSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
                 eleLowerRight = elePos + self.resizeElementSize
@@ -82,6 +101,9 @@ class Resizer:
                 if eleLowerRight - Vec2(20) < mouse < eleLowerRight + Vec2(10):
                     hoveringEle = element
                     break
+
+            for removedElement in removedElements:
+                self.resizeables.remove(removedElement)
 
             if hoveringEle != self.resizeHoverElement:
                 self.resizeHoverElement = hoveringEle

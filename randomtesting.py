@@ -10,15 +10,19 @@ import inspect
 import pandas as pd
 
 
-def click(x):
-    print(x.styleHandler.getStyle("Click").isEnabled())
-    x.click()
-    print(x.styleHandler.getStyle("Click").isEnabled())
+def x():
+    page.app.widget.after(2000, spreadsheet.remove)
+def y():
+    page.app.widget.after(2000, spreadsheet.hide)
 
 
 page = Page()
-button = Button(page, "Test", lambda: print(5))
-Button(page, "click", lambda: click(button))
+Button(page, "Remove in 2 seconds", x)
+Button(page, "Hide in 2 seconds", y)
+Button(page, "Show", lambda: spreadsheet.show())
+
+spreadsheet = Spreadsheet(page)
+spreadsheet.loadDataFrame(pd.DataFrame(index=[x for x in range(20)], columns=["hi", "there"]))
 
 # button.widget.after(1000, button.click)
 
