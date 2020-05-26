@@ -4,6 +4,7 @@ from generalgui import Button, Page, Label, Frame
 
 from generallibrary.iterables import getRows
 from generallibrary.types import typeChecker
+from generallibrary.time import sleep
 
 import pandas as pd
 
@@ -69,7 +70,10 @@ class Spreadsheet(Page):
             return
 
         headers = [child for child in self.columnKeysPage.getChildren() if isinstance(child, Frame)]
-        cells = [self.cellPage.getBaseWidget().grid_slaves(0, column)[0].element for column in range(len(headers))]
+        try:
+            cells = [self.cellPage.getBaseWidget().grid_slaves(0, column)[0].element for column in range(len(headers))]
+        except IndexError:
+            return
 
         for header in headers:
             header.widgetConfig(width=0)
@@ -102,8 +106,9 @@ class Spreadsheet(Page):
         label = Label(page, value, column=colI, row=rowI, padx=5, sticky="NSEW", relief="groove", bg="gray85")
         label.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
         # label.createBind("<Button-1>", lambda event: print(event))
+        return label
 
-    def loadDataFrame(self, df, add=True):
+    def loadDataFrame(self, df, add=False):
         """
         We can add an option to load df to columns instead of rows as well, then the rowKeys need to match instead of columnKeys
 
@@ -112,6 +117,11 @@ class Spreadsheet(Page):
         """
 
         existingRows = 0
+
+        if add is False:
+            if self.dataFrame is not None:
+                self.clearSpreadsheet()
+                self.dataFrame = None
 
         if self.dataFrame is None:
             if self.columnKeys:
@@ -122,40 +132,45 @@ class Spreadsheet(Page):
             self.dataFrame = df
 
         else:
-            if add:
-                if list(df.columns) != list(self.dataFrame.columns):
-                    raise AttributeError(f"Columns mismatch: {df.columns} != {self.dataFrame.columns}")
-                if df.shape[1] != self.dataFrame.shape[1]:  # Probably not needed
-                    raise AttributeError(f"Columns shape mismatch: {df.shape[1]} != {self.dataFrame.shape[1]}")
+            if list(df.columns) != list(self.dataFrame.columns):
+                raise AttributeError(f"Columns mismatch: {df.columns} != {self.dataFrame.columns}")
+            if df.shape[1] != self.dataFrame.shape[1]:  # Probably not needed
+                raise AttributeError(f"Columns shape mismatch: {df.shape[1]} != {self.dataFrame.shape[1]}")
 
-                existingRows = self.dataFrame.shape[0]
+            existingRows = self.dataFrame.shape[0]
 
-                if typeChecker(self.dataFrame.index, "RangeIndex", error=False) and typeChecker(df.index, "RangeIndex", error=False):
-                    ignoreIndex = True
-                else:
-                    ignoreIndex = False
-
-                self.dataFrame = self.dataFrame.append(df, ignore_index=ignoreIndex)
+            if typeChecker(self.dataFrame.index, "RangeIndex", error=False) and typeChecker(df.index, "RangeIndex", error=False):
+                ignoreIndex = True
             else:
-                self.clearSpreadsheet()
+                ignoreIndex = False
+
+            self.dataFrame = self.dataFrame.append(df, ignore_index=ignoreIndex)
 
         if self.rowKeys:
             for i in range(len(self.dataFrame.index) - existingRows):
                 keyValue = self.dataFrame.index[existingRows + i]
                 self.createCell(self.rowKeysPage, 0, existingRows + i, keyValue)
 
+        test = []
         for rowI, row in enumerate(df.itertuples(index=False)):
             for colI, value in enumerate(row):
-                self.createCell(self.cellPage, colI, 1 + existingRows + rowI, value)
+                test.append(self.createCell(self.cellPage, colI, 1 + existingRows + rowI, value))
+
+        print("done")
 
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()
         self.app.widget.update()
 
     def clearSpreadsheet(self):
-        return
-        self.frame.remove()
-        self.__init__(self.parentPage, width=self.frame.getWidgetConfig("width"), height=self.frame.getWidgetConfig("height"), cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True,)
+        self.cellPage.removeChildren()
+        if self.columnKeys:
+            self.columnKeysPage.removeChildren()
+        if self.rowKeys:
+            self.rowKeysPage.removeChildren()
+
+
+
 
 class Sorter:
     """

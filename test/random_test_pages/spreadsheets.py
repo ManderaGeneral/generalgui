@@ -25,6 +25,7 @@ reset = Button(page, "Reset", func=lambda: page.rainbow(reset=True))
 columnKeys = ("color", "number", "name")
 Button(page, "Add row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
 Button(page, "Add indexed row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"]], columns=columnKeys, index=["hello"]))))
+Button(page, "Add big", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame(columns=[x for x in range(20)], index=[x for x in range(20)]))))
 Button(page, "Small", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
 Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=400, width=400)))
 Button(page, "Debug", func=debug)
@@ -38,7 +39,9 @@ for one in range(2):
         rowPage = Page(spreadsheetPage, pack=True)
         for three in range(2):
             for four in range(2):
-                spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
+                if not spreadsheets:
+                    spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
+
 
 
 

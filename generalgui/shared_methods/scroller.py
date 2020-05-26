@@ -58,7 +58,6 @@ class Scroller:
         :param event:
         """
         if self.scrollButtonEnabled:
-            print("hi")
             self.scrollButtonEnabled = False
             self.scrollStyle.disable()
 
