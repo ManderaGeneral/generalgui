@@ -15,7 +15,7 @@ class Element_Page:
         """
         :param generalgui.element.Element or generalgui.Page self: Element or Page
         """
-        return "column" in self.packParameters and "row" in self.packParameters
+        return "column" in self.getTopElement().packParameters and "row" in self.getTopElement().packParameters
 
     def pack(self):
         """

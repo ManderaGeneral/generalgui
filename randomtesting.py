@@ -24,7 +24,8 @@ Button(page, "Hide in 2 seconds", y)
 Button(page, "Show", lambda: spreadsheet.show())
 
 spreadsheet = Spreadsheet(page)
-spreadsheet.loadDataFrame(pd.DataFrame(index=[x for x in range(20)], columns=["hi", "there"]))
+spreadsheet.dataFrame = pd.DataFrame(index=[x for x in range(20)], columns=["hi", "there"])
+spreadsheet.loadDataFrame()
 
 # button.widget.after(1000, button.click)
 

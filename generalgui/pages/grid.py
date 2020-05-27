@@ -19,35 +19,34 @@ class Grid(Page):
         size = self.getBaseWidget().grid_size()
         return Vec2(size[0], size[1])
 
-    def gridLabels(self, start, end, values):
-        """
-        Fill grid in this frame with values.
-        If labels are already in place then we just change the value.
-        Any excess labels are hidden or removed.
+    def fillGrid(self, eleCls, start, size, values=None, removeExcess=False, **parameters):
+        if values is not None:
+            values = list(values)
 
-        :param Vec2 start:
-        :param Vec2 end:
-        :param list[str or float] values:
-        """
-        currentEnd = self.getGridSize() - 1
-        fillRange = start.range(end)
-        maxEnd = currentEnd.max(end)
+        currentSize = self.getGridSize()
 
-        for pos in Vec2(0, 1).range(maxEnd):
+        maxSize = currentSize.max(start + size)
+        fillRange = start.range(size)
+
+        for pos in Vec2(0).range(maxSize):
             if fillRange and pos == fillRange[0]:
-                if label := self.getGridElement(pos):
-                    label.setValue(values[0])
+                if (element := self.getGridElement(pos)) and element.__class__ == eleCls:
+                    if eleCls == Label and values:
+                        element.setValue(values[0])
                 else:
-                    self.setGridElement(Label, column=pos.x, row=pos.y, value=values[0])
-                del values[0]
+                    if element:
+                        element.remove()
+                    value = values[0] if values else None
+                    eleCls(self, column=pos.x, row=pos.y, value=value, sticky="NSEW", **parameters)
+
+                    # element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
+
                 del fillRange[0]
-            else:
+                if values:
+                    del values[0]
+            elif removeExcess and not pos <= start + size - 1:
                 if element := self.getGridElement(pos):
                     element.remove()
 
-    def setGridElement(self, elementClass, column, row, **parameters):
-        element = elementClass(self, column=column, row=row, padx=5, sticky="NSEW", relief="groove", bg="gray85", **parameters)
-        element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
-        # label.createBind("<Button-1>", lambda event: print(event))
-        return element
+
 

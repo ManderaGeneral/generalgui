@@ -1,6 +1,6 @@
 """Spreadsheet class that inherits Page"""
 
-from generalgui import Button, Page, Label, Frame
+from generalgui import Button, Page, Label, Frame, Grid
 
 from generallibrary.types import typeChecker
 from generallibrary.time import sleep
@@ -53,7 +53,7 @@ class Spreadsheet(Page):
             self.mainGrid.canvasFrame.createBind("<Configure>", lambda event: self._syncKeysScroll(event), add=True)
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
-        self.dataFrame = None
+        self.dataFrame = pd.DataFrame()
 
         self.pack()
 
@@ -63,34 +63,46 @@ class Spreadsheet(Page):
         if self.rowKeys:
             self.rowKeysGrid.canvas.widget.yview_moveto(self.mainGrid.canvas.widget.yview()[0])
 
-    def _syncColumnKeysWidth(self):
+    def _syncColumnKeysWidth(self, test=False):
         """
         Sync the widths of all cells with headers
         """
         if not self.columnKeys:
             return
 
-        headers = [child for child in self.columnKeysGrid.getChildren() if isinstance(child, Frame)]
-        try:
-            cells = [self.mainGrid.getBaseWidget().grid_slaves(column=column, row=0)[0].element for column in range(len(headers))]
-        except IndexError:
+        columnSize = self.columnKeysGrid.getGridSize()
+        mainSize = self.mainGrid.getGridSize()
+
+        if columnSize.x != mainSize.x:
+            raise AttributeError(f"Columns mismatch {columnSize}, {mainSize}")
+
+        columnFrames = []
+        mainFrames = []
+        for pos in Vec2(0,0).range(Vec2(columnSize.x, 1)):
+            columnFrame = self.columnKeysGrid.getGridElement(pos)
+            print(columnFrame)
+            columnFrame.widgetConfig(width=0)
+            columnFrames.append(columnFrame)
+
+            mainFrame = self.mainGrid.getGridElement(pos)
+            print(mainFrame)
+            mainFrame.widgetConfig(width=0)
+            mainFrames.append(mainFrame)
+
+
+        if test:
             return
 
-        for header in headers:
-            header.widgetConfig(width=0)
-        for cell in cells:
-            cell.widgetConfig(width=0)
+        self.app.widget.update_idletasks()
 
-        self.app.widget.update()
-
-        headerWidths = [header.widget.winfo_width() for header in headers]
-        cellWidths = [cell.widget.winfo_width() for cell in cells]
-
-        for column in range(len(headers)):
-            if headerWidths[column] > cellWidths[column]:
-                cells[column].widgetConfig(width=headerWidths[column])
-            elif cellWidths[column] > headerWidths[column]:
-                headers[column].widgetConfig(width=cellWidths[column])
+        for i, columnFrame in enumerate(columnFrames):
+            mainFrame = mainFrames[i]
+            columnWidth = columnFrame.widget.winfo_width()
+            mainWidth = mainFrame.widget.winfo_width()
+            if columnWidth > mainWidth:
+                mainFrame.widgetConfig(width=columnWidth)
+            else:
+                columnFrame.widgetConfig(width=mainWidth)
 
     def _syncRowKeysWidth(self):
         if not self.rowKeys:
@@ -103,80 +115,31 @@ class Spreadsheet(Page):
         if self.columnKeys:
             self.columnKeysFillerLeft.widgetConfig(width=rowTitleWidth)
 
-    def createCell(self, page, colI, rowI, value):
-        label = Label(page, value, column=colI, row=rowI, padx=5, sticky="NSEW", relief="groove", bg="gray85")
-        label.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
-        # label.createBind("<Button-1>", lambda event: print(event))
-        return label
-
-    def loadDataFrame(self, df, add=False):
+    cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
+    def loadDataFrame(self, df=None):
         """
-
-        Replace current dataframe
-        Append to bottom (Matching columns)
-        Append to side (Matching rows)
-
-        :param pandas.DataFrame df:
-        :param add:
+        Update cells to represent current dataFrame
         """
-
-        existingRows = 0
-
-        if add is False:
-            if self.dataFrame is not None:
-                # self.clearSpreadsheet()
-                self.dataFrame = None
-
-        if self.dataFrame is None:
-            if self.columnKeys:
-                for i, keyValue in enumerate(df.columns):
-                    Frame(self.mainGrid, column=i, row=0, height=0, sticky="NSEW")
-                    Frame(self.columnKeysGrid, column=i, row=0, height=0, sticky="NSEW")
-                    self.createCell(self.columnKeysGrid, i, 1, keyValue)
+        if df is not None:
             self.dataFrame = df
+        df = self.dataFrame
 
-        else:
-            if list(df.columns) != list(self.dataFrame.columns):
-                raise AttributeError(f"Columns mismatch: {df.columns} != {self.dataFrame.columns}")
-            if df.shape[1] != self.dataFrame.shape[1]:  # Probably not needed
-                raise AttributeError(f"Columns shape mismatch: {df.shape[1]} != {self.dataFrame.shape[1]}")
-
-            existingRows = self.dataFrame.shape[0]
-
-            if typeChecker(self.dataFrame.index, "RangeIndex", error=False) and typeChecker(df.index, "RangeIndex", error=False):
-                ignoreIndex = True
-            else:
-                ignoreIndex = False
-
-            self.dataFrame = self.dataFrame.append(df, ignore_index=ignoreIndex)
+        if self.columnKeys:
+            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=0)
+            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), Vec2(len(df.columns), 1), values=df.columns, removeExcess=True, **self.cellConfig)
+            self.mainGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=0)
 
         if self.rowKeys:
-            for i in range(len(self.dataFrame.index) - existingRows):
-                keyValue = self.dataFrame.index[existingRows + i]
-                self.createCell(self.rowKeysGrid, 0, 1 + existingRows + i, keyValue)
+            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True, **self.cellConfig)
 
         values = []
-        for rowI, row in enumerate(df.itertuples(index=False)):
-            for colI, value in enumerate(row):
-                values.append(value)
-                # self.createCell(self.mainGrid, colI, 1 + existingRows + rowI, value)
-
-        start = Vec2(0, 1 + existingRows)
-        self.mainGrid.gridLabels(start, start + Vec2(df.shape[1], df.shape[0]) - Vec2(1, 1), values)
+        for row in df.itertuples(index=False):
+            values.extend(row)
+        self.mainGrid.fillGrid(Label, Vec2(0, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, **self.cellConfig)
 
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()
         self.app.widget.update()
-
-    def clearSpreadsheet(self):
-        self.mainGrid.removeChildren()
-        if self.columnKeys:
-            self.columnKeysGrid.removeChildren()
-        if self.rowKeys:
-            self.rowKeysGrid.removeChildren()
-
-
-
 
 class Sorter:
     """
@@ -192,6 +155,4 @@ class Sorter:
         self.reversed = False
 
 
-from generalgui import Grid
-# from generalgui.pages.spreadsheet import Spreadsheet
 

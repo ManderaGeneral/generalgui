@@ -12,9 +12,10 @@ import pandas as pd
 
 def debug():
     for spreadsheet in spreadsheets:
-        frame = spreadsheet.mainGrid.getBaseElement()
+        spreadsheet._syncColumnKeysWidth(True)
+        # frame = spreadsheet.mainGrid.getBaseElement()
         # frame.parentPage.hideChildren()
-        frame.gridLabels(Vec2(0, 1), frame.getGridSize() - Vec2(1), [])
+        # frame.gridLabels(Vec2(0, 1), frame.getGridSize() - Vec2(1), [])
 
 
 def ss(func):
@@ -34,8 +35,8 @@ Button(page, "Small", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(h
 Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=2000, width=2000)))
 Button(page, "Debug", func=debug)
 
-
 spreadsheets = []
+
 spreadsheetPage = Page(page, pack=True)
 
 for one in range(2):
@@ -44,7 +45,8 @@ for one in range(2):
         for three in range(2):
             for four in range(2):
                 if not spreadsheets:
-                    spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
+                    spreadsheets.append(Spreadsheet(rowPage, cellVSB=True, cellHSB=True, columnKeys=True, rowKeys=True, side="left", pack=True))
+                #     spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
 
 
 
