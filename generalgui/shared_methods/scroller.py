@@ -7,6 +7,7 @@ class Scroller:
     Scroller feature for App.
     Enables scrolling right click drag and mouse wheel.
     Todo: scrollable() method just like resizable(). Probably rename those too as well
+    Todo: Disable scrolling when not scrollable anymore
     """
     def __init__(self):
         """

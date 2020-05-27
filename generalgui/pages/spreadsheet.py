@@ -6,6 +6,8 @@ from generallibrary.iterables import getRows
 from generallibrary.types import typeChecker
 from generallibrary.time import sleep
 
+from generalvector import Vec2
+
 import pandas as pd
 
 
@@ -71,7 +73,7 @@ class Spreadsheet(Page):
 
         headers = [child for child in self.columnKeysPage.getChildren() if isinstance(child, Frame)]
         try:
-            cells = [self.cellPage.getBaseWidget().grid_slaves(0, column)[0].element for column in range(len(headers))]
+            cells = [self.cellPage.getBaseWidget().grid_slaves(column=column, row=0)[0].element for column in range(len(headers))]
         except IndexError:
             return
 
@@ -120,7 +122,7 @@ class Spreadsheet(Page):
 
         if add is False:
             if self.dataFrame is not None:
-                self.clearSpreadsheet()
+                # self.clearSpreadsheet()
                 self.dataFrame = None
 
         if self.dataFrame is None:
@@ -149,14 +151,16 @@ class Spreadsheet(Page):
         if self.rowKeys:
             for i in range(len(self.dataFrame.index) - existingRows):
                 keyValue = self.dataFrame.index[existingRows + i]
-                self.createCell(self.rowKeysPage, 0, existingRows + i, keyValue)
+                self.createCell(self.rowKeysPage, 0, 1 + existingRows + i, keyValue)
 
-        test = []
+        values = []
         for rowI, row in enumerate(df.itertuples(index=False)):
             for colI, value in enumerate(row):
-                test.append(self.createCell(self.cellPage, colI, 1 + existingRows + rowI, value))
+                values.append(value)
+                # self.createCell(self.cellPage, colI, 1 + existingRows + rowI, value)
 
-        print("done")
+        start = Vec2(0, 1 + existingRows)
+        self.cellPage.getBaseElement().gridLabels(start, start + Vec2(df.shape[1], df.shape[0]) - Vec2(1, 1), values)
 
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()

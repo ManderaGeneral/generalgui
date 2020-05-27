@@ -11,6 +11,12 @@ class Element_Page:
     """
     Pure methods that Element and Page share.
     """
+    def hasGridParameters(self):
+        """
+        :param generalgui.element.Element or generalgui.Page self: Element or Page
+        """
+        return "column" in self.packParameters and "row" in self.packParameters
+
     def pack(self):
         """
         Packs this Element's widget using the packParameters attribute.
@@ -22,7 +28,7 @@ class Element_Page:
                 raise AttributeError("Cannot pack Page without a topElement.")
             self.topElement.pack()
         else:
-            if "column" in self.packParameters and "row" in self.packParameters:
+            if self.hasGridParameters():
                 self._grid()
             else:
                 self.widget.pack(**self.packParameters)
@@ -170,7 +176,10 @@ class Element_Page:
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         """
         if self.isPacked:
-            self.getTopWidget().pack_forget()
+            if self.hasGridParameters():
+                self.getTopWidget().grid_forget()
+            else:
+                self.getTopWidget().pack_forget()
 
     def toggleShow(self, mainloop=True):
         """

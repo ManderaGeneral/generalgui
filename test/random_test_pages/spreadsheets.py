@@ -2,6 +2,8 @@
 
 from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet
 
+from generalvector import Vec2
+
 import tkinter as tk
 import inspect
 
@@ -9,8 +11,10 @@ import pandas as pd
 
 
 def debug():
-    spreadsheets[0].remove()
-    del spreadsheets[0]
+    for spreadsheet in spreadsheets:
+        frame = spreadsheet.cellPage.getBaseElement()
+        # frame.parentPage.hideChildren()
+        frame.gridLabels(Vec2(0, 1), frame.getGridSize() - Vec2(1), [])
 
 
 def ss(func):
@@ -27,7 +31,7 @@ Button(page, "Add row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([
 Button(page, "Add indexed row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"]], columns=columnKeys, index=["hello"]))))
 Button(page, "Add big", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame(columns=[x for x in range(20)], index=[x for x in range(20)]))))
 Button(page, "Small", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
-Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=400, width=400)))
+Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=2000, width=2000)))
 Button(page, "Debug", func=debug)
 
 

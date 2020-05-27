@@ -72,7 +72,7 @@ class Element_Page_App:
         Get base element from a part.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        :rtype: generalgui.element.Element
+        :rtype: generalgui.element.Element or generalgui.Frame
         """
         if typeChecker(self, ("App", "Element"), error=False):
             return self
@@ -95,7 +95,7 @@ class Element_Page_App:
         Get top element from a part.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        :rtype: generalgui.element.Element
+        :rtype: generalgui.element.Element or generalgui.Frame
         """
         if typeChecker(self, ("App", "Element"), error=False):
             return self
