@@ -12,7 +12,7 @@ import pandas as pd
 
 def debug():
     for spreadsheet in spreadsheets:
-        frame = spreadsheet.cellPage.getBaseElement()
+        frame = spreadsheet.mainGrid.getBaseElement()
         # frame.parentPage.hideChildren()
         frame.gridLabels(Vec2(0, 1), frame.getGridSize() - Vec2(1), [])
 

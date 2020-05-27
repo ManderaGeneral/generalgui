@@ -20,18 +20,18 @@ class SpreadsheetTest(unittest.TestCase):
                         spreadsheet.loadDataFrame(pd.DataFrame([["hello", "there"]], columns=columnIndexes, index=["row"]))
 
                         if columnKeys:
-                            values = [ele.getValue() for ele in spreadsheet.columnKeysPage.getChildren() if isinstance(ele, Label)]
+                            values = [ele.getValue() for ele in spreadsheet.columnKeysGrid.getChildren() if isinstance(ele, Label)]
                             self.assertEqual(columnIndexes, values)
                         else:
-                            self.assertIsNone(getattr(spreadsheet, "columnKeysPage", None))
+                            self.assertIsNone(getattr(spreadsheet, "columnKeysGrid", None))
 
                         if rowKeys:
-                            values = [ele.getValue() for ele in spreadsheet.rowKeysPage.getChildren()]
+                            values = [ele.getValue() for ele in spreadsheet.rowKeysGrid.getChildren()]
                             self.assertEqual(["row"], values)
                         else:
-                            self.assertIsNone(getattr(spreadsheet, "rowKeysPage", None))
+                            self.assertIsNone(getattr(spreadsheet, "rowKeysGrid", None))
 
-                        cellValues = [ele.getValue() for ele in spreadsheet.cellPage.getChildren() if isinstance(ele, Label)]
+                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]
                         self.assertEqual(["hello", "there"], cellValues)
 
                         self.assertRaises(AttributeError, spreadsheet.loadDataFrame, pd.DataFrame([["hello"]], index=["row"]))

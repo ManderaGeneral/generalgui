@@ -15,5 +15,6 @@ from generalgui.page import Page
 
 from generalgui.pages.labelentry import LabelEntry
 from generalgui.pages.labelcheckbutton import LabelCheckbutton
+from generalgui.pages.grid import Grid
 from generalgui.pages.spreadsheet import Spreadsheet
 

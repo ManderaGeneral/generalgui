@@ -2,7 +2,6 @@
 
 from generalgui import Button, Page, Label, Frame
 
-from generallibrary.iterables import getRows
 from generallibrary.types import typeChecker
 from generallibrary.time import sleep
 
@@ -31,27 +30,27 @@ class Spreadsheet(Page):
         if self.columnKeys:
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
-            self.columnKeysPage = Page(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, disableMouseScroll=True, fill="x", expand=True)
+            self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, disableMouseScroll=True, fill="x", expand=True)
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
-            self.rowKeysPage = Page(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, disableMouseScroll=True, fill="both", expand=True)
+            self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, disableMouseScroll=True, fill="both", expand=True)
 
-        self.cellPage = Page(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
+        self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
         if columnKeys:
-            self.columnSorter = Sorter(self.columnKeysPage)
+            self.columnSorter = Sorter(self.columnKeysGrid)
             if cellVSB:
-                Frame(self.columnKeysPageContainer, side="left", width=21, fill="y")  # To fill out for existing VSB in cellPage
+                Frame(self.columnKeysPageContainer, side="left", width=21, fill="y")  # To fill out for existing VSB in mainGrid
 
         if self.rowKeys:
-            self.rowSorter = Sorter(self.rowKeysPage)
+            self.rowSorter = Sorter(self.rowKeysGrid)
             if cellHSB:
-                Frame(self.rowKeysPageContainer, side="top", height=20, fill="x")  # To fill out for existing HSB in cellPage. Height -1 for pady=1 in container.
+                Frame(self.rowKeysPageContainer, side="top", height=20, fill="x")  # To fill out for existing HSB in mainGrid. Height -1 for pady=1 in container.
 
         # Update headers whenever canvas moves (Manual scrollbar, mousewheel and right-click drag)
         if self.rowKeys or self.columnKeys:
-            self.cellPage.canvasFrame.createBind("<Configure>", lambda event: self._syncKeysScroll(event), add=True)
+            self.mainGrid.canvasFrame.createBind("<Configure>", lambda event: self._syncKeysScroll(event), add=True)
 
         # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.dataFrame = None
@@ -60,9 +59,9 @@ class Spreadsheet(Page):
 
     def _syncKeysScroll(self, _):
         if self.columnKeys:
-            self.columnKeysPage.canvas.widget.xview_moveto(self.cellPage.canvas.widget.xview()[0])
+            self.columnKeysGrid.canvas.widget.xview_moveto(self.mainGrid.canvas.widget.xview()[0])
         if self.rowKeys:
-            self.rowKeysPage.canvas.widget.yview_moveto(self.cellPage.canvas.widget.yview()[0])
+            self.rowKeysGrid.canvas.widget.yview_moveto(self.mainGrid.canvas.widget.yview()[0])
 
     def _syncColumnKeysWidth(self):
         """
@@ -71,9 +70,9 @@ class Spreadsheet(Page):
         if not self.columnKeys:
             return
 
-        headers = [child for child in self.columnKeysPage.getChildren() if isinstance(child, Frame)]
+        headers = [child for child in self.columnKeysGrid.getChildren() if isinstance(child, Frame)]
         try:
-            cells = [self.cellPage.getBaseWidget().grid_slaves(column=column, row=0)[0].element for column in range(len(headers))]
+            cells = [self.mainGrid.getBaseWidget().grid_slaves(column=column, row=0)[0].element for column in range(len(headers))]
         except IndexError:
             return
 
@@ -98,7 +97,7 @@ class Spreadsheet(Page):
             return
 
         self.app.widget.update()  # To get right width
-        rowTitleWidth = self.rowKeysPage.getChildren()[0].widget.winfo_width() + 4
+        rowTitleWidth = self.rowKeysGrid.getChildren()[0].widget.winfo_width() + 4
         self.rowKeysPageContainer.getTopElement().widgetConfig(width=rowTitleWidth)
 
         if self.columnKeys:
@@ -112,7 +111,10 @@ class Spreadsheet(Page):
 
     def loadDataFrame(self, df, add=False):
         """
-        We can add an option to load df to columns instead of rows as well, then the rowKeys need to match instead of columnKeys
+
+        Replace current dataframe
+        Append to bottom (Matching columns)
+        Append to side (Matching rows)
 
         :param pandas.DataFrame df:
         :param add:
@@ -128,9 +130,9 @@ class Spreadsheet(Page):
         if self.dataFrame is None:
             if self.columnKeys:
                 for i, keyValue in enumerate(df.columns):
-                    Frame(self.cellPage, column=i, row=0, height=0, sticky="NSEW")
-                    Frame(self.columnKeysPage, column=i, row=0, height=0, sticky="NSEW")
-                    self.createCell(self.columnKeysPage, i, 1, keyValue)
+                    Frame(self.mainGrid, column=i, row=0, height=0, sticky="NSEW")
+                    Frame(self.columnKeysGrid, column=i, row=0, height=0, sticky="NSEW")
+                    self.createCell(self.columnKeysGrid, i, 1, keyValue)
             self.dataFrame = df
 
         else:
@@ -151,27 +153,27 @@ class Spreadsheet(Page):
         if self.rowKeys:
             for i in range(len(self.dataFrame.index) - existingRows):
                 keyValue = self.dataFrame.index[existingRows + i]
-                self.createCell(self.rowKeysPage, 0, 1 + existingRows + i, keyValue)
+                self.createCell(self.rowKeysGrid, 0, 1 + existingRows + i, keyValue)
 
         values = []
         for rowI, row in enumerate(df.itertuples(index=False)):
             for colI, value in enumerate(row):
                 values.append(value)
-                # self.createCell(self.cellPage, colI, 1 + existingRows + rowI, value)
+                # self.createCell(self.mainGrid, colI, 1 + existingRows + rowI, value)
 
         start = Vec2(0, 1 + existingRows)
-        self.cellPage.getBaseElement().gridLabels(start, start + Vec2(df.shape[1], df.shape[0]) - Vec2(1, 1), values)
+        self.mainGrid.gridLabels(start, start + Vec2(df.shape[1], df.shape[0]) - Vec2(1, 1), values)
 
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()
         self.app.widget.update()
 
     def clearSpreadsheet(self):
-        self.cellPage.removeChildren()
+        self.mainGrid.removeChildren()
         if self.columnKeys:
-            self.columnKeysPage.removeChildren()
+            self.columnKeysGrid.removeChildren()
         if self.rowKeys:
-            self.rowKeysPage.removeChildren()
+            self.rowKeysGrid.removeChildren()
 
 
 
@@ -190,4 +192,6 @@ class Sorter:
         self.reversed = False
 
 
+from generalgui import Grid
+# from generalgui.pages.spreadsheet import Spreadsheet
 
