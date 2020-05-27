@@ -80,12 +80,12 @@ class Spreadsheet(Page):
         mainFrames = []
         for pos in Vec2(0,0).range(Vec2(columnSize.x, 1)):
             columnFrame = self.columnKeysGrid.getGridElement(pos)
-            print(columnFrame)
+            # print(columnFrame)
             columnFrame.widgetConfig(width=0)
             columnFrames.append(columnFrame)
 
             mainFrame = self.mainGrid.getGridElement(pos)
-            print(mainFrame)
+            # print(mainFrame)
             mainFrame.widgetConfig(width=0)
             mainFrames.append(mainFrame)
 
@@ -125,9 +125,9 @@ class Spreadsheet(Page):
         df = self.dataFrame
 
         if self.columnKeys:
-            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=0)
+            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=1)
             self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), Vec2(len(df.columns), 1), values=df.columns, removeExcess=True, **self.cellConfig)
-            self.mainGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=0)
+            self.mainGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=1)
 
         if self.rowKeys:
             self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True, **self.cellConfig)

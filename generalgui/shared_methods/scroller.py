@@ -47,6 +47,10 @@ class Scroller:
                 self.scrollWheelTarget = None
                 return
 
+            visibleFraction = self.getVisibleFraction(self.scrollWheelTarget)
+            if visibleFraction.x >= 1:
+                return
+
             self.startCoords = Vec2(event.x_root, event.y_root)
             self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
             self.scrollButtonEnabled = True
@@ -93,6 +97,7 @@ class Scroller:
         When scrolling anywhere on App
 
         :param generalgui.app.App self:
+        :param event:
         """
         if self.scrollWheelTarget:
             if not self.scrollWheelTarget.isShown(error=False):
