@@ -109,7 +109,7 @@ class Spreadsheet(Page):
             return
 
         self.app.widget.update()  # To get right width
-        rowTitleWidth = self.rowKeysGrid.getChildren()[0].widget.winfo_width() + 4
+        rowTitleWidth = self.rowKeysGrid.getChildren()[0].widget.winfo_width() + 5
         self.rowKeysPageContainer.getTopElement().widgetConfig(width=rowTitleWidth)
 
         if self.columnKeys:

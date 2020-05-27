@@ -48,7 +48,7 @@ class Scroller:
                 return
 
             visibleFraction = self.getVisibleFraction(self.scrollWheelTarget)
-            if visibleFraction.x >= 1:
+            if visibleFraction >= Vec2(1):
                 return
 
             self.startCoords = Vec2(event.x_root, event.y_root)
