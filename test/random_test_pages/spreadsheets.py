@@ -9,8 +9,6 @@ import inspect
 
 import pandas as pd
 
-
-
 def debug():
     for spreadsheet in spreadsheets:
         spreadsheet._syncColumnKeysWidth(True)
@@ -47,8 +45,8 @@ for one in range(2):
         for three in range(2):
             for four in range(2):
                 if not spreadsheets:
-                    spreadsheets.append(Spreadsheet(rowPage, cellVSB=True, cellHSB=True, columnKeys=True, rowKeys=True, side="left", pack=True))
-                #     spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
+                    spreadsheets.append(Spreadsheet(rowPage, cellVSB=True, cellHSB=True, columnKeys=True, rowKeys=False, side="left", pack=True))
+                # spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
 
 
 

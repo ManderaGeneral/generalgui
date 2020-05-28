@@ -75,6 +75,8 @@ class Page(Element_Page, Element_Page_App, Page_App):
             def _canvasConfigure(event):
                 # print(self.canvasFrame.widget.winfo_height(), self.canvas.widget.winfo_height())
                 self.canvas.widgetConfig(scrollregion=self.canvas.widget.bbox("all"))
+                # print(self.canvas.widget.bbox("all"))
+                # self.canvas.widgetConfig(scrollregion=(0,0,self.canvasFrame.widget.winfo_width(), self.canvasFrame.widget.winfo_height()))
 
             self.canvas.createBind("<Configure>", _canvasConfigure)
 
