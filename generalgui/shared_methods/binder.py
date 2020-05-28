@@ -4,7 +4,6 @@ Could be it's own package and be called Config and ConfigHandler instead.
 """
 
 from generallibrary.functions import leadingArgsCount
-from generallibrary.iterables import appendToDict
 
 
 class Binder:
@@ -14,9 +13,6 @@ class Binder:
     def __init__(self):
         self.events = {}
         self.disabledPropagations = []
-
-    def cleanup_binder(self):
-        Binder.__init__(self)
 
     def setBindPropagation(self, key, enable):
         """
@@ -38,51 +34,54 @@ class Binder:
 
     def createBind(self, key, func, add=True, name=None):
         """
-        Add a function to a dict that is called with _bindCaller().
-        If None is passed as func then key gets unbinded.
+        Add a function to a list in dict that is called with _bindCaller().
 
         :param generalgui.Element or generalgui.App self:
         :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
         :param function or None func: A function to be called or None to unbind
         :param bool add: Add to existing binds instead of overwriting
         :param str name: Name of bind, if bind with that name exists then it's replaced
-        :return: Bind index or name if that was used
+        :return: Bind
         """
-        if func is None or not add:
-            if key in self.events:
-                if name and name in self.events[key]:
-                    del self.events[key][name]
-                else:
-                    del self.events[key]
+        if not add:
+            self.removeBind(key)
+        elif name:
+            self.removeBind(key, name=name)
 
-            if key not in self.events or not len(self.events[key]):
-                self.widget.unbind(key)
-                if key in self.events:
-                    del self.events[key]
+        bind = Bind(self, key, func, name)
+        if key not in self.events:
+            self.widget.bind(key, lambda event: self._bindCaller(event, key), add=False)
+            self.events[key] = []
 
-        if func is not None:
-            if key not in self.events:
-                self.widget.bind(key, lambda event: self._bindCaller(event, key), add=False)
-                self.events[key] = {}
+        self.events[key].append(bind)
+        return bind
 
-            if name:
-                self.events[key][name] = func
-                return name
-            else:
-                return appendToDict(self.events[key], func)
-
-    def removeBind(self, key, bindIndex):
+    def removeBind(self, key, bind=None, name=None):
         """
         Remove a bind from events.
 
         :param generalgui.Element or generalgui.App self:
         :param key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
-        :param bindIndex: Bind index returned from createBind()
+        :param Bind bind: Specific Bind to be removed
+        :param str name: Specific Bind with this name to be removed
         """
-        if key in self.events and bindIndex in self.events[key]:
-            del self.events[key][bindIndex]
-            if not len(self.events[key]):
+        if key in self.events:
+            if name is not None:
+                for bind in self.events[key]:
+                    if bind.name == name:
+                        self.events[key].remove(bind)
+                        break
+            elif bind is not None:
+                if bind in self.events[key]:
+                    self.events[key].remove(bind)
+            else:
                 del self.events[key]
+
+        if key in self.events and not self.events[key]:
+            del self.events[key]
+
+        if key not in self.events:
+            self.widget.unbind(key)
 
     def _bindCaller(self, event, key):
         """
@@ -93,19 +92,13 @@ class Binder:
         returnBreak = event and key in self.disabledPropagations
 
         returns = []
-        if key not in self.events:
-            if returnBreak:
-                return "break"
-            else:
-                return returns
-
-        for index, func in self.events[key].items():
-            if leadingArgsCount(func):
-                value = func(event)
+        for bind in self.events.get(key, []):
+            if leadingArgsCount(bind.func):
+                value = bind(event)
                 if value is not None:
                     returns.append(value)
             else:
-                value = func()
+                value = bind()
                 if value is not None:
                     returns.append(value)
 
@@ -175,3 +168,44 @@ class Binder:
             self.callBind("<Button-3>")
 
         return value
+
+class Bind:
+    """A specific bind that contains a func"""
+    def __init__(self, element, key, func, name=None):
+        self.element = element
+        self.key = key
+        self.func = func
+        self.name = name
+
+    def __call__(self, *args, **kwargs):
+        return self.func(*args, **kwargs)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
