@@ -34,8 +34,6 @@ class SpreadsheetTest(unittest.TestCase):
                         cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]
                         self.assertEqual(["hello", "there"], cellValues)
 
-                        self.assertRaises(AttributeError, spreadsheet.loadDataFrame, pd.DataFrame([["hello"]], index=["row"]))
-
         page.app.remove()
 
 

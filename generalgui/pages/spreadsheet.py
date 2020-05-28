@@ -31,6 +31,7 @@ class Spreadsheet(Page):
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
             self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, disableMouseScroll=True, fill="x", expand=True)
+            self.columnKeysGrid.getBaseElement().createBind("<Button-1>", lambda _: print("test"))
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
@@ -56,6 +57,9 @@ class Spreadsheet(Page):
         self.dataFrame = pd.DataFrame()
 
         self.pack()
+
+
+        self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
 
     def _syncKeysScroll(self, _):
         if self.columnKeys:
@@ -88,7 +92,6 @@ class Spreadsheet(Page):
             # print(mainFrame)
             mainFrame.widgetConfig(width=0)
             mainFrames.append(mainFrame)
-
 
         if test:
             return

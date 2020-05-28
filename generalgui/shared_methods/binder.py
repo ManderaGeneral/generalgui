@@ -36,7 +36,7 @@ class Binder:
             if key not in self.disabledPropagations:
                 self.disabledPropagations.append(key)
 
-    def createBind(self, key, func, add=True):
+    def createBind(self, key, func, add=True, name=None):
         """
         Add a function to a dict that is called with _bindCaller().
         If None is passed as func then key gets unbinded.
@@ -45,19 +45,31 @@ class Binder:
         :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
         :param function or None func: A function to be called or None to unbind
         :param bool add: Add to existing binds instead of overwriting
-        :return: Bind index
+        :param str name: Name of bind, if bind with that name exists then it's replaced
+        :return: Bind index or name if that was used
         """
         if func is None or not add:
-            self.widget.unbind(key)
             if key in self.events:
-                del self.events[key]
+                if name and name in self.events[key]:
+                    del self.events[key][name]
+                else:
+                    del self.events[key]
+
+            if key not in self.events or not len(self.events[key]):
                 self.widget.unbind(key)
+                if key in self.events:
+                    del self.events[key]
 
         if func is not None:
             if key not in self.events:
                 self.widget.bind(key, lambda event: self._bindCaller(event, key), add=False)
                 self.events[key] = {}
-            return appendToDict(self.events[key], func)
+
+            if name:
+                self.events[key][name] = func
+                return name
+            else:
+                return appendToDict(self.events[key], func)
 
     def removeBind(self, key, bindIndex):
         """

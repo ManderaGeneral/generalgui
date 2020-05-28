@@ -10,6 +10,7 @@ import inspect
 import pandas as pd
 
 
+
 def debug():
     for spreadsheet in spreadsheets:
         spreadsheet._syncColumnKeysWidth(True)

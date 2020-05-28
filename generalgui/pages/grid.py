@@ -28,6 +28,7 @@ class Grid(Page):
         maxSize = currentSize.max(start + size)
         fillRange = start.range(size)
 
+
         for pos in Vec2(0).range(maxSize):
             if fillRange and pos == fillRange[0]:
                 if (element := self.getGridElement(pos)) and element.__class__ == eleCls:
