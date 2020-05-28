@@ -89,6 +89,9 @@ class Binder:
 
         :param generalgui.Element or generalgui.App self:
         """
+        if not self.exists():
+            raise AttributeError(f"Cannot call a removed element's bind: {self}")
+
         returnBreak = event and key in self.disabledPropagations
 
         returns = []
