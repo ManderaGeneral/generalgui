@@ -14,7 +14,6 @@ class Scroller:
         :param generalgui.app.App self:
         """
         self.scrollWheelTarget = None
-        self.scrollButtonEnabled = False
         self.startCoords = None
         self.startFraction = None
         self.createBind("<MouseWheel>", self.scrollWheel)
@@ -24,11 +23,21 @@ class Scroller:
 
         self.scrollStyle = self.createStyle("Scroll", cursor="plus")
 
+    def checkEventForScrollTarget(self, event):
+        eventElement = event.widget.element
+        pages = eventElement.getParentPages()
+        for page in pages:
+            if page.scrollable and page.mouseScroll:
+                visibleFraction = self.getVisibleFraction(page.canvas)
+                if not visibleFraction >= Vec2(1):
+                    self.scrollWheelTarget = page.canvas
+                    break
+
     def getVisibleFraction(self, element):
         """
 
         :param generalgui.app.App self:
-        :return:
+        :param generalgui.element.Element element:
         """
         canvasSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
         scrollRegions = element.getWidgetConfig("scrollregion").split(" ")
@@ -42,30 +51,20 @@ class Scroller:
         :param generalgui.app.App self:
         :param event:
         """
+        self.checkEventForScrollTarget(event)
         if self.scrollWheelTarget:
-            if not self.scrollWheelTarget.isShown(error=False):
-                self.scrollWheelTarget = None
-                return
-
-            visibleFraction = self.getVisibleFraction(self.scrollWheelTarget)
-            if visibleFraction >= Vec2(1):
-                return
-
             self.startCoords = Vec2(event.x_root, event.y_root)
             self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
-            self.scrollButtonEnabled = True
             self.scrollStyle.enable()
 
-    def scrollButtonRelease(self, event):
+    def scrollButtonRelease(self, event=None):
         """
 
         :param generalgui.app.App self:
         :param event:
         """
-        if self.scrollButtonEnabled:
-            self.scrollButtonEnabled = False
-            self.scrollStyle.disable()
-
+        self.scrollWheelTarget = None
+        self.scrollStyle.disable()
 
     def scrollButtonMove(self, event):
         """
@@ -73,9 +72,9 @@ class Scroller:
         :param generalgui.app.App self:
         :param event:
         """
-        if self.scrollButtonEnabled and self.scrollWheelTarget:
+        if self.scrollWheelTarget:
             if not self.scrollWheelTarget.isShown(error=False):
-                self.scrollWheelTarget = None
+                self.scrollButtonRelease()
                 # self.scrollButtonRelease(None)  # This doesn't work because B3-Motion stops being called when removed. Would have to use Motion.
                 return
 
@@ -99,6 +98,7 @@ class Scroller:
         :param generalgui.app.App self:
         :param event:
         """
+        self.checkEventForScrollTarget(event)
         if self.scrollWheelTarget:
             if not self.scrollWheelTarget.isShown(error=False):
                 self.scrollWheelTarget = None
@@ -109,26 +109,6 @@ class Scroller:
                 return
 
             self.scrollWheelTarget.widget.yview_scroll(round(event.delta / -1), "units")
-
-    def setScrollTarget(self, element):
-        """
-        Targets an element to be scrolled if mousewheel is moved
-
-        :param generalgui.app.App self:
-        :param generalgui.element.Element element:
-        """
-        self.scrollWheelTarget = element
-
-    def removeScrollTarget(self, element):
-        """
-        Removes mouse wheel target
-
-        :param generalgui.app.App self:
-        :param element:
-        """
-
-        if element == self.scrollWheelTarget:
-            self.scrollWheelTarget = None
 
 
 

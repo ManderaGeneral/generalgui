@@ -33,7 +33,7 @@ class Element_Page:
             else:
                 self.widget.pack(**self.packParameters)
 
-            if self.parentPage.isScrollable():
+            if self.parentPage.scrollable:
                 # self.parentPage.canvas.widgetConfig(bg=Vec.random(0, 255).hex())
                 self.app.widget.update()  # To get correct scroll region
                 self.parentPage.canvas.callBind("<Configure>")  # Update canvas scroll region manually

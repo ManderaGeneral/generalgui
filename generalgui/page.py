@@ -12,7 +12,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
     Controls one tkinter Frame and adds a lot of convenient features.
     Hidden by default.
     """
-    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, disableMouseScroll=False, resizeable=False, **parameters):
+    def __init__(self, parentPage=None, removeSiblings=False, vsb=False, hsb=False, pack=False, scrollable=False, mouseScroll=True, resizeable=False, **parameters):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
@@ -36,8 +36,8 @@ class Page(Element_Page, Element_Page_App, Page_App):
         self.removeSiblings = removeSiblings
         self.vsb = vsb
         self.hsb = hsb
-        self.scrollable = scrollable
-        self.disableMouseScroll = disableMouseScroll
+        self.scrollable = scrollable or vsb or hsb
+        self.mouseScroll = mouseScroll
         self.resizable = resizeable
         self.parameters = parameters
 
@@ -54,7 +54,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
         if "width" in parameters or "height" in parameters:
             self.frame.widget.pack_propagate(0)
 
-        if self.isScrollable():
+        if self.scrollable:
             self.canvas = Canvas(self, pack=False, fill="both", side="left", expand=True, bd=-2)
             self.canvas.widget.pack_propagate(0)  # Not sure why we need it
 
@@ -79,21 +79,18 @@ class Page(Element_Page, Element_Page_App, Page_App):
 
             self.canvasFrame.createBind("<Configure>", _canvasConfigure)
 
-            if not disableMouseScroll:
-                self.canvas.createBind("<Enter>", lambda: self.app.setScrollTarget(self.canvas))
-                self.canvas.createBind("<Leave>", lambda: self.app.removeScrollTarget(self.canvas))
+            # if mouseScroll:
+            #     self.canvas.createBind("<Enter>", lambda: self.app.setScrollTarget(self.canvas))
+            #     self.canvas.createBind("<Leave>", lambda: self.app.removeScrollTarget(self.canvas))
 
-                self.canvas.widgetConfig(yscrollincrement="1")
-                self.canvas.widgetConfig(xscrollincrement="1")
+            self.canvas.widgetConfig(yscrollincrement="1")
+            self.canvas.widgetConfig(xscrollincrement="1")
 
         if pack:
             self.pack()
 
     def __repr__(self):
         return f"{self.__class__.__name__}: [{self.topElement}]"
-
-    def isScrollable(self):
-        return self.vsb or self.hsb or self.scrollable
 
 
 
