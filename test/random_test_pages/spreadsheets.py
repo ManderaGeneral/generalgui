@@ -37,16 +37,16 @@ Button(page, "Debug", func=debug)
 
 spreadsheets = []
 
-spreadsheetPage = Page(page, pack=True)
+spreadsheetPage = Page(page, pack=True, width=1000, height=1000, hsb=True, vsb=True, resizeable=True)
 
 for one in range(2):
     for two in range(2):
         rowPage = Page(spreadsheetPage, pack=True)
         for three in range(2):
             for four in range(2):
-                if not spreadsheets:
-                    spreadsheets.append(Spreadsheet(rowPage, cellVSB=True, cellHSB=True, columnKeys=True, rowKeys=False, side="left", pack=True))
-                # spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
+                # if not spreadsheets:
+                #     spreadsheets.append(Spreadsheet(rowPage, cellVSB=True, cellHSB=True, columnKeys=True, rowKeys=False, side="left", pack=True))
+                spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
 
 
 

@@ -33,25 +33,24 @@ class Page(Element_Page, Element_Page_App, Page_App):
             parentPage.removeChildren()
 
         self.parentPage = parentPage
+        self.removeSiblings = removeSiblings
+        self.vsb = vsb
+        self.hsb = hsb
+        self.scrollable = scrollable
+        self.disableMouseScroll = disableMouseScroll
+        self.resizable = resizeable
+        self.parameters = parameters
+
         if typeChecker(parentPage, App, error=False):
             self.parentPart = parentPage
         else:
             self.parentPart = parentPage.baseElement
 
         self.app = parentPage.app
-        self.parameters = parameters
         self.baseElement = None
         self.topElement = None
-
-        # These elements attributes aren't meant to be intuitive
-        self.frame = None
-        self.canvas = None
-        self.vsb = None
-        self.hsb = None
-        self.scrollable = scrollable
-        self.canvasFrame = None
-
         self.frame = Frame(self, pack=False, makeBase=True, resizeable=resizeable, **parameters)
+
         if "width" in parameters or "height" in parameters:
             self.frame.widget.pack_propagate(0)
 
@@ -59,10 +58,10 @@ class Page(Element_Page, Element_Page_App, Page_App):
             self.canvas = Canvas(self, pack=False, fill="both", side="left", expand=True, bd=-2)
             self.canvas.widget.pack_propagate(0)  # Not sure why we need it
 
-            if vsb:
+            if self.vsb:
                 self.vsb = Scrollbar(self, orient="vertical", command=self.canvas.widget.yview, side="right", fill="y")
                 self.canvas.widgetConfig(yscrollcommand=self.vsb.widget.set)
-            if hsb:
+            if self.hsb:
                 self.hsb = Scrollbar(self, orient="horizontal", command=self.canvas.widget.xview, side="bottom", fill="x")
                 self.canvas.widgetConfig(xscrollcommand=self.hsb.widget.set)
 
@@ -78,7 +77,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
                 # print(self.canvas.widget.bbox("all"))
                 # self.canvas.widgetConfig(scrollregion=(0,0,self.canvasFrame.widget.winfo_width(), self.canvasFrame.widget.winfo_height()))
 
-            self.canvas.createBind("<Configure>", _canvasConfigure)
+            self.canvasFrame.createBind("<Configure>", _canvasConfigure)
 
             if not disableMouseScroll:
                 self.canvas.createBind("<Enter>", lambda: self.app.setScrollTarget(self.canvas))
