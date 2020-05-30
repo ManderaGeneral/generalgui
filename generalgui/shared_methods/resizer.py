@@ -25,8 +25,8 @@ class Resizer:
         self.resizeTimer = Timer()
         self.resizeAfterID = None
 
-        self.createBind("<Button-1>", lambda event: self.startResize(event))
-        self.createBind("<ButtonRelease-1>", lambda event: self.stopResize(event))
+        self.createBind("<ButtonPress-1>", lambda event: self.startResize(event))
+        self.createBind("<ButtonRelease-1>", lambda event: self.app.widget.after(10, lambda: self.stopResize(event)))
         self.motionBind = self.createBind("<Motion>", lambda event: self.checkIfResize(event), add=False)
 
         self.resizeStyle = self.createStyle("Resize", cursor="sizing")
@@ -121,6 +121,7 @@ class Resizer:
         if self.resizeHoverElement:
             self.resizeElement = self.resizeHoverElement
             self.resizeMouseStart = self.getMouse(event)
+            return "break"
 
 
     def stopResize(self, event):
