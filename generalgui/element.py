@@ -15,7 +15,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
     Element is inherited by all tkinter widgets exluding App and Page.
     Shown by default. So when it's page is shown then all of page's children are shown automatically.
     """
-    def __init__(self, parentPage, widgetClass, pack=True, makeBase=False, resizeable=False, **parameters):
+    def __init__(self, parentPage, widgetClass, pack=True, makeBase=False, resizeable=False, onClick=None, **parameters):
         Element_App.__init__(self)
 
         typeChecker(parentPage, "Page")
@@ -46,13 +46,10 @@ class Element(Element_Page, Element_App, Element_Page_App):
         self.parameters = parameters
         self.widget = widgetClass(*initArgs)
 
-
         setattr(self.widget, "element", self)
         self.parentPage = parentPage
         self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
         self.app = parentPage.app
-
-
 
         configParameters = {}
         self.packParameters = {}
@@ -64,7 +61,8 @@ class Element(Element_Page, Element_App, Element_Page_App):
                 self.packParameters[key] = value
         self.widgetConfig(**configParameters)
 
-        # self.onClick(lambda: print(self))
+        if onClick:
+            self.onClick(onClick)
 
         if makeBase:
             self.makeBase()

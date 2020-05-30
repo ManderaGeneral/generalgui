@@ -33,7 +33,6 @@ class Page(Element_Page, Element_Page_App, Page_App):
             parentPage.removeChildren()
 
         self.parentPage = parentPage
-        self.removeSiblings = removeSiblings
         self.vsb = vsb
         self.hsb = hsb
         self.scrollable = scrollable or vsb or hsb

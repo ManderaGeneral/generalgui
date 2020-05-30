@@ -4,6 +4,8 @@ import tkinter as tk
 
 from generalgui.element import Element
 
+from generallibrary.types import strToDynamicType
+
 
 class Label(Element):
     """Controls one tkinter Label"""
@@ -23,4 +25,4 @@ class Label(Element):
         self.widget["text"] = str(value)
 
     def getValue(self):
-        return self.widget["text"]
+        return strToDynamicType(self.widget["text"])

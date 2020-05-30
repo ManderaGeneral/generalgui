@@ -1,6 +1,8 @@
 
 from generalvector import Vec2
 
+from generallibrary.types import typeChecker
+
 
 class Scroller:
     """
@@ -25,6 +27,9 @@ class Scroller:
 
     def checkEventForScrollTarget(self, event):
         eventElement = event.widget.element
+        if typeChecker(eventElement, "App", error=False):
+            return
+
         pages = eventElement.getParentPages()
         for page in pages:
             if page.scrollable and page.mouseScroll:

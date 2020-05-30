@@ -32,5 +32,5 @@ class LabelTest(unittest.TestCase):
         self.assertEqual("", label.getValue())
 
         label.setValue(True)
-        self.assertEqual("True", label.getValue())
+        self.assertEqual(True, label.getValue())
 

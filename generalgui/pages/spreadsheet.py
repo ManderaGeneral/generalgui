@@ -2,9 +2,6 @@
 
 from generalgui import Button, Page, Label, Frame, Grid
 
-from generallibrary.types import typeChecker
-from generallibrary.time import sleep
-
 from generalvector import Vec2
 
 import pandas as pd
@@ -39,12 +36,10 @@ class Spreadsheet(Page):
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
         if columnKeys:
-            self.columnSorter = Sorter(self.columnKeysGrid)
             if cellVSB:
                 Frame(self.columnKeysPageContainer, side="left", width=21, fill="y")  # To fill out for existing VSB in mainGrid
 
         if self.rowKeys:
-            self.rowSorter = Sorter(self.rowKeysGrid)
             if cellHSB:
                 Frame(self.rowKeysPageContainer, side="top", height=20, fill="x")  # To fill out for existing HSB in mainGrid. Height -1 for pady=1 in container.
 
@@ -59,7 +54,7 @@ class Spreadsheet(Page):
 
         # self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
 
-    def _syncKeysScroll(self, _):
+    def _syncKeysScroll(self, _=None):
         if self.columnKeys:
             self.columnKeysGrid.canvas.widget.xview_moveto(self.mainGrid.canvas.widget.xview()[0])
         if self.rowKeys:
@@ -126,12 +121,13 @@ class Spreadsheet(Page):
         df = self.dataFrame
 
         if self.columnKeys:
-            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=1)
-            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), Vec2(len(df.columns), 1), values=df.columns, removeExcess=True, **self.cellConfig)
-            self.mainGrid.fillGrid(Frame, Vec2(0, 0), Vec2(len(df.columns), 1), height=1)
+            size = Vec2(len(df.columns), 1)
+            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
+            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True, onClick=lambda e: self.sortByColumn(e), **self.cellConfig)
+            self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
 
         if self.rowKeys:
-            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True, **self.cellConfig)
+            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True, onClick=lambda e: self.sortByColumn(e), **self.cellConfig)
 
         values = []
         for row in df.itertuples(index=False):
@@ -141,19 +137,17 @@ class Spreadsheet(Page):
         self._syncColumnKeysWidth()
         self._syncRowKeysWidth()
         self.app.widget.update()
+        self._syncKeysScroll()
 
-class Sorter:
-    """
-    Used for columns and rows
+    def sortByColumn(self, event):
+        element = event.widget.element
+        columnPressed = 0 if element.parentPage == getattr(self, "columnKeysGrid", None) else 1
+        try:
+            self.dataFrame.sort_values(inplace=True, axis=columnPressed, by=[element.getValue()])
+        except TypeError:
+            return
+        self.loadDataFrame()
 
-    When changing columnKeys' sortKey it affects rowKeys' sortedKeys and vice versa.
-    """
-    def __init__(self, page):
-        self.page = page
-        self.keys = []
-        self.sortedKeys = []  # Contains same elements as keys but in a possibly different order
-        self.sortKey = None
-        self.reversed = False
 
 
 

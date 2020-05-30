@@ -7,6 +7,8 @@ from generalvector import Vec2
 import tkinter as tk
 import inspect
 
+import random
+
 import pandas as pd
 
 def debug():
@@ -16,11 +18,20 @@ def debug():
         # frame.parentPage.hideChildren()
         # frame.gridLabels(Vec2(0, 1), frame.getGridSize() - Vec2(1), [])
 
-
-
 def ss(func):
     for spreadsheet in spreadsheets:
         func(spreadsheet)
+
+def addBig():
+    l = []
+    for x in range(10):
+        l.append([])
+        for y in range(10):
+            l[-1].append(random.randint(-100, 100))
+
+    df = pd.DataFrame(l)
+
+    ss(lambda x: x.loadDataFrame(df))
 
 page = Page()
 
@@ -29,8 +40,8 @@ reset = Button(page, "Reset", func=lambda: page.rainbow(reset=True))
 
 columnKeys = ("color", "number", "name")
 Button(page, "Add row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
-Button(page, "Add indexed row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"]], columns=columnKeys, index=["hello"]))))
-Button(page, "Add big", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame(columns=[x for x in range(20)], index=[x for x in range(20)]))))
+Button(page, "Add indexed row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"], ["blue", 5, "zole"]], columns=columnKeys, index=["hello", "there"]))))
+Button(page, "Add big", func=addBig)
 Button(page, "Small", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
 Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=2000, width=2000)))
 Button(page, "Debug", func=debug)
