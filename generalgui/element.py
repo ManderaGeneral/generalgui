@@ -51,6 +51,13 @@ class Element(Element_Page, Element_App, Element_Page_App):
         self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
         self.app = parentPage.app
 
+        if onClick:
+            parameters["cursor"] = "hand2"
+            self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
+            self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
+            self.createBind("<Return>", self.click)
+            self.onClick(onClick, add=True)
+
         configParameters = {}
         self.packParameters = {}
         allConfigKeys = self.getAllWidgetConfigs()
@@ -60,9 +67,6 @@ class Element(Element_Page, Element_App, Element_Page_App):
             else:
                 self.packParameters[key] = value
         self.widgetConfig(**configParameters)
-
-        if onClick:
-            self.onClick(onClick)
 
         if makeBase:
             self.makeBase()

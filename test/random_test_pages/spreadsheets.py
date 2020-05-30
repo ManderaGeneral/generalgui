@@ -35,16 +35,16 @@ def addBig():
 
 page = Page()
 
-Button(page, "Rainbow", func=page.rainbow)
-reset = Button(page, "Reset", func=lambda: page.rainbow(reset=True))
+Button(page, "Rainbow", onClick=page.rainbow)
+reset = Button(page, "Reset", onClick=lambda: page.rainbow(reset=True))
 
 columnKeys = ("color", "number", "name")
-Button(page, "Add row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
-Button(page, "Add indexed row", func=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"], ["blue", 5, "zole"]], columns=columnKeys, index=["hello", "there"]))))
-Button(page, "Add big", func=addBig)
-Button(page, "Small", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
-Button(page, "Big", func=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=2000, width=2000)))
-Button(page, "Debug", func=debug)
+Button(page, "Add row", onClick=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
+Button(page, "Add indexed row", onClick=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"], ["blue", 5, "zole"]], columns=columnKeys, index=["hello", "there"]))))
+Button(page, "Add big", onClick=addBig)
+Button(page, "Small", onClick=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
+Button(page, "Big", onClick=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=2000, width=2000)))
+Button(page, "Debug", onClick=debug)
 
 spreadsheets = []
 

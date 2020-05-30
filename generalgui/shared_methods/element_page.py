@@ -6,6 +6,8 @@ from generalgui.shared_methods.decorators import ignore
 
 from generalvector import Vec
 
+from tkinter import TclError
+
 
 class Element_Page:
     """
@@ -31,7 +33,11 @@ class Element_Page:
             if self.hasGridParameters():
                 self._grid()
             else:
-                self.widget.pack(**self.packParameters)
+                try:
+                    self.widget.pack(**self.packParameters)
+                except TclError as e:
+                    print(self.packParameters)
+                    raise e
 
             if self.parentPage.scrollable:
                 # self.parentPage.canvas.widgetConfig(bg=Vec.random(0, 255).hex())

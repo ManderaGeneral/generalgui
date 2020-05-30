@@ -11,7 +11,7 @@ class Button(Element):
     """
     Controls one tkinter Button
     """
-    def __init__(self, parentPage, value, func=None, **parameters):
+    def __init__(self, parentPage, value, onClick=None, **parameters):
         """
         Create a Button element that controls a button.
 
@@ -19,15 +19,9 @@ class Button(Element):
         :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        super().__init__(parentPage, tk.Button, text=value, cursor="hand2", **parameters)
+        super().__init__(parentPage, tk.Button, text=value, onClick=onClick, **parameters)
 
         self.setBindPropagation("<Button-1>", False)
-
-        self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
-        self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
-        self.onClick(func, add=True)
-
-        self.createBind("<Return>", self.click)
 
     def setValue(self, value):
         """
