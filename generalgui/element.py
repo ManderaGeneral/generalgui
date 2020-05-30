@@ -22,9 +22,9 @@ class Element(Element_Page, Element_App, Element_Page_App):
 
         parameters["master"] = parentPage.getBaseWidget()
 
+        # Extract initialization arguments from parameters
         initArgs = []
         signature = inspect.signature(widgetClass)
-
         for parameterName in signature.parameters:
             parameter = signature.parameters[parameterName]
             kind = str(parameter.kind)
@@ -45,6 +45,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
 
         self.parameters = parameters
         self.widget = widgetClass(*initArgs)
+
 
         setattr(self.widget, "element", self)
         self.parentPage = parentPage

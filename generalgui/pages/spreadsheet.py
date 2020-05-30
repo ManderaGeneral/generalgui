@@ -36,10 +36,12 @@ class Spreadsheet(Page):
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
         if columnKeys:
+            self.previousColumnSort = None
             if cellVSB:
                 Frame(self.columnKeysPageContainer, side="left", width=21, fill="y")  # To fill out for existing VSB in mainGrid
 
         if self.rowKeys:
+            self.previousRowSort = None
             if cellHSB:
                 Frame(self.rowKeysPageContainer, side="top", height=20, fill="x")  # To fill out for existing HSB in mainGrid. Height -1 for pady=1 in container.
 
@@ -141,11 +143,33 @@ class Spreadsheet(Page):
 
     def sortByColumn(self, event):
         element = event.widget.element
-        columnPressed = 0 if element.parentPage == getattr(self, "columnKeysGrid", None) else 1
+        rowPressed = 0 if element.parentPage == getattr(self, "columnKeysGrid", None) else 1
+        value = element.getValue()
+
+        # HERE ** Add styles for active sorters
+
+        ascending = True
+        if rowPressed:
+            if self.previousRowSort == value:
+                ascending = False
+                self.previousRowSort = None
+            else:
+                self.previousRowSort = value
+
+        else:
+            if self.previousColumnSort == value:
+                ascending = False
+                self.previousColumnSort = None
+            else:
+                self.previousColumnSort = value
+
+
+
         try:
-            self.dataFrame.sort_values(inplace=True, axis=columnPressed, by=[element.getValue()])
+            self.dataFrame.sort_values(inplace=True, axis=rowPressed, by=[value], ascending=ascending)
         except TypeError:
             return
+
         self.loadDataFrame()
 
 
