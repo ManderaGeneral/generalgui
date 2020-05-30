@@ -8,14 +8,10 @@ from generalgui.shared_methods.element_app import Element_App
 from generalgui.shared_methods.page_app import Page_App
 from generalgui.shared_methods.scroller import Scroller
 from generalgui.shared_methods.resizer import Resizer
+from generalgui.shared_methods.menu import Menu
 
 
-from generalvector import Vec2
-
-from generallibrary.time import Timer
-
-
-class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer):
+class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu):
     """
     Controls one tkinter Tk object and adds a lot of convenient features.
     """
@@ -27,26 +23,14 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer):
         self.app = self
         self.mainlooped = False
 
-
         default_font = font.nametofont("TkDefaultFont")
         default_font.configure(size=10, family="Helvetica")
         self.widget.option_add("*Font", default_font)
         # print(default_font.actual())
 
-
         Scroller.__init__(self)
         Resizer.__init__(self)
-
-
-        def debug(widget):
-            print(
-                widget.winfo_height(),
-                widget.bbox("all"),
-                widget["scrollregion"],
-                widget,
-            )
-
-        # self.createBind("<Button-1>", lambda event: debug(event.widget))
+        Menu.__init__(self)
 
     def mainloop(self):
         """

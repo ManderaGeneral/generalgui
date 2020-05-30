@@ -31,9 +31,6 @@ class Resizer:
 
         self.resizeStyle = self.createStyle("Resize", cursor="sizing")
 
-    def getMouse(self, event):
-        return Vec2(event.x_root, event.y_root)
-
     def makeResizeable(self, element):
         """
         :param generalgui.element.Element element:

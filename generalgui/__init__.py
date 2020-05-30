@@ -1,6 +1,4 @@
 
-
-
 from generalgui.elements.button import Button
 from generalgui.elements.optionmenu import OptionMenu
 from generalgui.elements.entry import Entry

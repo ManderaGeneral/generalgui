@@ -8,8 +8,6 @@ class Scroller:
     """
     Scroller feature for App.
     Enables scrolling right click drag and mouse wheel.
-    Todo: scrollable() method just like resizable(). Probably rename those too as well
-    Todo: Disable scrolling when not scrollable anymore
     """
     def __init__(self):
         """
@@ -93,8 +91,10 @@ class Scroller:
 
             if visibleFraction.x < 1:
                 self.scrollWheelTarget.widget.xview_moveto(newFraction.x)
+                self.openMenuOnRelease = False
             if visibleFraction.y < 1:
                 self.scrollWheelTarget.widget.yview_moveto(newFraction.y)
+                self.openMenuOnRelease = False
 
     def scrollWheel(self, event):
         """

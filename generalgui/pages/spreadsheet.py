@@ -10,9 +10,6 @@ import pandas as pd
 class Spreadsheet(Page):
     """
     Controls elements in a grid
-    Todo: 'add' option for loadDataFrame, default to False probably
-    Todo: Allow changing dataframe directly and then add a function to refresh spreadsheet
-
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
     """
@@ -53,6 +50,15 @@ class Spreadsheet(Page):
         self.dataFrame = pd.DataFrame()
 
         self.pack()
+
+
+
+        # HERE ** Menu prototype
+        self.app.menu = page = Page(self.app, relief="solid", borderwidth=1)
+        Button(page, "Menu", lambda: print(5))
+        Button(page, "Menu", lambda: print(2))
+
+
 
         # self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
 
@@ -146,8 +152,6 @@ class Spreadsheet(Page):
         rowPressed = 0 if element.parentPage == getattr(self, "columnKeysGrid", None) else 1
         value = element.getValue()
 
-        # HERE ** Add styles for active sorters
-
         ascending = True
         if rowPressed:
             if self.previousRowSort == value:
@@ -155,7 +159,6 @@ class Spreadsheet(Page):
                 self.previousRowSort = None
             else:
                 self.previousRowSort = value
-
         else:
             if self.previousColumnSort == value:
                 ascending = False
@@ -163,14 +166,46 @@ class Spreadsheet(Page):
             else:
                 self.previousColumnSort = value
 
-
-
         try:
             self.dataFrame.sort_values(inplace=True, axis=rowPressed, by=[value], ascending=ascending)
         except TypeError:
             return
 
         self.loadDataFrame()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

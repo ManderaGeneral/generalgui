@@ -4,7 +4,7 @@ import tkinter as tk
 
 from generallibrary.types import typeChecker
 
-from generalvector import Vec
+from generalvector import Vec, Vec2
 
 from generalgui.shared_methods.decorators import ignore
 
@@ -13,6 +13,18 @@ class Element_Page_App:
     """
     Pure methods that Element, Page and App all share.
     """
+    def getWindowPos(self):
+        """
+        Get current window position of the upper left corner.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        return Vec2(self.app.widget.winfo_x(), self.app.widget.winfo_y())
+
+    def getMouse(self, event):
+        """Get mouse vector2 from event"""
+        return Vec2(event.x_root, event.y_root) - self.getWindowPos()
+
     def rainbow(self, reset=False):
         """
         Give every widget and subwidget recursively a random background color.
