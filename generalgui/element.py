@@ -17,6 +17,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
     """
     def __init__(self, parentPage, widgetClass, pack=True, makeBase=False, resizeable=False, onClick=None, **parameters):
         Element_App.__init__(self)
+        Element_Page_App.__init__(self)
 
         typeChecker(parentPage, "Page")
 

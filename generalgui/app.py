@@ -8,15 +8,16 @@ from generalgui.shared_methods.element_app import Element_App
 from generalgui.shared_methods.page_app import Page_App
 from generalgui.shared_methods.scroller import Scroller
 from generalgui.shared_methods.resizer import Resizer
-from generalgui.shared_methods.menu import Menu
+from generalgui.shared_methods.menu import Menu_App
 
 
-class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu):
+class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
     """
     Controls one tkinter Tk object and adds a lot of convenient features.
     """
     def __init__(self):
         Element_App.__init__(self)
+        Element_Page_App.__init__(self)
 
         self.widget = Tk()
         setattr(self.widget, "element", self)
@@ -28,9 +29,23 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu):
         self.widget.option_add("*Font", default_font)
         # print(default_font.actual())
 
+        self.Page = gui.Page
+        self.Element = Element
+
+        self.Button = gui.Button
+        self.Canvas = gui.Canvas
+        self.Checkbutton = gui.Checkbutton
+        self.Entry = gui.Entry
+        self.Frame = gui.Frame
+        self.Label = gui.Label
+        self.OptionMenu = gui.OptionMenu
+        self.Scrollbar = gui.Scrollbar
+
         Scroller.__init__(self)
         Resizer.__init__(self)
-        Menu.__init__(self)
+        Menu_App.__init__(self)
+
+
 
     def mainloop(self):
         """
@@ -57,4 +72,7 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu):
         """
         if self.isShown():
             self.widget.withdraw()
+
+import generalgui as gui
+from generalgui.element import Element
 

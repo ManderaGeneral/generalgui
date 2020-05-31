@@ -8,8 +8,8 @@ from generalgui.elements.frame import Frame
 from generalgui.elements.canvas import Canvas
 from generalgui.elements.scrollbar import Scrollbar
 
-from generalgui.app import App
 from generalgui.page import Page
+from generalgui.app import App
 
 from generalgui.pages.labelentry import LabelEntry
 from generalgui.pages.labelcheckbutton import LabelCheckbutton

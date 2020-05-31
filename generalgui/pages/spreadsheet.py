@@ -53,10 +53,12 @@ class Spreadsheet(Page):
 
 
 
-        # HERE ** Menu prototype
-        self.app.menu = page = Page(self.app, relief="solid", borderwidth=1)
-        Button(page, "Menu", lambda: print(5))
-        Button(page, "Menu", lambda: print(2))
+        self.menu("Spreadsheet", Do_something=lambda: print(5), Print=lambda:print(2))
+
+        # self.app.menu = page = Page(self.app, relief="solid", borderwidth=1)
+        # Label(page, "Menu")
+        # Button(page, "Do something", lambda: print(5))
+        # Button(page, "Print", lambda: print(2))
 
 
 

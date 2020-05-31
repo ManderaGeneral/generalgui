@@ -8,11 +8,16 @@ from generalvector import Vec, Vec2
 
 from generalgui.shared_methods.decorators import ignore
 
+from generalgui.shared_methods.menu import Menu_Element_Page_App
 
-class Element_Page_App:
+
+class Element_Page_App(Menu_Element_Page_App):
     """
     Pure methods that Element, Page and App all share.
     """
+    def __init__(self):
+        Menu_Element_Page_App.__init__(self)
+
     def getWindowPos(self):
         """
         Get current window position of the upper left corner.

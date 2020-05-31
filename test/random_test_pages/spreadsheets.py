@@ -1,6 +1,6 @@
 """Random testing"""
 
-from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet
+from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet, App
 
 from generalvector import Vec2
 
@@ -33,7 +33,7 @@ def addBig():
 
     ss(lambda x: x.loadDataFrame(df))
 
-page = Page()
+page = Page(App())
 
 Button(page, "Rainbow", onClick=page.rainbow)
 reset = Button(page, "Reset", onClick=lambda: page.rainbow(reset=True))
@@ -48,7 +48,8 @@ Button(page, "Debug", onClick=debug)
 
 spreadsheets = []
 
-spreadsheetPage = Page(page, pack=True, width=1000, height=1000, hsb=True, vsb=True, resizeable=True)
+spreadsheetPage = Page(page, pack=True)
+# spreadsheetPage = Page(page, pack=True, width=1000, height=1000, hsb=True, vsb=True, resizeable=True)
 
 for one in range(2):
     for two in range(2):
