@@ -52,6 +52,15 @@ class Menu_App:
         if self.openMenuOnRelease:
             self.createMenu(event)
 
+    def addLine(self):
+        """
+        :param generalgui.app.App self:
+        """
+        linePage = self.Page(self.menuPage, fill="x", pack=True, pady=5)
+        self.Frame(linePage, width=5, fill="y", side="left")
+        self.Frame(linePage, fill="x", side="left", bg="black", expand=True)
+        self.Frame(linePage, width=5, fill="y", side="left")
+
     def createMenu(self, event):
         """
         :param generalgui.app.App self:
@@ -60,6 +69,9 @@ class Menu_App:
         if self.menuPage:
             self.menuPage.remove()
         self.menuPage = self.Page(self, relief="solid", borderwidth=1)
+
+        self.Label(self.menuPage, "Menu", fill="x")
+        self.addLine()
 
         for part in event.widget.element.getParentPages(includeSelf=True):
             for label, buttons in part.menuContent.items():

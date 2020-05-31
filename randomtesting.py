@@ -2,7 +2,7 @@
 
 from generallibrary.time import sleep
 
-from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet
+from generalgui import App, Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet
 
 import tkinter as tk
 import inspect
@@ -18,7 +18,7 @@ def y():
     page.app.widget.after(2000, spreadsheet.hide)
 
 
-page = Page()
+page = Page(App())
 Button(page, "Remove in 2 seconds", x)
 Button(page, "Hide in 2 seconds", y)
 Button(page, "Show", lambda: spreadsheet.show())
