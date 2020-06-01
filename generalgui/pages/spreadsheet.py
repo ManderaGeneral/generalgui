@@ -1,10 +1,13 @@
 """Spreadsheet class that inherits Page"""
 
-from generalgui import Button, Page, Label, Frame, Grid
+from generalgui import Page, Label, Frame, Grid
 
 from generalvector import Vec2
 
 import pandas as pd
+
+from tkinter import filedialog
+from generalfile import File, Path
 
 
 class Spreadsheet(Page):
@@ -25,10 +28,12 @@ class Spreadsheet(Page):
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
             self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
+            self.columnKeysGrid.menu("Column", Remove_column=self.removeColumn)
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
             self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
+            self.rowKeysGrid.menu("Row", Remove_row=self.removeRow)
 
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
@@ -46,23 +51,82 @@ class Spreadsheet(Page):
         if self.rowKeys or self.columnKeys:
             self.mainGrid.canvasFrame.createBind("<Configure>", lambda event: self._syncKeysScroll(event), add=True)
 
-        # Keys shouldn't change order when sorting, that way we can add new rows if order is changed
         self.dataFrame = pd.DataFrame()
 
         self.pack()
 
-
-
-        self.menu("Spreadsheet", Do_something=lambda: print(5), Print=lambda:print(2))
-
-        # self.app.menu = page = Page(self.app, relief="solid", borderwidth=1)
-        # Label(page, "Menu")
-        # Button(page, "Do something", lambda: print(5))
-        # Button(page, "Print", lambda: print(2))
-
-
+        self.menu("Spreadsheet", Save_As_TSV=self.saveAsTSV)
 
         # self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
+
+    def saveAsTSV(self):
+        path = Path(filedialog.askdirectory()).addPath("dataframe.tsv")
+        File.write(path, self.dataFrame)
+
+    def drop(self, value, axis):
+        self.dataFrame.drop(value, axis=axis, inplace=True)
+        self.loadDataFrame()
+
+    def removeColumn(self):
+        self.drop(self.app.menuTargetElement.getValue(), "columns")
+
+    def removeRow(self):
+        self.drop(self.app.menuTargetElement.getValue(), "rows")
+
+    cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
+    def loadDataFrame(self, df=None):
+        """
+        Update cells to represent current dataFrame
+        """
+        if df is not None:
+            self.dataFrame = df
+        df = self.dataFrame
+
+        if self.columnKeys:
+            size = Vec2(len(df.columns), 1)
+            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
+            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True, onClick=lambda e: self.sortByColumn(e), **self.cellConfig)
+            self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
+
+        if self.rowKeys:
+            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True, onClick=lambda e: self.sortByColumn(e), **self.cellConfig)
+
+        values = []
+        for row in df.itertuples(index=False):
+            values.extend(row)
+        self.mainGrid.fillGrid(Label, Vec2(0, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, **self.cellConfig)
+
+        self._syncColumnKeysWidth()
+        self._syncRowKeysWidth()
+        self.app.widget.update()
+        self._syncKeysScroll()
+
+    def sortByColumn(self, event):
+        element = event.widget.element
+        rowPressed = 0 if element.parentPage == getattr(self, "columnKeysGrid", None) else 1
+        value = element.getValue()
+
+        ascending = True
+        if rowPressed:
+            if self.previousRowSort == value:
+                ascending = False
+                self.previousRowSort = None
+            else:
+                self.previousRowSort = value
+        else:
+            if self.previousColumnSort == value:
+                ascending = False
+                self.previousColumnSort = None
+            else:
+                self.previousColumnSort = value
+
+        # In case of mixed values
+        try:
+            self.dataFrame.sort_values(inplace=True, axis=rowPressed, by=[value], ascending=ascending)
+        except TypeError:
+            return
+
+        self.loadDataFrame()
 
     def _syncKeysScroll(self, _=None):
         if self.columnKeys:
@@ -120,61 +184,6 @@ class Spreadsheet(Page):
 
         if self.columnKeys:
             self.columnKeysFillerLeft.widgetConfig(width=rowTitleWidth)
-
-    cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
-    def loadDataFrame(self, df=None):
-        """
-        Update cells to represent current dataFrame
-        """
-        if df is not None:
-            self.dataFrame = df
-        df = self.dataFrame
-
-        if self.columnKeys:
-            size = Vec2(len(df.columns), 1)
-            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
-            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True, onClick=lambda e: self.sortByColumn(e), **self.cellConfig)
-            self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
-
-        if self.rowKeys:
-            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True, onClick=lambda e: self.sortByColumn(e), **self.cellConfig)
-
-        values = []
-        for row in df.itertuples(index=False):
-            values.extend(row)
-        self.mainGrid.fillGrid(Label, Vec2(0, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, **self.cellConfig)
-
-        self._syncColumnKeysWidth()
-        self._syncRowKeysWidth()
-        self.app.widget.update()
-        self._syncKeysScroll()
-
-    def sortByColumn(self, event):
-        element = event.widget.element
-        rowPressed = 0 if element.parentPage == getattr(self, "columnKeysGrid", None) else 1
-        value = element.getValue()
-
-        ascending = True
-        if rowPressed:
-            if self.previousRowSort == value:
-                ascending = False
-                self.previousRowSort = None
-            else:
-                self.previousRowSort = value
-        else:
-            if self.previousColumnSort == value:
-                ascending = False
-                self.previousColumnSort = None
-            else:
-                self.previousColumnSort = value
-
-        try:
-            self.dataFrame.sort_values(inplace=True, axis=rowPressed, by=[value], ascending=ascending)
-        except TypeError:
-            return
-
-        self.loadDataFrame()
-
 
 
 

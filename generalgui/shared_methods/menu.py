@@ -31,6 +31,7 @@ class Menu_App:
         """
         self.menuPage = None
         self.openMenuOnRelease = False
+        self.menuTargetElement = None
 
         self.createBind("<Button-1>", self.hideMenu)
         self.createBind("<Button-3>", self.menuButtonDown)
@@ -56,31 +57,50 @@ class Menu_App:
         """
         :param generalgui.app.App self:
         """
-        linePage = self.Page(self.menuPage, fill="x", pack=True, pady=5)
-        self.Frame(linePage, width=5, fill="y", side="left")
-        self.Frame(linePage, fill="x", side="left", bg="black", expand=True)
-        self.Frame(linePage, width=5, fill="y", side="left")
+        # linePage = self.Page(self.menuPage, fill="x", pack=True, pady=5)
+        # self.Frame(linePage, width=5, fill="y", side="left")
+        # self.Frame(linePage, fill="x", side="left", bg="black", expand=True)
+        # self.Frame(linePage, width=5, fill="y", side="left")
+
+        linePage = self.Page(self.menuPage, fill="x", pack=True, pady=10)
+        self.Frame(linePage, fill="x", bg="gray")
+        self.Frame(linePage, fill="x", height=2)
+        self.Frame(linePage, fill="x", bg="gray")
+
+    def addLabel(self, text):
+        """
+        :param generalgui.app.App self:
+        :param text:
+        """
+        self.Label(self.menuPage, text, fill="x")
+
+    def addButton(self, text, func):
+        """
+        :param generalgui.app.App self:
+        :param text:
+        :param func:
+        """
+        button = self.Button(self.menuPage, text.replace("_", " "), func, fill="x")
+        button.createBind("<ButtonRelease-1>", self.hideMenu, name="HideMenu")
 
     def createMenu(self, event):
         """
         :param generalgui.app.App self:
         :param event:
         """
+        self.menuTargetElement = event.widget.element
         if self.menuPage:
             self.menuPage.remove()
-        self.menuPage = self.Page(self, relief="solid", borderwidth=1)
 
-        self.Label(self.menuPage, "Menu", fill="x")
-        self.addLine()
-
+        self.menuPage = self.Page(self, relief="solid", borderwidth=1, padx=5, pady=5)
+        self.addLabel("Menu")
         for part in event.widget.element.getParentPages(includeSelf=True):
+            if part.menuContent:
+                self.addLine()
             for label, buttons in part.menuContent.items():
-                self.Label(self.menuPage, label, fill="x")
+                self.addLabel(label)
                 for buttonText, buttonFunc in buttons.items():
-                    button = self.Button(self.menuPage, buttonText.replace("_", " "), buttonFunc, fill="x")
-                    button.createBind("<ButtonRelease-1>", self.hideMenu, name="HideMenu")
-        # self.menuPage.pack()
-        # print(self.getMouse(event) - Vec2(8, 35))
+                    self.addButton(buttonText, buttonFunc)
         self.menuPage.place(self.getMouse(event) - Vec2(8, 35))
 
     def hideMenu(self):
