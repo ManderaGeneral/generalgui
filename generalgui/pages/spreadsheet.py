@@ -15,6 +15,9 @@ class Spreadsheet(Page):
     Controls elements in a grid
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
+
+    Column/Header -> Columns
+    Index -> Rows
     """
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
@@ -28,7 +31,8 @@ class Spreadsheet(Page):
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
             self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
-            self.columnKeysGrid.menu("Column", Remove_column=lambda: self.drop(columns=True))
+
+            self.columnKeysGrid.menu("Column", Remove_column=lambda: self.drop(columns=True), Make_column_index=self.makeColumnIndex)
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
@@ -55,36 +59,98 @@ class Spreadsheet(Page):
 
         self.pack()
 
-        self.menu("Spreadsheet", Save_as_tsv=self.saveAsTSV, Load_tsv_file=self.loadTSV, Reset_sort=self.resetSort)
+        self.menu("Spreadsheet",
+                  Save_as_tsv=self.saveAsTSV,
+                  Load_tsv_file=self.loadTSV,
+                  Reset_sort=self.resetSort,
+                  Reset_index_and_columns=self.resetIndex)
 
         # self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
 
-    def loadTSV(self):
-        """
-        Load a tsv file
+    def columnSort(self):
+        pass
 
-        HERE ** Working, but headers can be messed up
-        """
-        filetypes = [("Open a tsv file", ".tsv")]
-        path = filedialog.askopenfilename(title="Select spreadsheet", filetypes=filetypes)
-        if path:
-            read = File.read(path)
-            if read is not None:
-                self.dataFrame = read
-                self.loadDataFrame()
+    def rowSort(self):
+        pass
 
-    def saveAsTSV(self):
-        """Save current Data Frame as a tsv file, asks user where to put file."""
-        filetypes = [("Save spreadsheet as tsv", ".tsv")]
-        path = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=".tsv", title="Save spreadsheet", initialfile="Spreadsheet")
-        if path:
-            File.write(path, self.dataFrame, overwrite=True)
+    def headerSort(self):
+        pass
+
+    def indexSort(self):
+        pass
+
+    def columnDrop(self):
+        pass
+
+    def rowDrop(self):
+        pass
+
+
+
+
+
+
+    def resetIndex(self):
+        drop = self.dataFrame.index.name is None
+        self.dataFrame.reset_index(inplace=True, drop=drop)
+        self.loadDataFrame()
+
+    def moveIndexToColumn(self):
+        indexName = self.dataFrame.index.name
+        if indexName is not None:
+            self.dataFrame[indexName] = self.dataFrame.index.values
+
+    def makeColumnIndex(self, value=None, columns=False, rows=False):
+        """
+        Make header
+
+        :param value:
+        :param columns:
+        :param rows:
+        :return:
+        """
+        # if not columns and not rows:
+        #     raise AttributeError("Columns or rows has to be set to True")
+        # if value is None:
+        #     if self.app.menuTargetElement is None:
+        #         raise ValueError("value is None and app.menuTargetElement is None")
+
+        # print(self.dataFrame.index.values)
+
+        self.moveIndexToColumn()
+        value = self.app.menuTargetElement.getValue()
+        self.dataFrame.set_index(value, inplace=True)
+        self.loadDataFrame()
+
+
 
     def resetSort(self):
         """Reset the sorting of dataframe"""
         # self.dataFrame.sort_index(inplace=True)
         self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
         self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.index), axis=0)
+        self.loadDataFrame()
+
+    def drop(self, value=None, columns=False, rows=False):
+        """
+        Remove a column or row
+
+        :param value: Index of either a column or a row, leave as None to use menuTarget
+        :param columns:
+        :param rows:
+        :raises AttributeError: If columns and rows are False
+        :raises ValueError: If value and menuTarget is None
+        """
+        if not columns and not rows:
+            raise AttributeError("Columns or rows has to be set to True")
+        if value is None:
+            if self.app.menuTargetElement is None:
+                raise ValueError("value is None and app.menuTargetElement is None")
+
+            value = self.app.menuTargetElement.getValue()
+
+        axis = "columns" if columns else "rows"
+        self.dataFrame.drop(value, axis=axis, inplace=True)
         self.loadDataFrame()
 
     def sort(self, event):
@@ -115,29 +181,6 @@ class Spreadsheet(Page):
 
         self.loadDataFrame()
 
-    def drop(self, value=None, columns=False, rows=False):
-        """
-        Remove a column or row
-
-        :param value: Index of either a column or a row, leave as None to use menuTarget
-        :param columns:
-        :param rows:
-        :raises AttributeError: If columns and rows are False
-        :raises ValueError: If value and menuTarget is None
-        """
-        if not columns and not rows:
-            raise AttributeError("Columns or rows has to be set to True")
-
-        if value is None:
-            if self.app.menuTargetElement is None:
-                raise ValueError("value is None and app.menuTargetElement is None")
-
-            value = self.app.menuTargetElement.getValue()
-
-        axis = "columns" if columns else "rows"
-        self.dataFrame.drop(value, axis=axis, inplace=True)
-        self.loadDataFrame()
-
     cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
     def loadDataFrame(self, df=None):
         """
@@ -165,6 +208,27 @@ class Spreadsheet(Page):
         self._syncRowKeysWidth()
         self.app.widget.update()
         self._syncKeysScroll()
+
+    def loadTSV(self):
+        """
+        Load a tsv file
+
+        HERE ** Working, but headers can be messed up
+        """
+        filetypes = [("Open a tsv file", ".tsv")]
+        path = filedialog.askopenfilename(title="Select spreadsheet", filetypes=filetypes)
+        if path:
+            read = File.read(path)
+            if read is not None:
+                self.dataFrame = read
+                self.loadDataFrame()
+
+    def saveAsTSV(self):
+        """Save current Data Frame as a tsv file, asks user where to put file."""
+        filetypes = [("Save spreadsheet as tsv", ".tsv")]
+        path = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=".tsv", title="Save spreadsheet", initialfile="Spreadsheet")
+        if path:
+            File.write(path, self.dataFrame, overwrite=True)
 
     def _syncKeysScroll(self, _=None):
         if self.columnKeys:
