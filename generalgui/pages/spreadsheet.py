@@ -10,14 +10,37 @@ from tkinter import filedialog
 from generalfile import File, Path
 
 
+
+def loadDataFrame(func):
+    def f(self, *args, **kwargs):
+        result = func(self, *args, **kwargs)
+        self.loadDataFrame()
+        return result
+    return f
+
+
+def cellValue(func):
+    def f(self, cellValue=None, *args, **kwargs):
+
+        if cellValue is False:
+            if self.app.menuTargetElement is None:
+                raise ValueError("cellValue is None and app.menuTargetElement is None")
+            cellValue = self.app.menuTargetElement.getValue()
+            return func(self, cellValue=cellValue, *args, **kwargs)
+
+        return func(self, *args, **kwargs)
+    return f
+
+
 class Spreadsheet(Page):
     """
     Controls elements in a grid
     If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
     Should probably add row and column as arg to all elements instead of having them in packparameters
 
-    Column/Header -> Columns
-    Index -> Rows
+    Keys -> Header / Index
+    Header (df.columns) -> Columns
+    Index (df.index) -> Rows
     """
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
@@ -32,12 +55,15 @@ class Spreadsheet(Page):
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
             self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
 
-            self.columnKeysGrid.menu("Column", Remove_column=lambda: self.drop(columns=True), Make_column_index=self.makeColumnIndex)
+            self.columnKeysGrid.menu("Column",
+                                     Remove_column=self.dropColumn,
+                                     Make_column_index=self.makeColumnIndex)
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
             self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
-            self.rowKeysGrid.menu("Row", Remove_row=lambda: self.drop(rows=True))
+            self.rowKeysGrid.menu("Row",
+                                  Remove_row=self.dropRow)
 
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
@@ -62,74 +88,91 @@ class Spreadsheet(Page):
         self.menu("Spreadsheet",
                   Save_as_tsv=self.saveAsTSV,
                   Load_tsv_file=self.loadTSV,
-                  Reset_sort=self.resetSort,
-                  Reset_index_and_columns=self.resetIndex)
+
+                  Reset_header=self.resetHeader,
+                  Reset_index=self.resetIndex,
+
+                  Sort_header=self.sortHeader,
+                  Sort_index=self.sortIndex)
 
         # self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
 
-    def columnSort(self):
+    @loadDataFrame
+    def sortRow(self, index):
+        ascending = True
+        if self.previousRowSort == index:
+            ascending = False
+            self.previousRowSort = None
+        else:
+            self.previousRowSort = index
+        try:  # In case of mixed values
+            self.dataFrame.sort_values(inplace=True, axis=1, by=[index], ascending=ascending)
+        except TypeError:
+            return
+
+    @loadDataFrame
+    def sortColumn(self, header):
+        ascending = True
+        if self.previousColumnSort == header:
+            ascending = False
+            self.previousColumnSort = None
+        else:
+            self.previousColumnSort = header
+        try:  # In case of mixed values
+            self.dataFrame.sort_values(inplace=True, axis=0, by=[header], ascending=ascending)
+        except TypeError:
+            return
+
+    @loadDataFrame
+    def sortHeader(self):
+        self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
+
+    @loadDataFrame
+    def sortIndex(self):
+        self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.index), axis=0)
+
+    @loadDataFrame
+    @cellValue
+    def dropRow(self, cellValue=False):
+        # See if cellValue decorator works HERE ***
+        pass
+        # value = self.app.menuTargetElement.getValue()
+        #
+        # axis = "columns" if columns else "rows"
+        # self.dataFrame.drop(value, axis=axis, inplace=True)
+
+    @loadDataFrame
+    def dropColumn(self):
         pass
 
-    def rowSort(self):
+    @loadDataFrame
+    def makeRowHeader(self):
         pass
 
-    def headerSort(self):
+    @loadDataFrame
+    def makeColumnIndex(self):
+        self.moveIndexToColumn()
+        value = self.app.menuTargetElement.getValue()
+        self.dataFrame.set_index(value, inplace=True)
+
+    @loadDataFrame
+    def resetHeader(self):
         pass
 
-    def indexSort(self):
-        pass
-
-    def columnDrop(self):
-        pass
-
-    def rowDrop(self):
-        pass
-
-
-
-
-
-
+    @loadDataFrame
     def resetIndex(self):
         drop = self.dataFrame.index.name is None
         self.dataFrame.reset_index(inplace=True, drop=drop)
-        self.loadDataFrame()
+
+
+
+
 
     def moveIndexToColumn(self):
         indexName = self.dataFrame.index.name
         if indexName is not None:
             self.dataFrame[indexName] = self.dataFrame.index.values
 
-    def makeColumnIndex(self, value=None, columns=False, rows=False):
-        """
-        Make header
-
-        :param value:
-        :param columns:
-        :param rows:
-        :return:
-        """
-        # if not columns and not rows:
-        #     raise AttributeError("Columns or rows has to be set to True")
-        # if value is None:
-        #     if self.app.menuTargetElement is None:
-        #         raise ValueError("value is None and app.menuTargetElement is None")
-
-        # print(self.dataFrame.index.values)
-
-        self.moveIndexToColumn()
-        value = self.app.menuTargetElement.getValue()
-        self.dataFrame.set_index(value, inplace=True)
-        self.loadDataFrame()
-
-
-
-    def resetSort(self):
-        """Reset the sorting of dataframe"""
-        # self.dataFrame.sort_index(inplace=True)
-        self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
-        self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.index), axis=0)
-        self.loadDataFrame()
 
     def drop(self, value=None, columns=False, rows=False):
         """
@@ -153,34 +196,6 @@ class Spreadsheet(Page):
         self.dataFrame.drop(value, axis=axis, inplace=True)
         self.loadDataFrame()
 
-    def sort(self, event):
-        """Sort a row or column by values, TypeError is silenced if there are mixed values."""
-        element = event.widget.element
-        rowPressed = 0 if element.parentPage == getattr(self, "columnKeysGrid", None) else 1
-        value = element.getValue()
-
-        ascending = True
-        if rowPressed:
-            if self.previousRowSort == value:
-                ascending = False
-                self.previousRowSort = None
-            else:
-                self.previousRowSort = value
-        else:
-            if self.previousColumnSort == value:
-                ascending = False
-                self.previousColumnSort = None
-            else:
-                self.previousColumnSort = value
-
-        # In case of mixed values
-        try:
-            self.dataFrame.sort_values(inplace=True, axis=rowPressed, by=[value], ascending=ascending)
-        except TypeError:
-            return
-
-        self.loadDataFrame()
-
     cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
     def loadDataFrame(self, df=None):
         """
@@ -193,11 +208,13 @@ class Spreadsheet(Page):
         if self.columnKeys:
             size = Vec2(len(df.columns), 1)
             self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
-            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True, onClick=lambda e: self.sort(e), **self.cellConfig)
+            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True,
+                                         onClick=lambda e: self.sortRow(e.widget.element.getValue()), **self.cellConfig)
             self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
 
         if self.rowKeys:
-            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True, onClick=lambda e: self.sort(e), **self.cellConfig)
+            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
+                                      onClick=lambda e: self.sortColumn(e.widget.element.getValue()), **self.cellConfig)
 
         values = []
         for row in df.itertuples(index=False):
