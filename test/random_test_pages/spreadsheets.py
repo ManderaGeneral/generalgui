@@ -14,6 +14,9 @@ import random
 
 import pandas as pd
 
+from generallibrary.functions import leadingArgsCount
+
+
 def debug():
     for spreadsheet in spreadsheets:
         spreadsheet._syncColumnKeysWidth(True)
@@ -50,6 +53,9 @@ Button(page, "Big", onClick=lambda: ss(lambda x: x.getTopElement().widgetConfig(
 Button(page, "Debug", onClick=debug)
 
 spreadsheets = []
+
+
+
 
 spreadsheetPage = Page(page, pack=True)
 # spreadsheetPage = Page(page, pack=True, width=1000, height=1000, hsb=True, vsb=True, resizeable=True)

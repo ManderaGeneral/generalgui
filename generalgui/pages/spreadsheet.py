@@ -9,6 +9,10 @@ import pandas as pd
 from tkinter import filedialog
 from generalfile import File, Path
 
+import inspect
+
+# HERE ** Creating this in library
+from generallibrary.functions import changeParameter
 
 
 def loadDataFrame(func):
@@ -18,15 +22,16 @@ def loadDataFrame(func):
         return result
     return f
 
-
 def cellValue(func):
-    def f(self, cellValue=None, *args, **kwargs):
-
-        if cellValue is False:
+    def f(self, *args, **kwargs):
+        cellValue = inspect.signature(func).parameters.get("cellValue")
+        if cellValue is not None:
             if self.app.menuTargetElement is None:
                 raise ValueError("cellValue is None and app.menuTargetElement is None")
-            cellValue = self.app.menuTargetElement.getValue()
-            return func(self, cellValue=cellValue, *args, **kwargs)
+
+            value = self.app.menuTargetElement.getValue()
+            changeParameter(func, kwargs, args, "cellValue", value)
+
 
         return func(self, *args, **kwargs)
     return f
@@ -63,7 +68,8 @@ class Spreadsheet(Page):
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
             self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
             self.rowKeysGrid.menu("Row",
-                                  Remove_row=self.dropRow)
+                                  Remove_row=lambda: self.dropRow())
+                                  # Remove_row=lambda: self.dropRow(cellValue=False))
 
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
@@ -133,9 +139,10 @@ class Spreadsheet(Page):
 
     @loadDataFrame
     @cellValue
-    def dropRow(self, cellValue=False):
+    def dropRow(self, cellValue=None):
+
+        print(cellValue)
         # See if cellValue decorator works HERE ***
-        pass
         # value = self.app.menuTargetElement.getValue()
         #
         # axis = "columns" if columns else "rows"
