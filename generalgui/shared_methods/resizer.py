@@ -25,9 +25,9 @@ class Resizer:
         self.resizeTimer = Timer()
         self.resizeAfterID = None
 
-        self.createBind("<ButtonPress-1>", lambda event: self.startResize(event))
+        self.createBind("<Button-1>", lambda event: self.startResize(event))
         self.createBind("<ButtonRelease-1>", lambda event: self.app.widget.after(10, lambda: self.stopResize(event)))
-        self.motionBind = self.createBind("<Motion>", lambda event: self.checkIfResize(event), add=False)
+        self.motionBind = self.createBind("<Motion>", lambda event: self.checkIfResize(event))
 
         self.resizeStyle = self.createStyle("Resize", cursor="sizing")
 
@@ -61,7 +61,7 @@ class Resizer:
             self.resizeElement = None
             self.resizeStyle.disable()
 
-        mouse = self.getMouse(event)
+        mouse = self.getMouse()
 
         if self.resizeAfterID:
             self.app.widget.after_cancel(self.resizeAfterID)
@@ -91,17 +91,18 @@ class Resizer:
                 if not element.isShown():
                     continue
 
-                elePos = Vec2(element.widget.winfo_rootx(), element.widget.winfo_rooty())
-                self.resizeElementSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
-                eleLowerRight = elePos + self.resizeElementSize
+                self.resizeElementSize = element.getSize()
+                bottomRightPos = element.getBottomRightPos()
 
-                if eleLowerRight - Vec2(20) < mouse < eleLowerRight + Vec2(10):
+                # print(eleLowerRight - Vec2(20), mouse, eleLowerRight + Vec2(10))
+
+                if bottomRightPos - Vec2(20) < mouse < bottomRightPos + Vec2(10):
                     hoveringEle = element
                     break
 
             for removedElement in removedElements:
                 self.resizeables.remove(removedElement)
-
+            # print(hoveringEle, self.resizeHoverElement)
             if hoveringEle != self.resizeHoverElement:
                 self.resizeHoverElement = hoveringEle
                 if hoveringEle:
@@ -114,10 +115,11 @@ class Resizer:
         :param event:
         :param generalgui.app.App self:
         """
+        # print("heres", self.resizeHoverElement)
         self.checkIfResize(event)  # If moved to fast for cooldown
         if self.resizeHoverElement:
             self.resizeElement = self.resizeHoverElement
-            self.resizeMouseStart = self.getMouse(event)
+            self.resizeMouseStart = self.getMouse()
             return "break"
 
 

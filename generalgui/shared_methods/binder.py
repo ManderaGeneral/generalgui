@@ -88,11 +88,14 @@ class Binder:
         Every bound key only has this function bound.
 
         :param generalgui.Element or generalgui.App self:
+        :raises AttributeError: If Element or App is removed
         """
         if not self.exists():
-            raise AttributeError(f"Cannot call a removed element's bind: {self}")
+            raise AttributeError(f"Cannot call a removed element's or app's bind: {self}")
 
         returnBreak = event and key in self.disabledPropagations
+
+        # print(key, returnBreak, self.events.get(key, []))
 
         returns = []
         for bind in self.events.get(key, []):
@@ -120,7 +123,7 @@ class Binder:
         """
         return self._bindCaller(None, key)
 
-    def onClick(self, func, add=False):
+    def onClick(self, func, add=True):
         """
         Call a function when this element is left clicked.
 
@@ -146,7 +149,7 @@ class Binder:
 
         return value
 
-    def onRightClick(self, func, add=False):
+    def onRightClick(self, func, add=True):
         """
         Call a function when this element is right clicked.
 
@@ -183,6 +186,9 @@ class Bind:
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)
 
+    # def __repr__(self):
+    #     import inspect
+    #     return inspect.getsource(self.func)
 
 
 

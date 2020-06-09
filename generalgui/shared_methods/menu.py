@@ -101,7 +101,7 @@ class Menu_App:
                 self.addLabel(label)
                 for buttonText, buttonFunc in buttons.items():
                     self.addButton(buttonText, buttonFunc)
-        self.menuPage.place(self.getMouse(event) - Vec2(8, 35))
+        self.menuPage.place(self.getMouse() - Vec2(8, 35))
 
     def hideMenu(self):
         """Hide the menu"""

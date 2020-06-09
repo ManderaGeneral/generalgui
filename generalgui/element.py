@@ -58,7 +58,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
             self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
             self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
             self.createBind("<Return>", self.click)
-            self.onClick(onClick, add=True)
+            self.onClick(onClick)
 
         configParameters = {}
         self.packParameters = {}

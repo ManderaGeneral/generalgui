@@ -24,11 +24,41 @@ class Element_Page_App(Menu_Element_Page_App):
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        return Vec2(self.app.widget.winfo_x(), self.app.widget.winfo_y())
+        return Vec2(self.app.widget.winfo_rootx(), self.app.widget.winfo_rooty())
 
-    def getMouse(self, event):
-        """Get mouse vector2 from event"""
-        return Vec2(event.x_root, event.y_root) - self.getWindowPos()
+    def getTopLeftPos(self):
+        """
+        Get top left corner of this part's widget.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        return Vec2(self.widget.winfo_rootx(), self.widget.winfo_rooty()) - self.getWindowPos()
+
+    def getBottomRightPos(self):
+        """
+        Get bottom right corner of this part's widget.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        return self.getTopLeftPos() + self.getSize()
+
+    def getSize(self):
+        """
+        Get size of this part's widget.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        return Vec2(self.widget.winfo_width(), self.widget.winfo_height())
+
+    def getMouse(self):
+        """
+        Get mouse vector2 from event
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        # return Vec2(self.app.widget.winfo_pointerx(), self.app.widget.winfo_pointery())
+        return Vec2(self.app.widget.winfo_pointerx(), self.app.widget.winfo_pointery()) - self.getWindowPos()
+        # return Vec2(event.x_root, event.y_root) - self.getWindowPos()
 
     def rainbow(self, reset=False):
         """

@@ -29,6 +29,8 @@ spreadsheet.loadDataFrame()
 
 # button.widget.after(1000, button.click)
 
+# page.app.rainbow()
+
 page.show()
 
 # page.show(mainloop=False)

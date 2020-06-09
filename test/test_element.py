@@ -103,28 +103,28 @@ class ElementTest(unittest.TestCase):
 
     def test_textOnClick(self):
         text = Label(Page(), "hello")
-        text.onClick(lambda: 1)
+        text.onClick(lambda: 1, add=False)
         self.assertEqual([1], text.click())
-        text.onClick(lambda: 2)
+        text.onClick(lambda: 2, add=False)
         self.assertEqual([2], text.click())
         text.onClick(lambda: 3, add=True)
         self.assertEqual([2, 3], text.click())
-        text.onClick(lambda: 4, add=True)
+        text.onClick(lambda: 4)
         self.assertEqual([2, 3, 4], text.click())
-        text.onClick(lambda: 5)
+        text.onClick(lambda: 5, add=False)
         self.assertEqual([5], text.click())
 
     def test_buttonOnRightClick(self):
         button = Button(Page(), "hello")
-        button.onRightClick(lambda: 1)
+        button.onRightClick(lambda: 1, add=False)
         self.assertEqual([1], button.rightClick())
-        button.onRightClick(lambda: 2)
+        button.onRightClick(lambda: 2, add=False)
         self.assertEqual([2], button.rightClick())
         button.onRightClick(lambda: 3, add=True)
         self.assertEqual([2, 3], button.rightClick())
-        button.onRightClick(lambda: 4, add=True)
+        button.onRightClick(lambda: 4)
         self.assertEqual([2, 3, 4], button.rightClick())
-        button.onRightClick(lambda: 5)
+        button.onRightClick(lambda: 5, add=False)
         self.assertEqual([5], button.rightClick())
 
 
