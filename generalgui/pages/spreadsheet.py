@@ -11,8 +11,7 @@ from generalfile import File, Path
 
 import inspect
 
-# HERE ** Creating this in library
-from generallibrary.functions import changeParameter
+from generallibrary.functions import changeArgsAndKwargs, getParameter
 
 
 def loadDataFrame(func):
@@ -24,14 +23,12 @@ def loadDataFrame(func):
 
 def cellValue(func):
     def f(self, *args, **kwargs):
-        cellValue = inspect.signature(func).parameters.get("cellValue")
-        if cellValue is not None:
+        if getParameter(func, args, kwargs, "cellValue") is None:
             if self.app.menuTargetElement is None:
                 raise ValueError("cellValue is None and app.menuTargetElement is None")
 
             value = self.app.menuTargetElement.getValue()
-            changeParameter(func, kwargs, args, "cellValue", value)
-
+            args, kwargs = changeArgsAndKwargs(func, args, kwargs, cellValue=value)
 
         return func(self, *args, **kwargs)
     return f
@@ -59,7 +56,6 @@ class Spreadsheet(Page):
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
             self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
-
             self.columnKeysGrid.menu("Column",
                                      Remove_column=self.dropColumn,
                                      Make_column_index=self.makeColumnIndex)
@@ -68,12 +64,12 @@ class Spreadsheet(Page):
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
             self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
             self.rowKeysGrid.menu("Row",
-                                  Remove_row=lambda: self.dropRow())
-                                  # Remove_row=lambda: self.dropRow(cellValue=False))
+                                  Remove_row=self.dropRow,
+                                  Make_row_header=self.makeRowHeader)
 
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
-        if columnKeys:
+        if self.columnKeys:
             self.previousColumnSort = None
             if cellVSB:
                 Frame(self.columnKeysPageContainer, side="left", width=21, fill="y")  # To fill out for existing VSB in mainGrid
@@ -131,77 +127,73 @@ class Spreadsheet(Page):
 
     @loadDataFrame
     def sortHeader(self):
-        self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
+        try:
+            self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
+        except TypeError:
+            pass
 
     @loadDataFrame
     def sortIndex(self):
-        self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.index), axis=0)
+        try:
+            self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.index), axis=0)
+        except TypeError:
+            pass
 
     @loadDataFrame
     @cellValue
     def dropRow(self, cellValue=None):
-
-        print(cellValue)
-        # See if cellValue decorator works HERE ***
-        # value = self.app.menuTargetElement.getValue()
-        #
-        # axis = "columns" if columns else "rows"
-        # self.dataFrame.drop(value, axis=axis, inplace=True)
+        self.dataFrame.drop(cellValue, axis="rows", inplace=True)
 
     @loadDataFrame
-    def dropColumn(self):
-        pass
+    @cellValue
+    def dropColumn(self, cellValue=None):
+        self.dataFrame.drop(cellValue, axis="columns", inplace=True)
 
     @loadDataFrame
-    def makeRowHeader(self):
-        pass
+    @cellValue
+    def makeRowHeader(self, cellValue=None):
+        self.moveHeaderToRow()
+        row = self.dataFrame.loc[[cellValue]].values[0]
+        self.dataFrame.columns = row
+        self.dataFrame.columns.name = cellValue
+        self.dropRow(cellValue)
 
+    @cellValue
     @loadDataFrame
-    def makeColumnIndex(self):
+    def makeColumnIndex(self, cellValue=None):
         self.moveIndexToColumn()
-        value = self.app.menuTargetElement.getValue()
-        self.dataFrame.set_index(value, inplace=True)
+
+        column = self.dataFrame[cellValue].values
+        self.dataFrame.index = column
+        self.dataFrame.index.name = cellValue
+        self.dropColumn(cellValue)
 
     @loadDataFrame
     def resetHeader(self):
-        pass
+        self.moveHeaderToRow()
+        self.dataFrame.columns = range(self.dataFrame.shape[1])
 
     @loadDataFrame
     def resetIndex(self):
-        drop = self.dataFrame.index.name is None
-        self.dataFrame.reset_index(inplace=True, drop=drop)
+        self.moveIndexToColumn()
+        self.dataFrame.reset_index(inplace=True, drop=True)
 
+    def moveHeaderToRow(self):
+        headerName = self.dataFrame.columns.name
+        if headerName is None:
+            headerName = "headers"
 
-
-
+        if headerName not in self.dataFrame.index:
+            headerRow = pd.Series(self.dataFrame.columns, index=self.dataFrame.columns, name=headerName)
+            self.dataFrame = self.dataFrame.append(headerRow)
 
     def moveIndexToColumn(self):
         indexName = self.dataFrame.index.name
-        if indexName is not None:
+        if indexName is None:
+            indexName = "indexes"
+
+        if indexName not in self.dataFrame.columns:
             self.dataFrame[indexName] = self.dataFrame.index.values
-
-
-    def drop(self, value=None, columns=False, rows=False):
-        """
-        Remove a column or row
-
-        :param value: Index of either a column or a row, leave as None to use menuTarget
-        :param columns:
-        :param rows:
-        :raises AttributeError: If columns and rows are False
-        :raises ValueError: If value and menuTarget is None
-        """
-        if not columns and not rows:
-            raise AttributeError("Columns or rows has to be set to True")
-        if value is None:
-            if self.app.menuTargetElement is None:
-                raise ValueError("value is None and app.menuTargetElement is None")
-
-            value = self.app.menuTargetElement.getValue()
-
-        axis = "columns" if columns else "rows"
-        self.dataFrame.drop(value, axis=axis, inplace=True)
-        self.loadDataFrame()
 
     cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
     def loadDataFrame(self, df=None):
@@ -216,12 +208,12 @@ class Spreadsheet(Page):
             size = Vec2(len(df.columns), 1)
             self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
             self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True,
-                                         onClick=lambda e: self.sortRow(e.widget.element.getValue()), **self.cellConfig)
+                                         onClick=lambda e: self.sortColumn(e.widget.element.getValue()), **self.cellConfig)
             self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
 
         if self.rowKeys:
             self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
-                                      onClick=lambda e: self.sortColumn(e.widget.element.getValue()), **self.cellConfig)
+                                      onClick=lambda e: self.sortRow(e.widget.element.getValue()), **self.cellConfig)
 
         values = []
         for row in df.itertuples(index=False):
