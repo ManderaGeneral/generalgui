@@ -44,25 +44,6 @@ class Element_Page:
                 self.app.widget.update()  # To get correct scroll region
                 self.parentPage.canvas.callBind("<Configure>")  # Update canvas scroll region manually
 
-    def getParentPages(self, includeSelf=False):
-        """
-        Retrieves parent pages from element or page going all the way up to a top page that has App as it's 'parentPage' attribute.
-
-        :param generalgui.element.Element or generalgui.page.Page self: Element or Page
-        :param includeSelf: Whether to include self or not (Element or Page) as index 0
-        :rtype: list[generalgui.element.Element or generalgui.page.Page]
-        """
-        pages = []
-        parentPage = self.parentPage
-        while True:
-            if typeChecker(parentPage, "App", error=False):
-                if includeSelf:
-                    pages.insert(0, self)
-                return pages
-            else:
-                pages.append(parentPage)
-            parentPage = parentPage.parentPage
-
     def getTopPage(self):
         """
         Get the top page that has it's App as it's 'parentPage' attribute and has this element or page as a descendant.

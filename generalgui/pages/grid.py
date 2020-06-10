@@ -11,9 +11,16 @@ class Grid(Page):
     def __init__(self, parentPage=None, **parameters):
         super().__init__(parentPage=parentPage, **parameters)
 
-    def getGridElement(self, pos):
+    def getGridElement(self, pos, clampToSize=False):
+        if clampToSize:
+            pos = pos.clamp(Vec2(0,0), self.getGridSize())
+
         if slave := self.getBaseWidget().grid_slaves(column=pos.x, row=pos.y):
             return slave[0].element
+
+    def getPos(self, element):
+        gridInfo = element.widget.grid_info()
+        return Vec2(gridInfo["column"], gridInfo["row"])
 
     def getGridSize(self):
         size = self.getBaseWidget().grid_size()
@@ -48,6 +55,38 @@ class Grid(Page):
             elif removeExcess and not pos <= start + size - 1:
                 if element := self.getGridElement(pos):
                     element.remove()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

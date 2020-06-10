@@ -93,7 +93,7 @@ class Menu_App:
             self.menuPage.remove()
 
         self.menuPage = self.Page(self, relief="solid", borderwidth=1, padx=5, pady=5)
-        self.addLabel("Menu")
+
         for part in event.widget.element.getParentPages(includeSelf=True):
             if part.menuContent:
                 self.addLine()
@@ -101,13 +101,24 @@ class Menu_App:
                 self.addLabel(label)
                 for buttonText, buttonFunc in buttons.items():
                     self.addButton(buttonText, buttonFunc)
-        self.menuPage.place(self.getMouse() - Vec2(8, 35))
+
+        appSize = self.app.getSize()
+        pos = self.getMouse()
+        self.menuPage.place(pos)
+        self.app.widget.update()
+        size = self.menuPage.getSize()
+        bottomRightPos = self.menuPage.getBottomRightPos()
+
+        if not bottomRightPos <= appSize:
+            pos = pos.clamp(Vec2(0, 0), appSize - size - 2)
+            self.menuPage.place(pos)
 
     def hideMenu(self):
         """Hide the menu"""
         if self.menuPage:
             self.menuPage.remove()
             self.menuPage = None
+            self.menuTargetElement = None
 
 
 

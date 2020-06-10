@@ -32,7 +32,7 @@ class Element_Page_App(Menu_Element_Page_App):
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        return Vec2(self.widget.winfo_rootx(), self.widget.winfo_rooty()) - self.getWindowPos()
+        return Vec2(self.getTopWidget().winfo_rootx(), self.getTopWidget().winfo_rooty()) - self.getWindowPos()
 
     def getBottomRightPos(self):
         """
@@ -48,7 +48,7 @@ class Element_Page_App(Menu_Element_Page_App):
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        return Vec2(self.widget.winfo_width(), self.widget.winfo_height())
+        return Vec2(self.getTopWidget().winfo_width(), self.getTopWidget().winfo_height())
 
     def getMouse(self):
         """
@@ -56,9 +56,7 @@ class Element_Page_App(Menu_Element_Page_App):
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        # return Vec2(self.app.widget.winfo_pointerx(), self.app.widget.winfo_pointery())
         return Vec2(self.app.widget.winfo_pointerx(), self.app.widget.winfo_pointery()) - self.getWindowPos()
-        # return Vec2(event.x_root, event.y_root) - self.getWindowPos()
 
     def rainbow(self, reset=False):
         """
@@ -78,12 +76,46 @@ class Element_Page_App(Menu_Element_Page_App):
         for element in self.getChildren(includeParts=True):
             element.rainbow(reset=reset)
 
+    def getParentPages(self, includeSelf=False):
+        """
+        Retrieves parent pages from element or page going all the way up to a top page that has App as it's 'parentPage' attribute.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        :param includeSelf: Whether to include self or not (Element or Page) as index 0
+        :rtype: list[generalgui.element.Element or generalgui.page.Page]
+        """
+        pages = []
+
+        if typeChecker(self, "App", error=False):
+            return pages
+
+        parentPage = self.parentPage
+        while True:
+            if typeChecker(parentPage, "App", error=False):
+                if includeSelf:
+                    pages.insert(0, self)
+                return pages
+            else:
+                pages.append(parentPage)
+            parentPage = parentPage.parentPage
+
+    def getFirstParentClass(self, className):
+        """
+        Iterate parent pages to return first className match.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        :param className: Name or type of part, used by typeChecker
+        """
+        for part in self.getParentPages():
+            if typeChecker(part, className, error=False):
+                return part
+
     @ignore
     def getChildren(self, includeParts=False, ignore=None):
         """
         Get children pages and elements that's one step below in hierarchy.
 
-        :param generalgui.page.Page or generalgui.app.App self: Page or App
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param includeParts: Whether to get page parts or one page
         :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
         :return: Children elements in list

@@ -12,6 +12,7 @@ from generalfile import File, Path
 import inspect
 
 from generallibrary.functions import changeArgsAndKwargs, getParameter
+from generallibrary.types import typeChecker
 
 
 def loadDataFrame(func):
@@ -21,17 +22,46 @@ def loadDataFrame(func):
         return result
     return f
 
-def cellValue(func):
+
+def indexValue(func):
     def f(self, *args, **kwargs):
-        if getParameter(func, args, kwargs, "cellValue") is None:
-            if self.app.menuTargetElement is None:
-                raise ValueError("cellValue is None and app.menuTargetElement is None")
-
-            value = self.app.menuTargetElement.getValue()
-            args, kwargs = changeArgsAndKwargs(func, args, kwargs, cellValue=value)
-
-        return func(self, *args, **kwargs)
+        return cellValue(func, self, args, kwargs, index=True)
     return f
+
+def headerValue(func):
+    def f(self, *args, **kwargs):
+        return cellValue(func, self, args, kwargs, header=True)
+    return f
+
+def cellValue(func, self, args, kwargs, index=False, header=False):
+    cellValue = getParameter(func, args, kwargs, "cellValue")
+
+    element = None
+    if cellValue is None:
+        if self.app.menuTargetElement is None:
+            raise ValueError("cellValue is None and app.menuTargetElement is None")
+        element = self.app.menuTargetElement
+
+    elif typeChecker(cellValue, "Event", error=False):
+        event = cellValue
+        element = event.widget.element
+
+    if element is not None:
+        grid = element.parentPage
+        spreadsheet = grid.getFirstParentClass("Spreadsheet")
+        if grid == spreadsheet.mainGrid:
+            gridPos = grid.getPos(element)
+            if index:
+                value = spreadsheet.dataFrame.index[gridPos.y - 1]
+            elif header:
+                value = spreadsheet.dataFrame.columns[gridPos.x]
+            else:
+                raise ValueError("index or header has to be True")
+        else:
+            value = element.getValue()
+        args, kwargs = changeArgsAndKwargs(func, args, kwargs, cellValue=value)
+
+    return func(self, *args, **kwargs)
 
 
 class Spreadsheet(Page):
@@ -47,6 +77,17 @@ class Spreadsheet(Page):
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
 
+        menus = {
+            "Column": {
+                "Remove_column": self.dropColumn,
+                "Make_column_index": self.makeColumnIndex
+            },
+            "Row": {
+                "Remove_row": self.dropRow,
+                "Make_row_header": self.makeRowHeader
+            }
+        }
+
         self.cellHSB = cellHSB
         self.cellVSB = cellVSB
         self.columnKeys = columnKeys
@@ -56,16 +97,18 @@ class Spreadsheet(Page):
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
             self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
-            self.columnKeysGrid.menu("Column",
-                                     Remove_column=self.dropColumn,
-                                     Make_column_index=self.makeColumnIndex)
+            # self.columnKeysGrid.menu("Column",
+            #                          Remove_column=self.dropColumn,
+            #                          Make_column_index=self.makeColumnIndex)
+            self.columnKeysGrid.menu("Column", **menus["Column"])
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
             self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
-            self.rowKeysGrid.menu("Row",
-                                  Remove_row=self.dropRow,
-                                  Make_row_header=self.makeRowHeader)
+            # self.rowKeysGrid.menu("Row",
+            #                       Remove_row=self.dropRow,
+            #                       Make_row_header=self.makeRowHeader)
+            self.rowKeysGrid.menu("Row", **menus["Row"])
 
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
@@ -82,6 +125,12 @@ class Spreadsheet(Page):
         # Update headers whenever canvas moves (Manual scrollbar, mousewheel and right-click drag)
         if self.rowKeys or self.columnKeys:
             self.mainGrid.canvasFrame.createBind("<Configure>", lambda event: self._syncKeysScroll(event), add=True)
+
+        if not self.rowKeys:
+            self.mainGrid.menu("Row", **menus["Row"])
+
+        if not self.columnKeys:
+            self.mainGrid.menu("Column", **menus["Column"])
 
         self.dataFrame = pd.DataFrame()
 
@@ -100,32 +149,6 @@ class Spreadsheet(Page):
         # self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
 
     @loadDataFrame
-    def sortRow(self, index):
-        ascending = True
-        if self.previousRowSort == index:
-            ascending = False
-            self.previousRowSort = None
-        else:
-            self.previousRowSort = index
-        try:  # In case of mixed values
-            self.dataFrame.sort_values(inplace=True, axis=1, by=[index], ascending=ascending)
-        except TypeError:
-            return
-
-    @loadDataFrame
-    def sortColumn(self, header):
-        ascending = True
-        if self.previousColumnSort == header:
-            ascending = False
-            self.previousColumnSort = None
-        else:
-            self.previousColumnSort = header
-        try:  # In case of mixed values
-            self.dataFrame.sort_values(inplace=True, axis=0, by=[header], ascending=ascending)
-        except TypeError:
-            return
-
-    @loadDataFrame
     def sortHeader(self):
         try:
             self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
@@ -140,17 +163,45 @@ class Spreadsheet(Page):
             pass
 
     @loadDataFrame
-    @cellValue
+    @indexValue
+    def sortRow(self, cellValue=None):
+        ascending = True
+        if self.previousRowSort == cellValue:
+            ascending = False
+            self.previousRowSort = None
+        else:
+            self.previousRowSort = cellValue
+        try:  # In case of mixed values
+            self.dataFrame.sort_values(inplace=True, axis=1, by=[cellValue], ascending=ascending)
+        except TypeError:
+            return
+
+    @loadDataFrame
+    @headerValue
+    def sortColumn(self, cellValue=None):
+        ascending = True
+        if self.previousColumnSort == cellValue:
+            ascending = False
+            self.previousColumnSort = None
+        else:
+            self.previousColumnSort = cellValue
+        try:  # In case of mixed values
+            self.dataFrame.sort_values(inplace=True, axis=0, by=[cellValue], ascending=ascending)
+        except TypeError:
+            return
+
+    @loadDataFrame
+    @indexValue
     def dropRow(self, cellValue=None):
         self.dataFrame.drop(cellValue, axis="rows", inplace=True)
 
     @loadDataFrame
-    @cellValue
+    @headerValue
     def dropColumn(self, cellValue=None):
         self.dataFrame.drop(cellValue, axis="columns", inplace=True)
 
     @loadDataFrame
-    @cellValue
+    @indexValue
     def makeRowHeader(self, cellValue=None):
         self.moveHeaderToRow()
         row = self.dataFrame.loc[[cellValue]].values[0]
@@ -158,7 +209,7 @@ class Spreadsheet(Page):
         self.dataFrame.columns.name = cellValue
         self.dropRow(cellValue)
 
-    @cellValue
+    @headerValue
     @loadDataFrame
     def makeColumnIndex(self, cellValue=None):
         self.moveIndexToColumn()
@@ -184,8 +235,9 @@ class Spreadsheet(Page):
             headerName = "headers"
 
         if headerName not in self.dataFrame.index:
-            headerRow = pd.Series(self.dataFrame.columns, index=self.dataFrame.columns, name=headerName)
-            self.dataFrame = self.dataFrame.append(headerRow)
+            headerRow = pd.DataFrame({headerName: self.dataFrame.columns.values}).T
+            headerRow.columns = self.dataFrame.columns
+            self.dataFrame = headerRow.append(self.dataFrame)
 
     def moveIndexToColumn(self):
         indexName = self.dataFrame.index.name
@@ -193,7 +245,7 @@ class Spreadsheet(Page):
             indexName = "indexes"
 
         if indexName not in self.dataFrame.columns:
-            self.dataFrame[indexName] = self.dataFrame.index.values
+            self.dataFrame.insert(0, indexName, self.dataFrame.index.values)
 
     cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
     def loadDataFrame(self, df=None):
@@ -208,12 +260,12 @@ class Spreadsheet(Page):
             size = Vec2(len(df.columns), 1)
             self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
             self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True,
-                                         onClick=lambda e: self.sortColumn(e.widget.element.getValue()), **self.cellConfig)
+                                         onClick=lambda e: self.sortColumn(e), **self.cellConfig)
             self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
 
         if self.rowKeys:
-            self.rowKeysGrid.fillGrid(Label, Vec2(0, 0), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
-                                      onClick=lambda e: self.sortRow(e.widget.element.getValue()), **self.cellConfig)
+            self.rowKeysGrid.fillGrid(Label, Vec2(0, 1), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
+                                      onClick=lambda e: self.sortRow(e), **self.cellConfig)
 
         values = []
         for row in df.itertuples(index=False):
