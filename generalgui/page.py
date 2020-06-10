@@ -91,11 +91,6 @@ class Page(Element_Page, Element_Page_App, Page_App):
     def __repr__(self):
         return f"{self.__class__.__name__}: [{self.topElement}]"
 
-    def place(self, pos):
-        """Places a page with coordinates"""
-        self.pack()
-        self.getTopElement().widget.place(x=pos.x, y=pos.y)
-
 
 
 

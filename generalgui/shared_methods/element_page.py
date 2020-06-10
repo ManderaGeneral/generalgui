@@ -4,7 +4,7 @@ from generallibrary.types import typeChecker
 
 from generalgui.shared_methods.decorators import ignore
 
-from generalvector import Vec
+from generalvector import Vec2
 
 from tkinter import TclError
 
@@ -43,6 +43,34 @@ class Element_Page:
                 # self.parentPage.canvas.widgetConfig(bg=Vec.random(0, 255).hex())
                 self.app.widget.update()  # To get correct scroll region
                 self.parentPage.canvas.callBind("<Configure>")  # Update canvas scroll region manually
+
+    def _place(self, pos):
+        """
+        Helper for place
+
+        :param Vec2 pos: Coords for widget
+        :param generalgui.element.Element or generalgui.page.Page self: Element or Page
+        """
+        self.getTopElement().widget.place(x=pos.x, y=pos.y)
+
+    def place(self, pos):
+        """
+        Places a page with coordinates
+
+        :param Vec2 pos: Coords for widget
+        :param generalgui.element.Element or generalgui.page.Page self: Element or Page
+        """
+        self.pack()
+
+        appSize = self.app.getSize()
+        self._place(pos)
+        self.app.widget.update()
+        size = self.getSize()
+        bottomRightPos = self.getBottomRightPos()
+
+        if not bottomRightPos <= appSize:
+            pos = pos.clamp(Vec2(0, 0), appSize - size - 2)
+            self._place(pos)
 
     def getTopPage(self):
         """

@@ -100,18 +100,16 @@ class Menu_App:
             for label, buttons in part.menuContent.items():
                 self.addLabel(label)
                 for buttonText, buttonFunc in buttons.items():
-                    self.addButton(buttonText, buttonFunc)
+                    if buttonText.endswith(":"):
+                        buttonValue = buttonFunc()
+                        if buttonValue is not None:
+                            self.addLabel(f"{buttonText} {buttonValue}")
+                    else:
+                        self.addButton(buttonText, buttonFunc)
 
-        appSize = self.app.getSize()
-        pos = self.getMouse()
-        self.menuPage.place(pos)
-        self.app.widget.update()
-        size = self.menuPage.getSize()
-        bottomRightPos = self.menuPage.getBottomRightPos()
+        self.menuPage.place(self.getMouse())
 
-        if not bottomRightPos <= appSize:
-            pos = pos.clamp(Vec2(0, 0), appSize - size - 2)
-            self.menuPage.place(pos)
+
 
     def hideMenu(self):
         """Hide the menu"""

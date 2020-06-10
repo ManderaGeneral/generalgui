@@ -7,33 +7,37 @@ from generalvector import Vec2
 import pandas as pd
 
 from tkinter import filedialog
-from generalfile import File, Path
-
-import inspect
+from generalfile import File
 
 from generallibrary.functions import changeArgsAndKwargs, getParameter
 from generallibrary.types import typeChecker
 
 
 def loadDataFrame(func):
+    """Decorator to automatically reload dataframe once it's been changed"""
     def f(self, *args, **kwargs):
+        """."""
         result = func(self, *args, **kwargs)
         self.loadDataFrame()
         return result
     return f
 
-
 def indexValue(func):
+    """Decorator to change the cellValue parameter to one index"""
     def f(self, *args, **kwargs):
-        return cellValue(func, self, args, kwargs, index=True)
+        """."""
+        return _cellValue(func, self, args, kwargs, index=True)
     return f
 
 def headerValue(func):
+    """Decorator to change the cellValue parameter to one header"""
     def f(self, *args, **kwargs):
-        return cellValue(func, self, args, kwargs, header=True)
+        """."""
+        return _cellValue(func, self, args, kwargs, header=True)
     return f
 
-def cellValue(func, self, args, kwargs, index=False, header=False):
+def _cellValue(func, self, args, kwargs, index=False, header=False):
+    """Helper for index and header decorators"""
     cellValue = getParameter(func, args, kwargs, "cellValue")
 
     element = None
@@ -41,10 +45,13 @@ def cellValue(func, self, args, kwargs, index=False, header=False):
         if self.app.menuTargetElement is None:
             raise ValueError("cellValue is None and app.menuTargetElement is None")
         element = self.app.menuTargetElement
+        if not typeChecker(element, ("Button", "Label"), error=False):  # Because element can be Frame
+            return
 
     elif typeChecker(cellValue, "Event", error=False):
         event = cellValue
         element = event.widget.element
+
 
     if element is not None:
         grid = element.parentPage
@@ -79,10 +86,14 @@ class Spreadsheet(Page):
 
         menus = {
             "Column": {
+                "Column:": self.getColumnName,
+                "Header:": self.getHeaderName,
                 "Remove_column": self.dropColumn,
                 "Make_column_index": self.makeColumnIndex
             },
             "Row": {
+                "Row:": self.getRowName,
+                "Index:": self.getIndexName,
                 "Remove_row": self.dropRow,
                 "Make_row_header": self.makeRowHeader
             }
@@ -97,17 +108,11 @@ class Spreadsheet(Page):
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
             self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
-            # self.columnKeysGrid.menu("Column",
-            #                          Remove_column=self.dropColumn,
-            #                          Make_column_index=self.makeColumnIndex)
             self.columnKeysGrid.menu("Column", **menus["Column"])
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
             self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
-            # self.rowKeysGrid.menu("Row",
-            #                       Remove_row=self.dropRow,
-            #                       Make_row_header=self.makeRowHeader)
             self.rowKeysGrid.menu("Row", **menus["Row"])
 
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
@@ -144,12 +149,35 @@ class Spreadsheet(Page):
                   Reset_index=self.resetIndex,
 
                   Sort_header=self.sortHeader,
-                  Sort_index=self.sortIndex)
+                  Sort_index=self.sortIndex,
 
-        # self.app.createBind("<Button-1>", lambda event: print(event), name="Spreadsheet")
+                  Clear_all=self.clearAll)
+
+
+    defaultHeaderName = "headers"
+    defaultIndexName = "indexes"
+
+    @indexValue
+    def getRowName(self, cellValue=None):
+        """Return the row name"""
+        return cellValue
+
+    @headerValue
+    def getColumnName(self, cellValue=None):
+        """Return the column name"""
+        return cellValue
+
+    def getHeaderName(self):
+        """Return the header name"""
+        return self.dataFrame.columns.name
+
+    def getIndexName(self):
+        """Return the index name"""
+        return self.dataFrame.index.name
 
     @loadDataFrame
     def sortHeader(self):
+        """Sort headers in dataframe"""
         try:
             self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
         except TypeError:
@@ -157,6 +185,7 @@ class Spreadsheet(Page):
 
     @loadDataFrame
     def sortIndex(self):
+        """Sort index in dataframe"""
         try:
             self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.index), axis=0)
         except TypeError:
@@ -165,6 +194,7 @@ class Spreadsheet(Page):
     @loadDataFrame
     @indexValue
     def sortRow(self, cellValue=None):
+        """Sort a row in dataframe"""
         ascending = True
         if self.previousRowSort == cellValue:
             ascending = False
@@ -179,6 +209,7 @@ class Spreadsheet(Page):
     @loadDataFrame
     @headerValue
     def sortColumn(self, cellValue=None):
+        """Sort a column in dataframe"""
         ascending = True
         if self.previousColumnSort == cellValue:
             ascending = False
@@ -193,46 +224,70 @@ class Spreadsheet(Page):
     @loadDataFrame
     @indexValue
     def dropRow(self, cellValue=None):
-        self.dataFrame.drop(cellValue, axis="rows", inplace=True)
+        """Drop a row in dataframe"""
+        if self.dataFrame.shape[0] == 1:
+            self.clearAll()
+        else:
+            self.dataFrame.drop(cellValue, axis="rows", inplace=True)
 
     @loadDataFrame
     @headerValue
     def dropColumn(self, cellValue=None):
-        self.dataFrame.drop(cellValue, axis="columns", inplace=True)
+        """Drop a column in dataframe"""
+        if self.dataFrame.shape[1] == 1:
+            self.clearAll()
+        else:
+            self.dataFrame.drop(cellValue, axis="columns", inplace=True)
 
     @loadDataFrame
     @indexValue
     def makeRowHeader(self, cellValue=None):
+        """Turn a row to header and make current header a row in dataframe"""
         self.moveHeaderToRow()
         row = self.dataFrame.loc[[cellValue]].values[0]
         self.dataFrame.columns = row
-        self.dataFrame.columns.name = cellValue
+        if cellValue == self.defaultHeaderName:
+            self.dataFrame.columns.name = None
+        else:
+            self.dataFrame.columns.name = cellValue
         self.dropRow(cellValue)
 
     @headerValue
     @loadDataFrame
     def makeColumnIndex(self, cellValue=None):
+        """Turn a column to index and make current index a column in dataframe"""
         self.moveIndexToColumn()
 
         column = self.dataFrame[cellValue].values
         self.dataFrame.index = column
-        self.dataFrame.index.name = cellValue
+        if cellValue == self.defaultIndexName:
+            self.dataFrame.index.name = None
+        else:
+            self.dataFrame.index.name = cellValue
         self.dropColumn(cellValue)
 
     @loadDataFrame
     def resetHeader(self):
+        """Reset header to integers"""
         self.moveHeaderToRow()
         self.dataFrame.columns = range(self.dataFrame.shape[1])
 
     @loadDataFrame
     def resetIndex(self):
+        """Reset index to integers"""
         self.moveIndexToColumn()
         self.dataFrame.reset_index(inplace=True, drop=True)
 
+    @loadDataFrame
+    def clearAll(self):
+        """Clear entire spreadsheet"""
+        self.dataFrame = pd.DataFrame()
+
     def moveHeaderToRow(self):
+        """Move header to first row"""
         headerName = self.dataFrame.columns.name
         if headerName is None:
-            headerName = "headers"
+            headerName = self.defaultHeaderName
 
         if headerName not in self.dataFrame.index:
             headerRow = pd.DataFrame({headerName: self.dataFrame.columns.values}).T
@@ -240,9 +295,10 @@ class Spreadsheet(Page):
             self.dataFrame = headerRow.append(self.dataFrame)
 
     def moveIndexToColumn(self):
+        """Move index to column row"""
         indexName = self.dataFrame.index.name
         if indexName is None:
-            indexName = "indexes"
+            indexName = self.defaultIndexName
 
         if indexName not in self.dataFrame.columns:
             self.dataFrame.insert(0, indexName, self.dataFrame.index.values)
@@ -299,6 +355,7 @@ class Spreadsheet(Page):
             File.write(path, self.dataFrame, overwrite=True)
 
     def _syncKeysScroll(self, _=None):
+        """Sync header and index scrolling to main grid's"""
         if self.columnKeys:
             self.columnKeysGrid.canvas.widget.xview_moveto(self.mainGrid.canvas.widget.xview()[0])
         if self.rowKeys:
@@ -345,11 +402,15 @@ class Spreadsheet(Page):
                 columnFrame.widgetConfig(width=mainWidth)
 
     def _syncRowKeysWidth(self):
+        """Set right width for index, also update filler if it exists"""
         if not self.rowKeys:
+            return
+        children = self.rowKeysGrid.getChildren()
+        if not children:
             return
 
         self.app.widget.update()  # To get right width
-        rowTitleWidth = self.rowKeysGrid.getChildren()[0].widget.winfo_width() + 5
+        rowTitleWidth = children[0].widget.winfo_width() + 5
         self.rowKeysPageContainer.getTopElement().widgetConfig(width=rowTitleWidth)
 
         if self.columnKeys:

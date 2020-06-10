@@ -9,8 +9,10 @@ import inspect
 
 import pandas as pd
 
-
-
+df = pd.DataFrame({"a": [0, 1]})
+df.index = ["hi", "there"]
+print(df)
+print(df.shape)
 
 def x():
     page.app.widget.after(2000, spreadsheet.remove)
@@ -32,6 +34,9 @@ spreadsheet.loadDataFrame()
 # page.app.rainbow()
 
 page.show()
+
+
+
 
 # page.show(mainloop=False)
 # page.app.remove()
