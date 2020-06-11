@@ -44,4 +44,13 @@ class Page_App:
         for child in self.getChildren(ignore=ignore):
             child.remove()
 
+    def packPart(self, part):
+        """
+        Pack a part to this Page or Parent.
+        Meant to be overridden if needed.
+
+        :param generalgui.page.Page or generalgui.app.App self: Page or App
+        :param part: Child part
+        """
+        part.widget.pack(**part.packParameters)
 

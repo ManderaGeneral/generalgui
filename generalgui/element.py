@@ -21,7 +21,10 @@ class Element(Element_Page, Element_App, Element_Page_App):
 
         typeChecker(parentPage, "Page")
 
-        parameters["master"] = parentPage.getBaseWidget()
+        self.app = parentPage.app
+        self.parentPage = parentPage
+        self.parentPart = parentPage.getBaseElement()
+        parameters["master"] = self.parentPart.widget
 
         # Extract initialization arguments from parameters
         initArgs = []
@@ -46,12 +49,9 @@ class Element(Element_Page, Element_App, Element_Page_App):
 
         self.parameters = parameters
         self.widget = widgetClass(*initArgs)
-
+        self.baseFor = None
 
         setattr(self.widget, "element", self)
-        self.parentPage = parentPage
-        self.parentPart = parentPage if parentPage.baseElement is None else parentPage.baseElement
-        self.app = parentPage.app
 
         if onClick:
             parameters["cursor"] = "hand2"
@@ -88,12 +88,10 @@ class Element(Element_Page, Element_App, Element_Page_App):
         Make this element the new base to the page it belongs to.
         If page doesn't have a top then this one becomes it as well.
         """
+        self.baseFor = self.parentPage
         self.parentPage.baseElement = self
         if self.parentPage.topElement is None:
             self.parentPage.topElement = self
-
-    def _grid(self):
-        self.widget.grid(**self.packParameters)
 
 
 

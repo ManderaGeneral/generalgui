@@ -1,8 +1,4 @@
 
-from generallibrary.types import typeChecker
-
-from generalvector import Vec2
-
 
 class Menu_Element_Page_App:
     """Keep all menu functionality in this module"""
@@ -18,10 +14,11 @@ class Menu_Element_Page_App:
         """
         self.menuContent[name] = buttons
 
+
 class Menu_App:
     """
-    Todo: Proper structure - App could have a list of pages containig buttons created by any page that should have a menu
-        So multiple pages in menu can be shown at once if menu was opened in a subpage where both pages have a menu
+    Menu should probably inherit page so it becomes reuseable
+
     Menu feature for App.
     Shows a menu when right clicking a page that has a menu enabled.
     """
@@ -57,11 +54,6 @@ class Menu_App:
         """
         :param generalgui.app.App self:
         """
-        # linePage = self.Page(self.menuPage, fill="x", pack=True, pady=5)
-        # self.Frame(linePage, width=5, fill="y", side="left")
-        # self.Frame(linePage, fill="x", side="left", bg="black", expand=True)
-        # self.Frame(linePage, width=5, fill="y", side="left")
-
         linePage = self.Page(self.menuPage, fill="x", pack=True, pady=10)
         self.Frame(linePage, fill="x", bg="gray")
         self.Frame(linePage, fill="x", height=2)
@@ -93,7 +85,6 @@ class Menu_App:
             self.menuPage.remove()
 
         self.menuPage = self.Page(self, relief="solid", borderwidth=1, padx=5, pady=5)
-
         for part in event.widget.element.getParentPages(includeSelf=True):
             if part.menuContent:
                 self.addLine()
@@ -108,8 +99,6 @@ class Menu_App:
                         self.addButton(buttonText, buttonFunc)
 
         self.menuPage.place(self.getMouse())
-
-
 
     def hideMenu(self):
         """Hide the menu"""

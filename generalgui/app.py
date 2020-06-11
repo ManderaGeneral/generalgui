@@ -41,11 +41,15 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         self.OptionMenu = gui.OptionMenu
         self.Scrollbar = gui.Scrollbar
 
+        self.LabelCheckbutton = gui.LabelCheckbutton
+        self.LabelEntry = gui.LabelEntry
+
         Scroller.__init__(self)
         Resizer.__init__(self)
         Menu_App.__init__(self)
 
-
+        self.menu("App", Rainbow=self.rainbow, Reset=lambda: self.rainbow(True))
+        # self.createBind("<Button-1>", lambda e: print(e.widget.element))
 
     def mainloop(self):
         """

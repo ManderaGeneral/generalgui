@@ -19,6 +19,37 @@ class Element_Page:
         """
         return "column" in self.getTopElement().packParameters and "row" in self.getTopElement().packParameters
 
+    def grid(self, pos):
+        """
+        Change this element's grid pack parameters and then call _grid.
+
+        :param generalgui.element.Element or generalgui.Page self: Element or Page
+        :param Vec2 pos: Grid position
+        """
+        self.packParameters.update(column=pos.x, row=pos.y)
+        self._grid()
+
+    def _grid(self):
+        """
+        Grids this Element's widget using the packParameters attribute.
+
+        :param generalgui.element.Element or generalgui.Page self: Element or Page
+        """
+        packParameters = {"sticky": "NSEW"}
+        packParameters.update(self.packParameters)
+        self.getTopWidget().grid(**packParameters)
+
+    def getParentPartPage(self):
+        """
+        Get the page of this element's or page's parentPart
+
+        :param generalgui.element.Element or generalgui.Page self: Element or Page
+        """
+        if typeChecker(self.parentPart, "App", error=False):
+            return self.app
+        else:
+            return self.parentPart.parentPage
+
     def pack(self):
         """
         Packs this Element's widget using the packParameters attribute.
@@ -29,18 +60,21 @@ class Element_Page:
             if self.topElement is None:
                 raise AttributeError("Cannot pack Page without a topElement.")
             self.topElement.pack()
+
         else:
+
             if self.hasGridParameters():
                 self._grid()
+
             else:
                 try:
-                    self.widget.pack(**self.packParameters)
+                    self.getParentPartPage().packPart(self)
+                    # self.parentPart.parentPage.packPart(self)
                 except TclError as e:
-                    print(self.packParameters)
+                    print(self, self.packParameters, self.parentPart)
                     raise e
 
             if self.parentPage.scrollable:
-                # self.parentPage.canvas.widgetConfig(bg=Vec.random(0, 255).hex())
                 self.app.widget.update()  # To get correct scroll region
                 self.parentPage.canvas.callBind("<Configure>")  # Update canvas scroll region manually
 

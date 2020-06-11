@@ -87,7 +87,7 @@ class Element_Page_App(Menu_Element_Page_App):
         pages = []
 
         if typeChecker(self, "App", error=False):
-            return pages
+            return [self]
 
         parentPage = self.parentPage
         while True:

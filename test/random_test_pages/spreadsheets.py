@@ -1,6 +1,6 @@
 """Random testing"""
 
-from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet, App
+from generalgui import Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet, App, ElementList
 
 from generalvector import Vec2
 
@@ -39,10 +39,11 @@ def addBig():
 
     ss(lambda x: x.loadDataFrame(df))
 
-page = Page(App())
+app = App()
+page = ElementList(app, maxFirstSteps=4)
 
-Button(page, "Rainbow", onClick=page.rainbow)
-reset = Button(page, "Reset", onClick=lambda: page.rainbow(reset=True))
+Button(page, "Rainbow", onClick=app.rainbow)
+reset = Button(page, "Reset", onClick=lambda: app.rainbow(reset=True))
 
 columnKeys = ("color", "number", "name")
 Button(page, "Add row", onClick=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
@@ -51,12 +52,15 @@ Button(page, "Add big", onClick=addBig)
 Button(page, "Small", onClick=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
 Button(page, "Big", onClick=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=2000, width=2000)))
 Button(page, "Debug", onClick=debug)
+# Page(page, height=100, pack=True)
+LabelEntry(page, "testing")
+LabelCheckbutton(page, "testing this one")
+
+
+
+page = Page(app)
 
 spreadsheets = []
-
-
-
-
 spreadsheetPage = Page(page, pack=True)
 # spreadsheetPage = Page(page, pack=True, width=1000, height=1000, hsb=True, vsb=True, resizeable=True)
 
@@ -80,7 +84,7 @@ for one in range(2):
 
 # Label(page, "Menu").widget.place(x=100, y=250)
 
-page.show()
+app.showChildren()
 
 
 

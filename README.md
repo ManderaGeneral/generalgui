@@ -22,8 +22,8 @@ Packed instantly because it always has to be inside a page.
  * .parentPart attribute in Label goes to Page's Frame.
  * Every part has a .parentPage and .parentPart attribute.
  * An Element can never have more than one widget.
- * A widget only has .element attribute.
- * Element can only be put inside a Page, so create subpages if needed.
+ * A tkinter widget only has .element attribute.
+ * Element can only be put inside a Page, not Frame, so create subpages if needed.
  * Elements are packed directly because they need a parent page.
  * Only have one method with the same name, even if it's shared.
  * Each feature can have it's own "cleanup_*" method which is called when removing part.

@@ -12,6 +12,10 @@ from generalfile import File
 from generallibrary.functions import changeArgsAndKwargs, getParameter
 from generallibrary.types import typeChecker
 
+# import statistics
+
+import numpy as np
+
 
 def loadDataFrame(func):
     """Decorator to automatically reload dataframe once it's been changed"""
@@ -57,7 +61,7 @@ def _cellValue(func, self, args, kwargs, index=False, header=False):
         grid = element.parentPage
         spreadsheet = grid.getFirstParentClass("Spreadsheet")
         if grid == spreadsheet.mainGrid:
-            gridPos = grid.getPos(element)
+            gridPos = grid.getGridPos(element)
             if index:
                 value = spreadsheet.dataFrame.index[gridPos.y - 1]
             elif header:
@@ -85,17 +89,19 @@ class Spreadsheet(Page):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
 
         menus = {
-            "Column": {
-                "Column:": self.getColumnName,
-                "Header:": self.getHeaderName,
-                "Remove_column": self.dropColumn,
-                "Make_column_index": self.makeColumnIndex
-            },
             "Row": {
-                "Row:": self.getRowName,
                 "Index:": self.getIndexName,
+                "Row:": self.getRowName,
+                "Average:": self.getRowAverage,
                 "Remove_row": self.dropRow,
                 "Make_row_header": self.makeRowHeader
+            },
+            "Column": {
+                "Header:": self.getHeaderName,
+                "Column:": self.getColumnName,
+                "Average:": self.getColumnAverage,
+                "Remove_column": self.dropColumn,
+                "Make_column_index": self.makeColumnIndex
             }
         }
 
@@ -156,6 +162,22 @@ class Spreadsheet(Page):
 
     defaultHeaderName = "headers"
     defaultIndexName = "indexes"
+
+    @indexValue
+    def getRowAverage(self, cellValue=None):
+        """Return the row average"""
+        try:
+            return np.average(self.dataFrame.loc[[cellValue]].values[0])
+        except TypeError:
+            return None
+
+    @headerValue
+    def getColumnAverage(self, cellValue=None):
+        """Return the column average"""
+        try:
+            return np.average(self.dataFrame[cellValue].values)
+        except TypeError:
+            return None
 
     @indexValue
     def getRowName(self, cellValue=None):

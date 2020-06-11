@@ -18,7 +18,7 @@ class Grid(Page):
         if slave := self.getBaseWidget().grid_slaves(column=pos.x, row=pos.y):
             return slave[0].element
 
-    def getPos(self, element):
+    def getGridPos(self, element):
         gridInfo = element.widget.grid_info()
         return Vec2(gridInfo["column"], gridInfo["row"])
 
@@ -45,7 +45,7 @@ class Grid(Page):
                     if element:
                         element.remove()
                     value = values[0] if values else None
-                    eleCls(self, column=pos.x, row=pos.y, value=value, sticky="NSEW", **parameters)
+                    eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
 
                     # element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
 
@@ -56,8 +56,28 @@ class Grid(Page):
                 if element := self.getGridElement(pos):
                     element.remove()
 
+    def getFirstElementPos(self, startPos, step):
+        pos = startPos
+        while True:
+            if element := self.getGridElement(pos):
+                return element
+            pos += step
+            if not pos.inrange(Vec2(0, 0), self.getGridSize()):
+                return None
 
+    def addToColumn(self, element, column):
+        pos = Vec2(column, self.getGridSize().y)
+        element.grid(self.getFirstElementPos(pos, Vec2(0, -1)) + Vec2(0, 1))
 
+    def addInPattern(self, element, start=Vec2(0), firstStep=Vec2(0, 1), secondStep=Vec2(1, 0), maxFirstSteps=5):
+        pos = start
+        while True:
+            for i in range(maxFirstSteps):
+                if not self.getGridElement(pos):
+                    element.grid(pos)
+                    return pos
+                pos += firstStep
+            pos = pos - firstStep * maxFirstSteps + secondStep
 
 
 

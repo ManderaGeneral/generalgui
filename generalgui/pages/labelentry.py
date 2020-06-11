@@ -7,7 +7,7 @@ class LabelEntry(Page):
     """
     Controls one Label and one Entry, very minimal page.
     """
-    def __init__(self, parentPage=None, value=None, default=None, width=None, **parameters):
+    def __init__(self, parentPage=None, value=None, default=None, width=15, **parameters):
         super().__init__(parentPage=parentPage, pady=4, **parameters)
 
         self.label = Label(self, value=value, side="left", padx=4)
