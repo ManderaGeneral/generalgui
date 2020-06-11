@@ -1,11 +1,12 @@
 """Tests for Button"""
 import tkinter as tk
-import unittest
+
+from test.shared_methods import GuiTests
 
 from generalgui import Page, Button, App
 
 
-class ButtonTest(unittest.TestCase):
+class ButtonTest(GuiTests):
     def test_button(self):
         for page in Page(App()), Page(App(), width=200, height=200):
             button = Button(page, "hello", lambda: 5)

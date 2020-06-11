@@ -10,7 +10,20 @@ from generalgui.shared_methods.scroller import Scroller
 from generalgui.shared_methods.resizer import Resizer
 from generalgui.shared_methods.menu import Menu_App
 
+from generallibrary.iterables import getFreeIndex
+from generallibrary.types import typeChecker
 
+
+class tkTk(Tk):
+    def after_helper(self, func, index):
+        del self.element.afters[index]
+        return func()
+
+    def after(self, ms, func=None, *args):
+        identifier = super().after(ms, lambda i=getFreeIndex(self.element.afters): self.after_helper(func, i), *args)
+        self.element.afters[getFreeIndex(self.element.afters)] = identifier
+
+apps = []
 class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
     """
     Controls one tkinter Tk object and adds a lot of convenient features.
@@ -19,7 +32,11 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         Element_App.__init__(self)
         Element_Page_App.__init__(self)
 
-        self.widget = Tk()
+        apps.append(self)
+
+        self.widget = tkTk()
+        self.afters = {}
+
         setattr(self.widget, "element", self)
         self.app = self
         self.mainlooped = False
@@ -29,9 +46,9 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         self.widget.option_add("*Font", default_font)
         # print(default_font.actual())
 
-        self.Page = gui.Page
         self.Element = Element
 
+        self.Page = gui.Page
         self.Button = gui.Button
         self.Canvas = gui.Canvas
         self.Checkbutton = gui.Checkbutton
@@ -54,6 +71,16 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         def setFocus(e):
             e.widget.focus_set()
         self.createBind("<Button-1>", setFocus)
+
+        # def cleanAfters():
+        #     for identifier in self.afters.values():
+        #         print(identifier)
+        #         self.widget.after_cancel(identifier)
+        # self.createBind("<Destroy>", cleanAfters)
+
+    @classmethod
+    def getApps(cls):
+        return apps
 
     def mainloop(self):
         """
@@ -80,6 +107,10 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         """
         if self.isShown():
             self.widget.withdraw()
+
+    def remove(self):
+        super().remove()
+        apps.remove(self)
 
 import generalgui as gui
 from generalgui.element import Element

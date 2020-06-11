@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "generalgui",
-    version = "0.0.2",
+    version = "1.1.4",
     description = (""
                    "Added binds and tests for them."
                    " Core features for GUI using Tkinter."
