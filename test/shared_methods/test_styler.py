@@ -2,12 +2,12 @@
 
 import unittest
 
-from generalgui import Page, Label, Button
+from generalgui import App, Page, Label, Button
 
 
 class StylerTest(unittest.TestCase):
     def test_init(self):
-        page = Page()
+        page = Page(App())
         label = Label(page, "random")
         page.show(mainloop=False)
 
@@ -42,7 +42,7 @@ class StylerTest(unittest.TestCase):
 
     def test_animate(self):
         pass  # Not working when mainloop is False
-        # button = Button(Page(), "click here")
+        # button = Button(Page(App()), "click here")
         # button.show(mainloop=False)
         #
         # hoverStyle = button.styleHandler.getStyle("Hover")

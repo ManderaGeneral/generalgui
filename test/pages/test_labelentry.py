@@ -2,12 +2,12 @@
 
 import unittest
 
-from generalgui import Page, LabelEntry
+from generalgui import App, Page, LabelEntry
 
 
 class LabelEntryTest(unittest.TestCase):
     def test(self):
-        labelEntry = LabelEntry(Page(), "hello", "defaultz")
+        labelEntry = LabelEntry(Page(App()), "hello", "defaultz")
         self.assertEqual("hello", labelEntry.label.getValue())
         self.assertEqual("defaultz", labelEntry.entry.getValue())
 

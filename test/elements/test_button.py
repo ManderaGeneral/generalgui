@@ -2,12 +2,12 @@
 import tkinter as tk
 import unittest
 
-from generalgui import Page, Button
+from generalgui import Page, Button, App
 
 
 class ButtonTest(unittest.TestCase):
     def test_button(self):
-        for page in Page(), Page(width=200, height=200):
+        for page in Page(App()), Page(App(), width=200, height=200):
             button = Button(page, "hello", lambda: 5)
             self.assertEqual(button.parentPage, page)
             self.assertIs(button.widget.element, button)
@@ -22,7 +22,7 @@ class ButtonTest(unittest.TestCase):
             self.assertRaises(tk.TclError, button.isShown)
 
     def test_value(self):
-        button = Button(Page(), "start")
+        button = Button(Page(App()), "start")
         self.assertEqual("start", button.getValue())
 
         button.setValue("changed")

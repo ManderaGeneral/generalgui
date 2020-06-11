@@ -2,12 +2,12 @@
 
 import unittest
 
-from generalgui import Page, Label
+from generalgui import App, Page, Label
 
 
 class FrameTest(unittest.TestCase):
     def test_init(self):
-        page = Page()
+        page = Page(App())
         label = Label(page, "Text")
 
         bind = label.createBind("<Button-1>", lambda: 5)

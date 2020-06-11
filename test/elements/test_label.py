@@ -2,12 +2,12 @@
 import tkinter as tk
 import unittest
 
-from generalgui import Page, Label
+from generalgui import App, Page, Label
 
 
 class LabelTest(unittest.TestCase):
     def test_label(self):
-        for page in Page(), Page(width=200, height=200):
+        for page in Page(App()), Page(App(), width=200, height=200):
             label = Label(page, "hello")
             self.assertEqual(label.parentPage, page)
             self.assertIs(label.widget.element, label)
@@ -20,7 +20,7 @@ class LabelTest(unittest.TestCase):
             self.assertRaises(tk.TclError, label.isShown)
 
     def test_value(self):
-        label = Label(Page(), "hello")
+        label = Label(Page(App()), "hello")
 
         label.setValue("test")
         self.assertEqual("test", label.getValue())

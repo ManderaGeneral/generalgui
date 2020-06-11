@@ -2,12 +2,12 @@
 import tkinter as tk
 import unittest
 
-from generalgui import Page, Label, Button, Checkbutton
+from generalgui import App, Page, Label, Button, Checkbutton
 
 
 class ElementTest(unittest.TestCase):
     def test_siblings(self):
-        for page in Page(), Page(width=200, height=200):
+        for page in Page(App()), Page(App(), width=200, height=200):
             text1 = Label(page, "hi")
             text2 = Label(page, "hello")
             self.assertEqual(text1.getSiblings(), [text2])
@@ -39,7 +39,7 @@ class ElementTest(unittest.TestCase):
             page.app.remove()
 
     def test_nextSibling(self):
-        page = Page()
+        page = Page(App())
         button = Button(page, "button")
         label = Label(page, "label")
         checkbutton = Checkbutton(page)
@@ -50,7 +50,7 @@ class ElementTest(unittest.TestCase):
         self.assertEqual(button.previousSibling(), checkbutton)
 
     def test_children(self):
-        for page in Page(), Page(width=200, height=200):
+        for page in Page(App()), Page(App(), width=200, height=200):
             text1 = Label(page, "hello")
             text2 = Label(page, "there")
             page2 = Page(page)
@@ -91,7 +91,7 @@ class ElementTest(unittest.TestCase):
             page.app.remove()
 
     def test_parents(self):
-        for page in Page(), Page(width=200, height=200):
+        for page in Page(App()), Page(App(), width=200, height=200):
             Label(page, "hello")
             Label(page, "there")
             page2 = Page(page)
@@ -102,7 +102,7 @@ class ElementTest(unittest.TestCase):
             self.assertEqual(text3.getParentPages(includeSelf=True), [text3, page2, page])
 
     def test_textOnClick(self):
-        text = Label(Page(), "hello")
+        text = Label(Page(App()), "hello")
         text.onClick(lambda: 1, add=False)
         self.assertEqual([1], text.click())
         text.onClick(lambda: 2, add=False)
@@ -115,7 +115,7 @@ class ElementTest(unittest.TestCase):
         self.assertEqual([5], text.click())
 
     def test_buttonOnRightClick(self):
-        button = Button(Page(), "hello")
+        button = Button(Page(App()), "hello")
         button.onRightClick(lambda: 1, add=False)
         self.assertEqual([1], button.rightClick())
         button.onRightClick(lambda: 2, add=False)

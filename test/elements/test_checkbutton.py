@@ -1,12 +1,12 @@
 """Tests for Checkbutton"""
 import unittest
 
-from generalgui import Page, Checkbutton
+from generalgui import App, Page, Checkbutton
 
 
 class CheckbuttonTest(unittest.TestCase):
     def test_value(self):
-        checkbutton = Checkbutton(Page())
+        checkbutton = Checkbutton(Page(App()))
         self.assertIs(False, checkbutton.getValue())
 
         checkbutton.setValue(True)
@@ -21,7 +21,7 @@ class CheckbuttonTest(unittest.TestCase):
         checkbutton.app.remove()
 
     def test_toggle(self):
-        checkbutton = Checkbutton(Page())
+        checkbutton = Checkbutton(Page(App()))
         self.assertIs(False, checkbutton.getValue())
 
         checkbutton.toggle()

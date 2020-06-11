@@ -2,7 +2,7 @@
 
 import unittest
 
-from generalgui import Page, Spreadsheet, Label
+from generalgui import App, Page, Spreadsheet, Label
 
 import pandas as pd
 
@@ -10,7 +10,7 @@ import pandas as pd
 class SpreadsheetTest(unittest.TestCase):
     def test_init(self):
         columnIndexes = ["col1", "col2"]
-        page = Page()
+        page = Page(App())
         for cellVSB in range(2):
             for cellHSB in range(2):
                 for columnKeys in range(2):

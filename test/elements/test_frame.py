@@ -2,12 +2,12 @@
 
 import unittest
 
-from generalgui import Page, Frame
+from generalgui import App, Page, Frame
 
 
 class FrameTest(unittest.TestCase):
     def test_init(self):
-        page = Page()
+        page = Page(App())
         frame = Frame(page)
         page.show(mainloop=False)
 

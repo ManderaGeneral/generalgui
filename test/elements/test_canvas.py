@@ -2,12 +2,12 @@
 
 import unittest
 
-from generalgui import Page, Canvas
+from generalgui import App, Page, Canvas
 
 
 class CanvasTest(unittest.TestCase):
     def test_init(self):
-        page = Page()
+        page = Page(App())
         canvas = Canvas(page)
         page.show(mainloop=False)
 

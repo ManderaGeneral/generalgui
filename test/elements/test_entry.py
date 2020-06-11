@@ -2,12 +2,12 @@
 
 import unittest
 
-from generalgui import Page, Entry, Button, Label
+from generalgui import Page, Entry, Button, Label, App
 
 
 class EntryTest(unittest.TestCase):
     def test__clickNextButton(self):
-        page = Page()
+        page = Page(App())
         entry = Entry(page, "hello")
         Label(page, "random")
         Button(page, "Change default", lambda: 5)
@@ -20,7 +20,7 @@ class EntryTest(unittest.TestCase):
         page.app.remove()
 
     def test__removeWord(self):
-        entry = Entry(Page())
+        entry = Entry(Page(App()))
         entry.setValue("hello there")
         entry._removeWord()
         self.assertEqual("hello x", entry.getValue())
@@ -48,7 +48,7 @@ class EntryTest(unittest.TestCase):
         entry.app.remove()
 
     def test_getValue_and_setValue(self):
-        entry = Entry(Page(), "default")
+        entry = Entry(Page(App()), "default")
         self.assertEqual("default", entry.getValue())
 
         entry.setValue("hello there")
@@ -78,7 +78,7 @@ class EntryTest(unittest.TestCase):
         entry.app.remove()
 
     def test_default(self):
-        entry = Entry(Page(), "default")
+        entry = Entry(Page(App()), "default")
         entry.clearIfDefault()
         self.assertEqual("", entry.getValue())
 
