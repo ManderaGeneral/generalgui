@@ -13,6 +13,7 @@ class InputList(ElementList):
     """
     def __init__(self, parentPage=None, maxFirstSteps=None, **parameters):
         super().__init__(parentPage=parentPage, maxFirstSteps=maxFirstSteps, **parameters)
+        self.inputElements = {}
 
     def packPart(self, element):
         typeChecker(element, ("Label", "Entry", "Checkbutton"))
@@ -27,4 +28,19 @@ class InputList(ElementList):
                 element = self.app.Checkbutton(parentPage=self, default=value)
             else:
                 element = self.app.Entry(parentPage=self, default=str(value))
+
             element.grid(pos + Vec2(1, 0))
+            self.addInputElement(key, element)
+
+    def getValues(self):
+        return {key: element.getValue() for key, element in self.inputElements.items()}
+
+    def addInputElement(self, key, element):
+        if key in self.inputElements:
+            raise KeyError(f"Key {key} already exists in inputElements")
+
+        self.inputElements[key] = element
+
+    def removeChildren(self, ignore=None):
+        super().removeChildren(ignore=ignore)
+        self.inputElements = {}

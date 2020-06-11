@@ -76,24 +76,30 @@ class Element_Page_App(Menu_Element_Page_App):
         for element in self.getChildren(includeParts=True):
             element.rainbow(reset=reset)
 
-    def getParentPages(self, includeSelf=False):
+    def getParentPages(self, includeSelf=False, includeApp=False):
         """
         Retrieves parent pages from element or page going all the way up to a top page that has App as it's 'parentPage' attribute.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param includeSelf: Whether to include self or not (Element or Page) as index 0
+        :param includeApp: Whether to include app or not
         :rtype: list[generalgui.element.Element or generalgui.page.Page]
         """
         pages = []
 
         if typeChecker(self, "App", error=False):
-            return [self]
+            if includeApp:
+                return [self]
+            else:
+                return []
 
         parentPage = self.parentPage
         while True:
             if typeChecker(parentPage, "App", error=False):
                 if includeSelf:
                     pages.insert(0, self)
+                if includeApp:
+                    pages.append(parentPage)
                 return pages
             else:
                 pages.append(parentPage)

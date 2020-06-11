@@ -85,7 +85,7 @@ class Menu_App:
             self.menuPage.remove()
 
         self.menuPage = self.Page(self, relief="solid", borderwidth=1, padx=5, pady=5)
-        for part in event.widget.element.getParentPages(includeSelf=True):
+        for part in event.widget.element.getParentPages(includeSelf=True, includeApp=True):
             if part.menuContent:
                 self.addLine()
             for label, buttons in part.menuContent.items():

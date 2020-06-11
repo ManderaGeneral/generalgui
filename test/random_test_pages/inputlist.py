@@ -26,7 +26,11 @@ def add():
 app = App()
 page = Page(app)
 
-Button(page, "Add", add)
+buttons = ElementList(page, maxFirstSteps=1)
+Button(buttons, "Add", add)
+Button(buttons, "Get", lambda: print(inputList.getValues()))
+Button(buttons, "Clear", lambda: inputList.removeChildren())
+
 inputList = InputList(page, maxFirstSteps=4)
 
 app.showChildren()
