@@ -1,11 +1,11 @@
 """Tests for Element"""
 import tkinter as tk
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Label, Button, Checkbutton
 
 
-class ElementTest(unittest.TestCase):
+class ElementTest(GuiTests):
     def test_siblings(self):
         for page in Page(App()), Page(App(), width=200, height=200):
             text1 = Label(page, "hi")

@@ -1,11 +1,11 @@
 """Tests for binds"""
 
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Label
 
 
-class FrameTest(unittest.TestCase):
+class FrameTest(GuiTests):
     def test_init(self):
         page = Page(App())
         label = Label(page, "Text")

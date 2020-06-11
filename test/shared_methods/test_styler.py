@@ -1,11 +1,11 @@
 """Tests for Styler"""
 
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Label, Button
 
 
-class StylerTest(unittest.TestCase):
+class StylerTest(GuiTests):
     def test_init(self):
         page = Page(App())
         label = Label(page, "random")

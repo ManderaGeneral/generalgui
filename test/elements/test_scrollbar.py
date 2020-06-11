@@ -1,11 +1,11 @@
 """Tests for Scrollbar"""
 
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Scrollbar
 
 
-class ScrollbarTest(unittest.TestCase):
+class ScrollbarTest(GuiTests):
     def test_init(self):
         page = Page(App())
         scrollbar = Scrollbar(page)

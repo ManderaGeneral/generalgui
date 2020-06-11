@@ -1,11 +1,11 @@
 """Tests for App"""
 import tkinter as tk
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page
 
 
-class AppTest(unittest.TestCase):
+class AppTest(GuiTests):
     def test_init(self):
         app = App()
         self.assertIs(app.app, app)

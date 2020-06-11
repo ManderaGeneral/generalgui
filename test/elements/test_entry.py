@@ -1,11 +1,11 @@
 """Tests for Entry"""
 
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import Page, Entry, Button, Label, App
 
 
-class EntryTest(unittest.TestCase):
+class EntryTest(GuiTests):
     def test__clickNextButton(self):
         page = Page(App())
         entry = Entry(page, "hello")

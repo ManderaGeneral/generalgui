@@ -1,11 +1,11 @@
 """Tests for Frame"""
 
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Frame
 
 
-class FrameTest(unittest.TestCase):
+class FrameTest(GuiTests):
     def test_init(self):
         page = Page(App())
         frame = Frame(page)

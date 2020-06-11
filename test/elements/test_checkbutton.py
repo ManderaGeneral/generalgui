@@ -1,10 +1,10 @@
 """Tests for Checkbutton"""
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Checkbutton
 
 
-class CheckbuttonTest(unittest.TestCase):
+class CheckbuttonTest(GuiTests):
     def test_value(self):
         checkbutton = Checkbutton(Page(App()))
         self.assertIs(False, checkbutton.getValue())

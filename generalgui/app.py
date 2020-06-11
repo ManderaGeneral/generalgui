@@ -109,8 +109,13 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
             self.widget.withdraw()
 
     def remove(self):
+        for identifier in self.afters.values():
+            print(identifier)
+            self.widget.after_cancel(identifier)
+        self.widget.update()
         super().remove()
         apps.remove(self)
+
 
 import generalgui as gui
 from generalgui.element import Element

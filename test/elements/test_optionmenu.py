@@ -1,10 +1,10 @@
 """Tests for OptionMenu"""
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, OptionMenu
 
 
-class OptionMenuTest(unittest.TestCase):
+class OptionMenuTest(GuiTests):
     def test_init(self):
         optionMenu = OptionMenu(Page(App()), [1, "hello", 3.5])
         self.assertEqual(optionMenu.getOptions(), [1, "hello", 3.5])

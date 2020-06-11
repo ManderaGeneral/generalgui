@@ -1,13 +1,13 @@
 """Tests for Spreadsheet"""
 
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Spreadsheet, Label
 
 import pandas as pd
 
 
-class SpreadsheetTest(unittest.TestCase):
+class SpreadsheetTest(GuiTests):
     def test_init(self):
         columnIndexes = ["col1", "col2"]
         page = Page(App())

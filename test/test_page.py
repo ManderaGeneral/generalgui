@@ -1,11 +1,11 @@
 """Tests for Page"""
 import tkinter as tk
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page
 
 
-class PageTest(unittest.TestCase):
+class PageTest(GuiTests):
     def test_init(self):
         for page in Page(App()), Page(App(), width=200, height=200):
             self.assertIs(page.parentPage, page.app)

@@ -1,11 +1,11 @@
 """Tests for LabelEntry"""
 
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, LabelCheckbutton
 
 
-class LabelEntryTest(unittest.TestCase):
+class LabelEntryTest(GuiTests):
     def test(self):
         labelEntry = LabelCheckbutton(Page(App()), "hello")
         self.assertEqual("hello", labelEntry.label.getValue())

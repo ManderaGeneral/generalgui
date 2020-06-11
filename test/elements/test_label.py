@@ -1,11 +1,11 @@
 """Tests for Button"""
 import tkinter as tk
-import unittest
+from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Label
 
 
-class LabelTest(unittest.TestCase):
+class LabelTest(GuiTests):
     def test_label(self):
         for page in Page(App()), Page(App(), width=200, height=200):
             label = Label(page, "hello")
