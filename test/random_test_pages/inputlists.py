@@ -15,7 +15,7 @@ from generallibrary.functions import leadingArgsCount
 
 
 def add():
-    inputList.fillWithDict({
+    inputList.fillWithValues({
         "random": True,
         "hello": "yellow",
         "whatever": None,
@@ -30,6 +30,8 @@ buttons = ElementList(page, maxFirstSteps=1)
 Button(buttons, "Add", add)
 Button(buttons, "Get", lambda: print(inputList.getValues()))
 Button(buttons, "Clear", lambda: inputList.removeChildren())
+# Button(buttons, "Test", lambda: app.widget.focus_set())
+# Button(buttons, "Test", lambda: app.test.widget.select_clear())
 
 inputList = InputList(page, maxFirstSteps=4)
 

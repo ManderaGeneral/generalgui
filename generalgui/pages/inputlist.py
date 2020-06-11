@@ -16,11 +16,14 @@ class InputList(ElementList):
         self.inputElements = {}
 
     def packPart(self, element):
+        # Don't pack at all, only check type with whitelist
         typeChecker(element, ("Label", "Entry", "Checkbutton"))
-        # self.addInPattern(element, maxFirstSteps=self.maxFirstSteps)
 
-    def fillWithDict(self, d):
-        for key, value in d.items():
+    def fillWithValues(self, values, add=False):
+        if not add:
+            self.removeChildren()
+
+        for key, value in values.items():
             label = self.app.Label(self, key)
             pos = self.addInPattern(label, secondStep=Vec2(2, 0), maxFirstSteps=self.maxFirstSteps)
 

@@ -49,7 +49,11 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         Menu_App.__init__(self)
 
         self.menu("App", Rainbow=self.rainbow, Reset=lambda: self.rainbow(True))
-        # self.createBind("<Button-1>", lambda e: print(e.widget.element))
+
+        # Mainly to remove focus from entries but had some mostly nice side-effects
+        def setFocus(e):
+            e.widget.focus_set()
+        self.createBind("<Button-1>", setFocus)
 
     def mainloop(self):
         """
