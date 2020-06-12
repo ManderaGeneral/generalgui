@@ -42,5 +42,6 @@ class OptionMenuTest(GuiTests):
         label1.remove()
         self.assertEqual(Vec2(0, 0), grid.getGridSize())
 
-
+    def test_fillGrid(self):
+        pass
 

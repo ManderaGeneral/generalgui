@@ -46,6 +46,16 @@ class Grid(Page):
         return Vec2(size[0], size[1])
 
     def fillGrid(self, eleCls, start, size, values=None, removeExcess=False, **parameters):
+        """
+        Fill grid with values, using a start position and a size.
+
+        :param class eleCls: Class to be created in each cell
+        :param Vec2 start: Start position
+        :param Vec2 size: Size of values as Vec2, needs to match values len
+        :param values: Values to be given to object as 'value' parameter
+        :param removeExcess: Whether to remove cells with a greater position than fill area
+        :param parameters: Parameters to be given to objects
+        """
         if values is not None:
             values = list(values)
 
