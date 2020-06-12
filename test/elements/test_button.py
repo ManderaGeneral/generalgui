@@ -8,7 +8,8 @@ from generalgui import Page, Button, App
 
 class ButtonTest(GuiTests):
     def test_button(self):
-        for page in Page(App()), Page(App(), width=200, height=200):
+        app = App()
+        for page in Page(app), Page(app, width=200, height=200):
             button = Button(page, "hello", lambda: 5)
             self.assertEqual(button.parentPage, page)
             self.assertIs(button.widget.element, button)
@@ -19,7 +20,7 @@ class ButtonTest(GuiTests):
 
             self.assertEqual([5], button.click())
 
-            page.app.remove()
+            page.remove()
             self.assertRaises(tk.TclError, button.isShown)
 
     def test_value(self):

@@ -7,10 +7,10 @@ from generalgui import App, Page
 
 class PageTest(GuiTests):
     def test_init(self):
-        for page in Page(App()), Page(App(), width=200, height=200):
+        app = App()
+        for page in Page(app), Page(app, width=200, height=200):
             self.assertIs(page.parentPage, page.app)
             self.assertIs(page.topElement.parentPage, page)
-            page.remove()
 
     def test_siblings(self):
         for page in Page(App()), Page(App(), width=200, height=200):
@@ -113,7 +113,7 @@ class PageTest(GuiTests):
             page.removeChildren()
             self.assertEqual(page.getChildren(), [])
 
-            page.app.remove()
+            page.remove()
             self.assertRaises(tk.TclError, page.isShown)
 
     def test_parents(self):

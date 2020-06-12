@@ -19,7 +19,7 @@ class AppTest(GuiTests):
         app.hide()
         self.assertFalse(app.isShown())
         app.remove()
-        self.assertRaises(tk.TclError, app.isShown)
+        self.assertEqual(False, app.isShown(error=False))
 
     def test_children(self):
         app = App()

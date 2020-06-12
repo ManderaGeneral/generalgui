@@ -19,12 +19,16 @@ print(df.shape)
 def x():
     page.app.widget.after(2000, spreadsheet.remove)
 def y():
-    page.app.widget.after(2000, spreadsheet.hide)
+    page.app.widget.after(2000, lambda: print(5))
+    # page.app.widget.after(2000, spreadsheet.hide)
+def z():
+    page.app.widget.after(2000, spreadsheet.app.remove)
 
 
 page = Page(App())
 Button(page, "Remove in 2 seconds", x)
 Button(page, "Hide in 2 seconds", y)
+Button(page, "Quit in 2 seconds", z)
 Button(page, "Show", lambda: spreadsheet.show())
 
 spreadsheet = Spreadsheet(page)

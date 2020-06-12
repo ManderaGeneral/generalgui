@@ -7,7 +7,8 @@ from generalgui import App, Page, Label, Button, Checkbutton
 
 class ElementTest(GuiTests):
     def test_siblings(self):
-        for page in Page(App()), Page(App(), width=200, height=200):
+        app = App()
+        for page in Page(app), Page(app, width=200, height=200):
             text1 = Label(page, "hi")
             text2 = Label(page, "hello")
             self.assertEqual(text1.getSiblings(), [text2])
@@ -36,7 +37,6 @@ class ElementTest(GuiTests):
 
             text1.parentPage.showChildren(mainloop=False)
             self.assertTrue(text2.isShown())
-            page.app.remove()
 
     def test_nextSibling(self):
         page = Page(App())
@@ -50,7 +50,8 @@ class ElementTest(GuiTests):
         self.assertEqual(button.previousSibling(), checkbutton)
 
     def test_children(self):
-        for page in Page(App()), Page(App(), width=200, height=200):
+        app = App()
+        for page in Page(app), Page(app, width=200, height=200):
             text1 = Label(page, "hello")
             text2 = Label(page, "there")
             page2 = Page(page)
@@ -88,10 +89,9 @@ class ElementTest(GuiTests):
             self.assertRaises(tk.TclError, page2.isShown)
             self.assertRaises(tk.TclError, text3.isShown)
 
-            page.app.remove()
-
     def test_parents(self):
-        for page in Page(App()), Page(App(), width=200, height=200):
+        app = App()
+        for page in Page(app), Page(app, width=200, height=200):
             Label(page, "hello")
             Label(page, "there")
             page2 = Page(page)

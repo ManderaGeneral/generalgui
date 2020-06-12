@@ -7,7 +7,8 @@ from generalgui import App, Page, Label
 
 class LabelTest(GuiTests):
     def test_label(self):
-        for page in Page(App()), Page(App(), width=200, height=200):
+        app = App()
+        for page in Page(app), Page(app, width=200, height=200):
             label = Label(page, "hello")
             self.assertEqual(label.parentPage, page)
             self.assertIs(label.widget.element, label)
@@ -16,7 +17,7 @@ class LabelTest(GuiTests):
             label.show(mainloop=False)
             self.assertTrue(label.isShown())
 
-            page.app.remove()
+            page.remove()
             self.assertRaises(tk.TclError, label.isShown)
 
     def test_value(self):

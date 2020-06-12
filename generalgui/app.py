@@ -110,11 +110,11 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
 
     def remove(self):
         for identifier in self.afters.values():
-            print(identifier)
             self.widget.after_cancel(identifier)
-        self.widget.update()
-        super().remove()
         apps.remove(self)
+
+        # self.widget.update()
+        self.widget.quit()
 
 
 import generalgui as gui

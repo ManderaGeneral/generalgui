@@ -8,3 +8,11 @@ class GuiTests(unittest.TestCase):
         for app in App.getApps():
             app.remove()
 
+    def setUp(self):
+        for app in App.getApps():
+            app.remove()
+
+
+
+
+
