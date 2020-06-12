@@ -109,10 +109,7 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
             self.widget.withdraw()
 
     def remove(self):
-        for identifier in self.afters.values():
-            self.widget.after_cancel(identifier)
         apps.remove(self)
-
         # self.widget.update()
         self.widget.quit()
 
