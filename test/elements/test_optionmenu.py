@@ -21,7 +21,7 @@ class OptionMenuTest(GuiTests):
         optionMenu.addOption("Hi")
         self.assertEqual(optionMenu.getOptions(), [1, "hello", 3.5, 4, "there", "Hi"])
 
-    def test_setValue(self):
+    def test_value(self):
         optionMenu = OptionMenu(Page(App()), [1, "hello", 3.5])
 
         optionMenu.setValue("hello")

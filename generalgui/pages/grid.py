@@ -4,25 +4,44 @@ from generalgui import Label, Page
 
 from generalvector import Vec2
 
+
 class Grid(Page):
     """
-    Controls one Label and one Entry, very minimal page.
+    Controls a grid, inherits Page.
     """
     def __init__(self, parentPage=None, **parameters):
         super().__init__(parentPage=parentPage, **parameters)
 
-    def getGridElement(self, pos, clampToSize=False):
-        if clampToSize:
-            pos = pos.clamp(Vec2(0,0), self.getGridSize())
+    def getGridElement(self, pos):
+        """
+        Returns the element in a certain position in grid, or None
 
+        :param Vec2 pos: Grid position to check
+        """
         if slave := self.getBaseWidget().grid_slaves(column=pos.x, row=pos.y):
             return slave[0].element
 
     def getGridPos(self, element):
+        """
+        Returns position of an element that's in this grid as a Vec2.
+
+        :param element:
+        :raises AttributeError: If element not in self
+        """
+        if element.parentPage != self:
+            raise AttributeError(f"{element}'s parent is {element.parentPage}, not {self}")
+
         gridInfo = element.widget.grid_info()
+
+        if "column" not in gridInfo or "row" not in gridInfo:
+            raise AttributeError(f"{gridInfo} missing column and or row")
+
         return Vec2(gridInfo["column"], gridInfo["row"])
 
     def getGridSize(self):
+        """
+        Get current grid size as a Vec2.
+        """
         size = self.getBaseWidget().grid_size()
         return Vec2(size[0], size[1])
 

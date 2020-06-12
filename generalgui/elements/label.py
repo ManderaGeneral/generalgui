@@ -20,9 +20,17 @@ class Label(Element):
         super().__init__(parentPage, tk.Label, text=value, **parameters)
 
     def setValue(self, value):
+        """
+        Set value of label
+
+        :param any value: Any value, is cast to str
+        """
         if value is None:
             value = ""
         self.widget["text"] = str(value)
 
     def getValue(self):
+        """
+        Get value of label as a dynamic type, "tRue" becomes True for example
+        """
         return strToDynamicType(self.widget["text"])
