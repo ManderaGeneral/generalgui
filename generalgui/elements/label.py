@@ -9,7 +9,7 @@ from generallibrary.types import strToDynamicType
 
 class Label(Element):
     """Controls one tkinter Label"""
-    def __init__(self, parentPage, value, **parameters):
+    def __init__(self, parentPage, value=None, **parameters):
         """
         Create a Label element that controls a label.
 

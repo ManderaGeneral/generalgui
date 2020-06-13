@@ -18,6 +18,9 @@ class Grid(Page):
 
         :param Vec2 pos: Grid position to check
         """
+        if not pos >= Vec2(0, 0):
+            return None
+
         if slave := self.getBaseWidget().grid_slaves(column=pos.x, row=pos.y):
             return slave[0].element
 
@@ -31,7 +34,7 @@ class Grid(Page):
         if element.parentPage != self:
             raise AttributeError(f"{element}'s parent is {element.parentPage}, not {self}")
 
-        gridInfo = element.widget.grid_info()
+        gridInfo = element.getTopWidget().grid_info()
 
         if "column" not in gridInfo or "row" not in gridInfo:
             raise AttributeError(f"{gridInfo} missing column and or row")
@@ -56,14 +59,16 @@ class Grid(Page):
         :param removeExcess: Whether to remove cells with a greater position than fill area
         :param parameters: Parameters to be given to objects
         """
-        if values is not None:
-            values = list(values)
 
         currentSize = self.getGridSize()
 
         maxSize = currentSize.max(start + size)
         fillRange = start.range(size)
 
+        if values is not None:
+            values = list(values)
+            if len(values) != len(fillRange):
+                raise ValueError("Values length doesn't match fillRange's")
 
         for pos in Vec2(0).range(maxSize):
             if fillRange and pos == fillRange[0]:
@@ -85,14 +90,28 @@ class Grid(Page):
                 if element := self.getGridElement(pos):
                     element.remove()
 
-    def getFirstElementPos(self, startPos, step):
+    def getFirstElementPos(self, startPos, step, confine=True, maxSteps=100):
+        """
+        Get position of first found element
+
+        :param Vec2 startPos: Inclusive position to start search
+        :param Vec2 step: Directional Vec2 to be used as step for each iteration
+        :param confine: Whether to confine search or not
+        :param int maxSteps: Maximum amount of steps to take without result before returning None
+        """
+        size = self.getGridSize()
         pos = startPos
-        while True:
-            if element := self.getGridElement(pos):
-                return element
+        for i in range(maxSteps):
+            if self.getGridElement(pos):
+                return pos
             pos += step
-            if not pos.inrange(Vec2(0, 0), self.getGridSize()):
-                return None
+
+            if confine:
+                pos = pos.confineTo(Vec2(0, 0), size)
+
+            if pos == startPos or not pos.inrange(Vec2(0, 0), size):
+                break
+        return None
 
     def addToColumn(self, element, column):
         pos = Vec2(column, self.getGridSize().y)

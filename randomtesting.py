@@ -10,7 +10,6 @@ import inspect
 import pandas as pd
 
 
-
 df = pd.DataFrame({"a": [0, 1]})
 df.index = ["hi", "there"]
 print(df)

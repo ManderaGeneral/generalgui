@@ -9,6 +9,9 @@ class LabelTest(GuiTests):
     def test_label(self):
         app = App()
         for page in Page(app), Page(app, width=200, height=200):
+            label = Label(page)
+            self.assertEqual("", label.getValue())
+
             label = Label(page, "hello")
             self.assertEqual(label.parentPage, page)
             self.assertIs(label.widget.element, label)
