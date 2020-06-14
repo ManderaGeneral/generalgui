@@ -59,7 +59,6 @@ class Grid(Page):
         :param removeExcess: Whether to remove cells with a greater position than fill area
         :param parameters: Parameters to be given to objects
         """
-
         currentSize = self.getGridSize()
 
         maxSize = currentSize.max(start + size)
@@ -90,39 +89,55 @@ class Grid(Page):
                 if element := self.getGridElement(pos):
                     element.remove()
 
-    def getFirstElementPos(self, startPos, step, confine=True, maxSteps=100):
+    def getFirstElementPos(self, startPos, step, confine=True, maxSteps=100, p=0):
         """
-        Get position of first found element
+        Get position of first found element.
 
         :param Vec2 startPos: Inclusive position to start search
         :param Vec2 step: Directional Vec2 to be used as step for each iteration
         :param confine: Whether to confine search or not
         :param int maxSteps: Maximum amount of steps to take without result before returning None
         """
-        size = self.getGridSize()
-        pos = startPos
+        maxPos = self.getGridSize() - 1
+        pos = startPos.sanitize(ints=True)
+        step.sanitize(ints=True)
+
+        if confine:
+            pos = pos.confineTo(Vec2(0, 0), maxPos)
+
         for i in range(maxSteps):
+            if p:
+                print(pos, maxPos)
             if self.getGridElement(pos):
                 return pos
             pos += step
 
             if confine:
-                pos = pos.confineTo(Vec2(0, 0), size)
+                pos = pos.confineTo(Vec2(0, 0), maxPos)
 
-            if pos == startPos or not pos.inrange(Vec2(0, 0), size):
+            if pos == startPos or not pos.inrange(Vec2(0, 0), maxPos):
                 break
         return None
 
-    def addToColumn(self, element, column):
-        pos = Vec2(column, self.getGridSize().y)
-        element.grid(self.getFirstElementPos(pos, Vec2(0, -1)) + Vec2(0, 1))
+    def appendToColumn(self, part, column):
+        """
+        Append a part to column, after the last possibly existing cell
 
-    def addInPattern(self, element, start=Vec2(0), firstStep=Vec2(0, 1), secondStep=Vec2(1, 0), maxFirstSteps=5):
+        :param generalgui.element.Element or generalgui.page.Page part:
+        :param int column: Which column to append to
+        :return: Position of filled cell
+        """
+        firstElementPos = self.getFirstElementPos(Vec2(column, -1), Vec2(0, -1))
+        firstEmptyPos = firstElementPos + Vec2(0, 1)
+        part.grid(firstEmptyPos)
+        return firstEmptyPos
+
+    def addInPattern(self, part, start=Vec2(0), firstStep=Vec2(0, 1), secondStep=Vec2(1, 0), maxFirstSteps=5):
         pos = start
         while True:
             for i in range(maxFirstSteps):
                 if not self.getGridElement(pos):
-                    element.grid(pos)
+                    part.grid(pos)
                     return pos
                 pos += firstStep
             pos = pos - firstStep * maxFirstSteps + secondStep

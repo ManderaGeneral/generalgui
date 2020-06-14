@@ -358,8 +358,6 @@ class Spreadsheet(Page):
     def loadTSV(self):
         """
         Load a tsv file
-
-        HERE ** Working, but headers can be messed up
         """
         filetypes = [("Open a tsv file", ".tsv")]
         path = filedialog.askopenfilename(title="Select spreadsheet", filetypes=filetypes)

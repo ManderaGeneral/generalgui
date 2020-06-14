@@ -90,6 +90,11 @@ class OptionMenuTest(GuiTests):
         self.assertEqual(Vec2(1, 2), grid.getFirstElementPos(Vec2(0, 2), Vec2(1, 0)))
         self.assertEqual(Vec2(2, 2), grid.getFirstElementPos(Vec2(0, 2), Vec2(-1, 0)))
 
+        Label(grid, column=0, row=2)
+        self.assertEqual(Vec2(0, 2), grid.getFirstElementPos(Vec2(3, 2), Vec2(1, 0), p=1))
+
+    def test_appendToColumn(self):
+        grid = Grid(App())
 
 
 
