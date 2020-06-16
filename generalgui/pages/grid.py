@@ -21,6 +21,8 @@ class Grid(Page):
         if not pos >= Vec2(0, 0):
             return None
 
+        pos = pos.sanitize(ints=True)
+
         if slave := self.getBaseWidget().grid_slaves(column=pos.x, row=pos.y):
             return slave[0].element
 
@@ -103,7 +105,7 @@ class Grid(Page):
         step.sanitize(ints=True)
 
         if confine:
-            pos = pos.confineTo(Vec2(0, 0), maxPos)
+            pos = pos.confineTo(Vec2(0, 0), maxPos, margin=0.5)
 
         for i in range(maxSteps):
             if p:
@@ -113,7 +115,7 @@ class Grid(Page):
             pos += step
 
             if confine:
-                pos = pos.confineTo(Vec2(0, 0), maxPos)
+                pos = pos.confineTo(Vec2(0, 0), maxPos, margin=0.5)
 
             if pos == startPos or not pos.inrange(Vec2(0, 0), maxPos):
                 break
