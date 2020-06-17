@@ -91,27 +91,32 @@ class Grid(Page):
                 if element := self.getGridElement(pos):
                     element.remove()
 
-    def getFirstElementPos(self, startPos, step, confine=True, maxSteps=100, p=0):
+    def getFirstElementPos(self, startPos, step=None, confine=False, maxSteps=100):
         """
         Get position of first found element.
+        Grid's upper left corner is always Vec2(0, 0).
+        Lower right corner is grid size - 1.
 
         :param Vec2 startPos: Inclusive position to start search
         :param Vec2 step: Directional Vec2 to be used as step for each iteration
         :param confine: Whether to confine search or not
         :param int maxSteps: Maximum amount of steps to take without result before returning None
         """
+        if step is None:
+            step = Vec2(0)
+
         maxPos = self.getGridSize() - 1
         pos = startPos.sanitize(ints=True)
         step.sanitize(ints=True)
 
-        if confine:
-            pos = pos.confineTo(Vec2(0, 0), maxPos, margin=0.5)
+        pos = pos.confineTo(Vec2(0, 0), maxPos, margin=0.5)
 
-        for i in range(maxSteps):
-            if p:
-                print(pos, maxPos)
+        for i in range(maxSteps + 1):
             if self.getGridElement(pos):
                 return pos
+            if step == 0:
+                break
+
             pos += step
 
             if confine:

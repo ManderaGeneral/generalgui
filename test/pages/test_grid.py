@@ -78,20 +78,41 @@ class OptionMenuTest(GuiTests):
         grid = Grid(App())
 
         Label(grid, column=1, row=2)
-        self.assertEqual(Vec2(1, 2), grid.getFirstElementPos(Vec2(-1, 0), Vec2(1, 1)))
 
-        self.assertEqual(None, grid.getFirstElementPos(Vec2(0, 0), Vec2(1, 1), confine=False))
+        # Ints sanitize
+        self.assertRaises(Exception, grid.getFirstElementPos, Vec2(1, 0.5))
+
+        # Initial jump
+        self.assertEqual(None, grid.getFirstElementPos(Vec2(-1, 0), Vec2(1, 1)))
+        self.assertEqual(Vec2(1.0, 2), grid.getFirstElementPos(Vec2(1, -1)))
+        self.assertEqual(Vec2(1, 2), grid.getFirstElementPos(Vec2(-1, 0), Vec2(1, 1), confine=True))
+
+        # Initial jump with max steps
+        self.assertEqual(None, grid.getFirstElementPos(Vec2(-1, 0), Vec2(1, 1), confine=True, maxSteps=1))
+        self.assertEqual(Vec2(1, 2), grid.getFirstElementPos(Vec2(-1, 0), Vec2(1, 1), confine=True, maxSteps=2))
+
+        # No initial jump, then three jumps
+        self.assertEqual(None, grid.getFirstElementPos(Vec2(0, 0), Vec2(1, 1)))
         self.assertEqual(Vec2(1, 2), grid.getFirstElementPos(Vec2(0, 0), Vec2(1, 1), confine=True))
 
+        # No jumps, move two steps
         self.assertEqual(Vec2(1, 2), grid.getFirstElementPos(Vec2(1, 0), Vec2(0, 1)))
         self.assertEqual(None, grid.getFirstElementPos(Vec2(1, 0), Vec2(0, 1), maxSteps=1))
 
+        # Two elements in row, make sure it gets first
         Label(grid, column=2, row=2)
         self.assertEqual(Vec2(1, 2), grid.getFirstElementPos(Vec2(0, 2), Vec2(1, 0)))
-        self.assertEqual(Vec2(2, 2), grid.getFirstElementPos(Vec2(0, 2), Vec2(-1, 0)))
 
+        # Step over one element
+        self.assertEqual(Vec2(2, 2), grid.getFirstElementPos(Vec2(0, 2), Vec2(2, 0)))
+
+        # Jump with multiple elements
+        self.assertEqual(None, grid.getFirstElementPos(Vec2(0, 2), Vec2(-1, 0)))
+        self.assertEqual(Vec2(2, 2), grid.getFirstElementPos(Vec2(0, 2), Vec2(-1, 0), confine=True))
+
+        # Initial jump with multiple elements
         Label(grid, column=0, row=2)
-        self.assertEqual(Vec2(0, 2), grid.getFirstElementPos(Vec2(3, 2), Vec2(1, 0), p=1))
+        self.assertEqual(Vec2(0, 2), grid.getFirstElementPos(Vec2(3, 2), Vec2(1, 0)))
 
     def test_appendToColumn(self):
         grid = Grid(App())
