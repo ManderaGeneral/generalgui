@@ -25,7 +25,8 @@ class InputList(ElementList):
 
         for key, value in values.items():
             label = self.app.Label(self, key)
-            pos = self.addInPattern(label, secondStep=Vec2(2, 0), maxFirstSteps=self.maxFirstSteps)
+            pos = self.getFirstPatternPos(secondStep=Vec2(2, 0), maxFirstSteps=self.maxFirstSteps)
+            label.grid(pos)
 
             if value is True or value is False:
                 element = self.app.Checkbutton(parentPage=self, default=value)

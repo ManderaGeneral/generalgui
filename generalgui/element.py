@@ -15,11 +15,15 @@ class Element(Element_Page, Element_App, Element_Page_App):
     Element is inherited by all tkinter widgets exluding App and Page.
     Shown by default. So when it's page is shown then all of page's children are shown automatically.
     """
-    def __init__(self, parentPage, widgetClass, pack=True, makeBase=False, resizeable=False, onClick=None, **parameters):
+    def __init__(self, parentPage, widgetClass, pack=True, makeBase=False, resizeable=False, onClick=None, pos=None, **parameters):
         Element_App.__init__(self)
         Element_Page_App.__init__(self)
 
         typeChecker(parentPage, "Page")
+
+        if pos is not None:
+            parameters["column"] = pos.x
+            parameters["row"] = pos.y
 
         self.app = parentPage.app
         self.parentPage = parentPage

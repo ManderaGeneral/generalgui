@@ -22,7 +22,7 @@ class ElementList(Grid):
         if element == self.frame:
             super().packPart(element)
         else:
-            self.addInPattern(element, maxFirstSteps=self.maxFirstSteps)
+            element.grid(self.getFirstPatternPos(maxFirstSteps=self.maxFirstSteps))
 
 
 

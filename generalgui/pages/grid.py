@@ -91,6 +91,42 @@ class Grid(Page):
                 if element := self.getGridElement(pos):
                     element.remove()
 
+    def confinePos(self, pos, maxPos=None):
+        """
+        Returns a confined pos between 0 and gridSize - 1
+
+        :param Vec2 pos:
+        :param Vec2 maxPos:
+        """
+        if maxPos is None:
+            maxPos = self.getGridSize() - 1
+        return pos.confineTo(Vec2(0, 0), maxPos, margin=0.5)
+
+    def _traverse(self, checkPosFunc, startPos, step=None, maxPos=None, confine=False, maxSteps=100):
+        if step is None:
+            step = Vec2(0)
+        if maxPos is None:
+            maxPos = self.getGridSize() - 1
+        if maxPos == -1:
+            return None
+
+        pos = startPos.sanitize(ints=True)
+        step.sanitize(ints=True)
+
+        pos = self.confinePos(pos, maxPos)
+
+        for i in range(maxSteps + 1):
+            if (result := checkPosFunc(pos)) is not None:
+                return result
+            if step == 0:
+                break
+            pos += step
+            if confine:
+                pos = self.confinePos(pos, maxPos)
+            if pos == startPos or not pos.inrange(Vec2(0, 0), maxPos):
+                break
+        return None
+
     def getFirstElementPos(self, startPos, step=None, confine=False, maxSteps=100):
         """
         Get position of first found element.
@@ -102,29 +138,55 @@ class Grid(Page):
         :param confine: Whether to confine search or not
         :param int maxSteps: Maximum amount of steps to take without result before returning None
         """
-        if step is None:
-            step = Vec2(0)
-
-        maxPos = self.getGridSize() - 1
-        pos = startPos.sanitize(ints=True)
-        step.sanitize(ints=True)
-
-        pos = pos.confineTo(Vec2(0, 0), maxPos, margin=0.5)
-
-        for i in range(maxSteps + 1):
+        def checkPosFunc(pos):
+            """Func passed to traverse"""
             if self.getGridElement(pos):
                 return pos
-            if step == 0:
-                break
 
-            pos += step
+        return self._traverse(checkPosFunc=checkPosFunc, startPos=startPos, step=step, confine=confine, maxSteps=maxSteps)
 
-            if confine:
-                pos = pos.confineTo(Vec2(0, 0), maxPos, margin=0.5)
+    def getFirstEmptyPos(self, startPos, step=None, confine=False, maxSteps=100):
+        """
+        Get position of first empty pos.
+        Grid's upper left corner is always Vec2(0, 0).
+        Lower right corner is grid size - 1.
 
-            if pos == startPos or not pos.inrange(Vec2(0, 0), maxPos):
-                break
-        return None
+        :param Vec2 startPos: Inclusive position to start search
+        :param Vec2 step: Directional Vec2 to be used as step for each iteration
+        :param confine: Whether to confine search or not
+        :param int maxSteps: Maximum amount of steps to take without result before returning None
+        """
+        def checkPosFunc(pos):
+            """Func passed to traverse"""
+            if not self.getGridElement(pos):
+                return pos
+
+        gridSize = self.getGridSize()
+        if gridSize == 0:
+            return startPos.max(0)
+
+        # maxPos = gridSize - 1 + step.absolute()
+        maxPos = gridSize - 1
+
+        traverse = self._traverse(checkPosFunc=checkPosFunc, startPos=startPos, step=step, maxPos=maxPos, confine=confine, maxSteps=maxSteps)
+        return traverse
+
+    def getFirstPatternPos(self, startPos=Vec2(0), firstStep=Vec2(0, 1), secondStep=Vec2(1, 0), maxFirstSteps=5):
+        """
+        Get position of first empty pos in pattern.
+
+        :param Vec2 startPos: Inclusive position to start search
+        :param Vec2 firstStep: Directional Vec2 to be used as step for each maxFirstSteps
+        :param Vec2 secondStep: Directional Vec2 to be used as step for each time firstStep has been made maxFirstSteps times
+        :param maxFirstSteps: Number of firstSteps before one secondStep
+        """
+        pos = startPos
+        while True:
+            for i in range(maxFirstSteps):
+                if not self.getGridElement(pos):
+                    return pos
+                pos += firstStep
+            pos = pos - firstStep * maxFirstSteps + secondStep
 
     def appendToColumn(self, part, column):
         """
@@ -134,20 +196,25 @@ class Grid(Page):
         :param int column: Which column to append to
         :return: Position of filled cell
         """
-        firstElementPos = self.getFirstElementPos(Vec2(column, -1), Vec2(0, -1))
-        firstEmptyPos = firstElementPos + Vec2(0, 1)
+        firstEmptyPos = self.getFirstEmptyPos(Vec2(column, 0), Vec2(0, 1))
+        if firstEmptyPos is None:
+            firstEmptyPos = Vec2(column, self.getGridSize().y)
         part.grid(firstEmptyPos)
         return firstEmptyPos
 
-    def addInPattern(self, part, start=Vec2(0), firstStep=Vec2(0, 1), secondStep=Vec2(1, 0), maxFirstSteps=5):
-        pos = start
-        while True:
-            for i in range(maxFirstSteps):
-                if not self.getGridElement(pos):
-                    part.grid(pos)
-                    return pos
-                pos += firstStep
-            pos = pos - firstStep * maxFirstSteps + secondStep
+    def appendToRow(self, part, row):
+        """
+        Append a part to column, after the last possibly existing cell
+
+        :param generalgui.element.Element or generalgui.page.Page part:
+        :param int row: Which row to append to
+        :return: Position of filled cell
+        """
+        firstEmptyPos = self.getFirstEmptyPos(Vec2(0, row), Vec2(1, 0))
+        if firstEmptyPos is None:
+            firstEmptyPos = Vec2(self.getGridSize().x, row)
+        part.grid(firstEmptyPos)
+        return firstEmptyPos
 
 
 
