@@ -1,7 +1,7 @@
 """Tests for Grid"""
 from test.shared_methods import GuiTests
 
-from generalgui import App, Grid, ElementList, Label, LabelEntry
+from generalgui import App, Grid, Label
 
 from generalvector import Vec2
 
@@ -135,6 +135,8 @@ class OptionMenuTest(GuiTests):
 
     def test_getFirstPatternPos(self):
         grid = Grid(App())
+
+        # Default pattern
         self.assertEqual(Vec2(0, 0), pos := grid.getFirstPatternPos())
         Label(grid, pos=pos)
         self.assertEqual(Vec2(0, 1), pos := grid.getFirstPatternPos())
@@ -150,8 +152,33 @@ class OptionMenuTest(GuiTests):
         self.assertEqual(Vec2(1, 1), pos := grid.getFirstPatternPos())
         Label(grid, pos=pos)
 
-        # HERE  ** A few more tests!
+        # One row down, two rows high
+        self.assertEqual(Vec2(1, 2), pos := grid.getFirstPatternPos(startPos=Vec2(1, 1), maxFirstSteps=2))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(2, 1), pos := grid.getFirstPatternPos(startPos=Vec2(1, 1), maxFirstSteps=2))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(2, 2), pos := grid.getFirstPatternPos(startPos=Vec2(1, 1), maxFirstSteps=2))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(3, 1), pos := grid.getFirstPatternPos(startPos=Vec2(1, 1), maxFirstSteps=2))
+        Label(grid, pos=pos)
 
+        # Left down
+        self.assertEqual(Vec2(10, 10), pos := grid.getFirstPatternPos(startPos=Vec2(10, 10), firstStep=Vec2(-1, 0), secondStep=Vec2(-1, -1), maxFirstSteps=2))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(9, 10), pos := grid.getFirstPatternPos(startPos=Vec2(10, 10), firstStep=Vec2(-1, 0), secondStep=Vec2(-1, -1), maxFirstSteps=2))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(9, 9), pos := grid.getFirstPatternPos(startPos=Vec2(10, 10), firstStep=Vec2(-1, 0), secondStep=Vec2(-1, -1), maxFirstSteps=2))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(8, 9), pos := grid.getFirstPatternPos(startPos=Vec2(10, 10), firstStep=Vec2(-1, 0), secondStep=Vec2(-1, -1), maxFirstSteps=2))
+        Label(grid, pos=pos)
+
+        # Digaonal
+        self.assertEqual(Vec2(20, 20), pos := grid.getFirstPatternPos(startPos=Vec2(20, 20), firstStep=Vec2(10), secondStep=Vec2(1, 1), maxFirstSteps=1))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(21, 21), pos := grid.getFirstPatternPos(startPos=Vec2(20, 20), firstStep=Vec2(10), secondStep=Vec2(1, 1), maxFirstSteps=1))
+        Label(grid, pos=pos)
+        self.assertEqual(Vec2(22, 22), pos := grid.getFirstPatternPos(startPos=Vec2(20, 20), firstStep=Vec2(10), secondStep=Vec2(1, 1), maxFirstSteps=1))
+        Label(grid, pos=pos)
 
     def test_append(self):
         grid = Grid(App())

@@ -174,6 +174,8 @@ class Grid(Page):
     def getFirstPatternPos(self, startPos=Vec2(0), firstStep=Vec2(0, 1), secondStep=Vec2(1, 0), maxFirstSteps=5):
         """
         Get position of first empty pos in pattern.
+        When firstStep has been made maxFirstSteps times we subtract all firstSteps and then make one secondStep.
+        If maxfirststeps is 1 then only second step is used.
 
         :param Vec2 startPos: Inclusive position to start search
         :param Vec2 firstStep: Directional Vec2 to be used as step for each maxFirstSteps
