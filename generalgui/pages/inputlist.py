@@ -9,14 +9,22 @@ from generalvector import Vec2
 
 class InputList(ElementList):
     """
-    Controls only labelcheckbuttons and labelentries, puts them in nice grid
+    Nice automatically formatted inputs.
+    Dynamically choses checkbutton or entry.
+    Easily get values as a dict.
+    Inherits ElementList, can only be packed by 'fillWithValues()'.
     """
     def __init__(self, parentPage=None, maxFirstSteps=None, **parameters):
         super().__init__(parentPage=parentPage, maxFirstSteps=maxFirstSteps, **parameters)
         self.inputElements = {}
 
     def packPart(self, element):
-        # Don't pack at all, only check type with whitelist
+        """
+        Don't pack at all, only check type with whitelist
+
+        :param element:
+        :return:
+        """
         typeChecker(element, ("Label", "Entry", "Checkbutton"))
 
     def fillWithValues(self, values, add=False):

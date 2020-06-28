@@ -10,8 +10,9 @@ import inspect
 
 import pandas as pd
 
-grid = Grid(App())
-Label(grid, column=1, row=1)
+# grid = Grid(App())
+# Label(grid, column=1, row=1)
 
-print(grid.getFirstEmptyPos(Vec2(1, -1), Vec2(0, -1)))
+# print(grid.getFirstEmptyPos(Vec2(1, -1), Vec2(0, -1)))
+
 
