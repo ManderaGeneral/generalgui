@@ -49,6 +49,9 @@ class Page_App:
         Pack a part to this Page or Parent.
         Meant to be overridden if needed.
 
+        There's probably a better way to achieve this behaviour where the parent can change how it's childrens' methods behave.
+        We could use it for remove as well for example.
+
         :param generalgui.page.Page or generalgui.app.App self: Page or App
         :param part: Child part
         """

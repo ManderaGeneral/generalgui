@@ -15,7 +15,7 @@ from generallibrary.functions import leadingArgsCount
 
 
 def add():
-    inputList.fillWithValues({
+    inputList.setValues({
         "random": True,
         "hello": "yellow",
         "whatever": None,
