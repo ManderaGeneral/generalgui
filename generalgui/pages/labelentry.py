@@ -6,6 +6,7 @@ from generalgui import Label, Entry, Page
 class LabelEntry(Page):
     """
     Controls one Label and one Entry, very minimal page.
+    Use InputList instead if using multiple inputs.
     """
     def __init__(self, parentPage=None, value=None, default=None, width=15, **parameters):
         super().__init__(parentPage=parentPage, pady=4, **parameters)

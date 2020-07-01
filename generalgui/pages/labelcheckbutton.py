@@ -5,7 +5,8 @@ from generalgui import Label, Checkbutton, Page
 
 class LabelCheckbutton(Page):
     """
-    Controls one Label and one Entry, very minimal page.
+    Controls one Label and one Checkbutton, very minimal page.
+    Use InputList instead if using multiple inputs.
     """
     def __init__(self, parentPage=None, value=None, default=False, **parameters):
         super().__init__(parentPage=parentPage, pady=4, **parameters)

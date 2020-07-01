@@ -11,6 +11,4 @@ class LabelEntryTest(GuiTests):
         self.assertEqual("hello", labelEntry.label.getValue())
         self.assertEqual("defaultz", labelEntry.entry.getValue())
 
-        labelEntry.app.remove()
-
 

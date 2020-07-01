@@ -11,7 +11,7 @@ setup(
                    " Core features for GUI using Tkinter."
                    ""),
     packages = find_packages(),
-    install_requires = ["wheel", "generallibrary", "generalvector", "pandas", "numpy"]
+    install_requires = ["wheel", "generallibrary", "generalvector", "generalfile", "pandas", "numpy"]
 )
 
 

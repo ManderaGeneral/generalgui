@@ -9,7 +9,6 @@ import pandas as pd
 
 class SpreadsheetTest(GuiTests):
     def test_init(self):
-        columnIndexes = ["col1", "col2"]
         page = Page(App())
         for cellVSB in range(2):
             for cellHSB in range(2):
@@ -17,23 +16,25 @@ class SpreadsheetTest(GuiTests):
                     for rowKeys in range(2):
                         spreadsheet = Spreadsheet(page, cellVSB=cellVSB, cellHSB=cellHSB, columnKeys=columnKeys, rowKeys=rowKeys)
 
-                        spreadsheet.loadDataFrame(pd.DataFrame([["hello", "there"]], columns=columnIndexes, index=["row"]))
+                        # Named keys
+                        spreadsheet.loadDataFrame(pd.DataFrame([["foo", 5], ["bar", 2.2]], columns=["name", "number"], index=["row", "another"]))
 
                         if columnKeys:
                             values = [ele.getValue() for ele in spreadsheet.columnKeysGrid.getChildren() if isinstance(ele, Label)]
-                            self.assertEqual(columnIndexes, values)
+                            self.assertEqual(["name", "number"], values)
                         else:
                             self.assertIsNone(getattr(spreadsheet, "columnKeysGrid", None))
 
                         if rowKeys:
                             values = [ele.getValue() for ele in spreadsheet.rowKeysGrid.getChildren()]
-                            self.assertEqual(["row"], values)
+                            self.assertEqual(["row", "another"], values)
                         else:
                             self.assertIsNone(getattr(spreadsheet, "rowKeysGrid", None))
 
-                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]
-                        self.assertEqual(["hello", "there"], cellValues)
+                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
+                        self.assertEqual(["foo", 5, "bar", 2.2], cellValues)
 
-        page.app.remove()
-
+                        spreadsheet.sortIndex()
+                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
+                        self.assertEqual(["bar", 2.2, "foo", 5], cellValues)
 

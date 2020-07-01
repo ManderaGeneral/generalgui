@@ -41,7 +41,7 @@ def headerValue(func):
     return f
 
 def _cellValue(func, self, args, kwargs, index=False, header=False):
-    """Helper for index and header decorators"""
+    """Helper for indexValue and headerValue decorators"""
     cellValue = getParameter(func, args, kwargs, "cellValue")
 
     element = None
@@ -77,13 +77,16 @@ def _cellValue(func, self, args, kwargs, index=False, header=False):
 
 class Spreadsheet(Page):
     """
-    Controls elements in a grid
-    If we figure out how two frames can always have same width with grid elements inside them then each row can be an entire frame so it's easy to sort
-    Should probably add row and column as arg to all elements instead of having them in packparameters
+    Controls multiple grids in a certain way to make it all look cohesive.
+    Has optional scrollbars and optional fixed row / column for keys.
+    Built-in right-clickable menu, if keys are disabled then those menu options can be accessed by right-clicking main grid instead.
 
-    Keys -> Header / Index
-    Header (df.columns) -> Columns
-    Index (df.index) -> Rows
+    Keywords:
+        Keys -> Header / Index
+
+        Header (df.columns) -> Column keys
+
+        Index (df.index) -> Row keys
     """
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
@@ -317,7 +320,7 @@ class Spreadsheet(Page):
             self.dataFrame = headerRow.append(self.dataFrame)
 
     def moveIndexToColumn(self):
-        """Move index to column row"""
+        """Move index to first column row"""
         indexName = self.dataFrame.index.name
         if indexName is None:
             indexName = self.defaultIndexName

@@ -1,9 +1,8 @@
 """Tests for InputList"""
+
 from test.shared_methods import GuiTests
 
 from generalgui import App, Page, InputList
-
-from generalvector import Vec2
 
 
 class InputListTest(GuiTests):
