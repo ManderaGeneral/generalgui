@@ -17,6 +17,35 @@ from generallibrary.types import typeChecker
 import numpy as np
 
 
+
+
+def ascending(attrName):
+    """
+    Generate a decorator based on attrName that works both for row and coloumn
+
+    :param str attrName: Should be "previousColumnSort" or "previousRowSort"
+    """
+    def wrapper(func):
+        """Decorator to automatically make the ascending parameter toggleable"""
+        def decorator(self, *args, **kwargs):
+            """."""
+            cellValue = getParameter(func, args, kwargs, "cellValue")
+            print(cellValue, self, attrName, getattr(self, attrName))
+
+            ascending = True
+            if getattr(self, attrName) == cellValue:
+                ascending = False
+                setattr(self, attrName, None)
+            else:
+                setattr(self, attrName, cellValue)
+
+            changeArgsAndKwargs(func, args, kwargs, ascending=ascending)
+
+            return func(self, *args, **kwargs)
+        return decorator
+    return wrapper
+
+
 def loadDataFrame(func):
     """Decorator to automatically reload dataframe once it's been changed"""
     def f(self, *args, **kwargs):
@@ -44,10 +73,16 @@ def _cellValue(func, self, args, kwargs, index=False, header=False):
     """Helper for indexValue and headerValue decorators"""
     cellValue = getParameter(func, args, kwargs, "cellValue")
 
+    # HERE ** Not sure why cellValue is None when element was pressed. Testing a new way to get clicked cell
+    ele = self.getElement()
+    ele.rainbow()
+    print(cellValue, self, self.app, ele)
+
     element = None
     if cellValue is None:
         if self.app.menuTargetElement is None:
             raise ValueError("cellValue is None and app.menuTargetElement is None")
+
         element = self.app.menuTargetElement
         if not typeChecker(element, ("Button", "Label"), error=False):  # Because element can be Frame
             return
@@ -55,7 +90,6 @@ def _cellValue(func, self, args, kwargs, index=False, header=False):
     elif typeChecker(cellValue, "Event", error=False):
         event = cellValue
         element = event.widget.element
-
 
     if element is not None:
         grid = element.parentPage
@@ -216,16 +250,12 @@ class Spreadsheet(Page):
         except TypeError:
             pass
 
-    @loadDataFrame
     @indexValue
-    def sortRow(self, cellValue=None):
+    @ascending("previousRowSort")
+    @loadDataFrame
+    def sortRow(self, cellValue=None, ascending=None):
+        print("sortrow")
         """Sort a row in dataframe"""
-        ascending = True
-        if self.previousRowSort == cellValue:
-            ascending = False
-            self.previousRowSort = None
-        else:
-            self.previousRowSort = cellValue
         try:  # In case of mixed values
             self.dataFrame.sort_values(inplace=True, axis=1, by=[cellValue], ascending=ascending)
         except TypeError:
@@ -235,6 +265,7 @@ class Spreadsheet(Page):
     @headerValue
     def sortColumn(self, cellValue=None):
         """Sort a column in dataframe"""
+        print(cellValue)
         ascending = True
         if self.previousColumnSort == cellValue:
             ascending = False
@@ -360,7 +391,7 @@ class Spreadsheet(Page):
 
     def loadTSV(self):
         """
-        Load a tsv file
+        Load a tsv file, configure header and index afterwards by right clicking
         """
         filetypes = [("Open a tsv file", ".tsv")]
         path = filedialog.askopenfilename(title="Select spreadsheet", filetypes=filetypes)

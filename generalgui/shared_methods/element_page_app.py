@@ -58,6 +58,18 @@ class Element_Page_App(Menu_Element_Page_App):
         """
         return Vec2(self.app.widget.winfo_pointerx(), self.app.widget.winfo_pointery()) - self.getWindowPos()
 
+    def getElement(self, pos=None):
+        """
+        Get element from pos
+
+        :param Vec2 pos: Pixel pos to search for element, defaults to getMouse().
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        if pos is None:
+            pos = self.getMouse()
+        pos += self.getWindowPos()
+        return self.app.widget.winfo_containing(pos.x, pos.y).element
+
     def rainbow(self, reset=False):
         """
         Give every widget and subwidget recursively a random background color.

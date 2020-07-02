@@ -38,3 +38,13 @@ class SpreadsheetTest(GuiTests):
                         cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
                         self.assertEqual(["bar", 2.2, "foo", 5], cellValues)
 
+                        spreadsheet.sortHeader()
+                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
+                        self.assertEqual(["bar", 2.2, "foo", 5], cellValues)
+
+                        spreadsheet.sortHeader()
+                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
+                        self.assertEqual([2.2, "bar", 5, "foo"], cellValues)
+
+
+
