@@ -1,7 +1,6 @@
 """App for generalgui, controls Tk"""
 
-from tkinter import Tk
-from tkinter import font
+from tkinter import Tk, TclError, font
 
 from generalgui.shared_methods.element_page_app import Element_Page_App
 from generalgui.shared_methods.element_app import Element_App
@@ -78,7 +77,10 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
 
         # Mainly to remove focus from entries but had some mostly nice side-effects
         def setFocus(e):
-            e.widget.focus_set()
+            try:
+                e.widget.focus_set()
+            except TclError:
+                pass
         self.createBind("<Button-1>", setFocus)
 
         # def cleanAfters():
