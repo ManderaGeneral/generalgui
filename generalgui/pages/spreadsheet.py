@@ -17,8 +17,6 @@ from generallibrary.types import typeChecker
 import numpy as np
 
 
-
-
 def ascending(attrName):
     """
     Generate a decorator based on attrName that works both for row and coloumn
@@ -119,22 +117,33 @@ class Spreadsheet(Page):
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
 
+        # Menus to put in respective keys grid if they exist, otherwise it's put in main grid
         menus = {
             "Row": {
                 "Index:": self.getIndexName,
                 "Row:": self.getRowName,
                 "Average:": self.getRowAverage,
+
                 "Sort_row": self.sortRow,
+                "Sort_index": self.sortIndex,
+
                 "Remove_row": self.dropRow,
-                "Make_row_header": self.makeRowHeader
+
+                "Make_row_header": self.makeRowHeader,
+                "Reset_index": self.resetIndex,
             },
             "Column": {
                 "Header:": self.getHeaderName,
                 "Column:": self.getColumnName,
                 "Average:": self.getColumnAverage,
+
                 "Sort_column": self.sortColumn,
+                "Sort_header": self.sortHeader,
+
                 "Remove_column": self.dropColumn,
-                "Make_column_index": self.makeColumnIndex
+
+                "Make_column_index": self.makeColumnIndex,
+                "Reset_header": self.resetHeader,
             }
         }
 
@@ -142,6 +151,8 @@ class Spreadsheet(Page):
         self.cellVSB = cellVSB
         self.columnKeys = columnKeys
         self.rowKeys = rowKeys
+        self.previousColumnSort = None
+        self.previousRowSort = None
 
         if self.columnKeys:
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
@@ -157,12 +168,10 @@ class Spreadsheet(Page):
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
         if self.columnKeys:
-            self.previousColumnSort = None
             if cellVSB:
                 Frame(self.columnKeysPageContainer, side="left", width=21, fill="y")  # To fill out for existing VSB in mainGrid
 
         if self.rowKeys:
-            self.previousRowSort = None
             if cellHSB:
                 Frame(self.rowKeysPageContainer, side="top", height=20, fill="x")  # To fill out for existing HSB in mainGrid. Height -1 for pady=1 in container.
 
@@ -183,13 +192,6 @@ class Spreadsheet(Page):
         self.menu("Spreadsheet",
                   Save_as_tsv=self.saveAsTSV,
                   Load_tsv_file=self.loadTSV,
-
-                  Reset_header=self.resetHeader,
-                  Reset_index=self.resetIndex,
-
-                  Sort_header=self.sortHeader,
-                  Sort_index=self.sortIndex,
-
                   Clear_all=self.clearAll)
 
 
@@ -231,24 +233,32 @@ class Spreadsheet(Page):
         return self.dataFrame.index.name
 
     @loadDataFrame
-    def sortHeader(self):
-        """Sort headers in dataframe"""
+    @ascending("previousRowSort")
+    def sortHeader(self, cellValue="header_thisvaluehastobeuniquesoimaddingthisfunstringwhichisverygoodpractice", ascending=None):
+        """
+        Sort headers in dataframe
+        self.preivousRowSort is assigned to cellValue to keep track of ascending toggling
+        """
         try:
-            self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.columns), axis=1)
+            self.dataFrame.sort_index(inplace=True, axis=1, ascending=ascending)
         except TypeError:
             pass
 
     @loadDataFrame
-    def sortIndex(self):
-        """Sort index in dataframe"""
+    @ascending("previousColumnSort")
+    def sortIndex(self, cellValue="index_thisvaluehastobeuniquesoimaddingthisfunstringwhichisverygoodpractice", ascending=None):
+        """
+        Sort index in dataframe
+        self.previousColumnSort is assigned to cellValue to keep track of ascending toggling
+        """
         try:
-            self.dataFrame = self.dataFrame.reindex(sorted(self.dataFrame.index), axis=0)
+            self.dataFrame.sort_index(inplace=True, axis=0, ascending=ascending)
         except TypeError:
             pass
 
     @indexValue
-    @ascending("previousRowSort")
     @loadDataFrame
+    @ascending("previousRowSort")
     def sortRow(self, cellValue=None, ascending=None):
         """Sort a row in dataframe"""
         try:  # In case of mixed values
@@ -257,8 +267,8 @@ class Spreadsheet(Page):
             return
 
     @headerValue
-    @ascending("previousColumnSort")
     @loadDataFrame
+    @ascending("previousColumnSort")
     def sortColumn(self, cellValue=None, ascending=None):
         """Sort a column in dataframe"""
         try:  # In case of mixed values
