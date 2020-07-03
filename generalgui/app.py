@@ -11,17 +11,26 @@ from generalgui.shared_methods.resizer import Resizer
 from generalgui.shared_methods.menu import Menu_App
 
 from generallibrary.iterables import getFreeIndex
-from generallibrary.types import typeChecker
 
 
 class tkTk(Tk):
-    def after_helper(self, func, index):
+    """Extend Tk class to handle queued functions and also allow kwargs as tkinter only allows args"""
+    def after_helper(self, func, index, *args, **kwargs):
+        """Wrapper for func queued with app.widget.after() to make func clean dict when called"""
         del self.element.afters[index]
-        return func()
+        return func(*args, **kwargs)
 
-    def after(self, ms, func=None, *args):
-        identifier = super().after(ms, lambda i=getFreeIndex(self.element.afters): self.after_helper(func, i), *args)
-        self.element.afters[getFreeIndex(self.element.afters)] = identifier
+    def after(self, ms, func=None, *args, **kwargs):
+        """Overriding to fill dict"""
+        index = getFreeIndex(self.element.afters)
+        identifier = super().after(ms, lambda func=func, index=index, args=args: self.after_helper(func, index, *args, **kwargs))
+        self.element.afters[index] = identifier
+        return index
+
+    def after_cancel(self, index):
+        """Overriding to clean dict"""
+        super().after_cancel(self.element.afters[index])
+        del self.element.afters[index]
 
 apps = []
 class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):

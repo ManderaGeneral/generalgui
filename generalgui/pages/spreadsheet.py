@@ -124,6 +124,7 @@ class Spreadsheet(Page):
                 "Index:": self.getIndexName,
                 "Row:": self.getRowName,
                 "Average:": self.getRowAverage,
+                "Sort_row": self.sortRow,
                 "Remove_row": self.dropRow,
                 "Make_row_header": self.makeRowHeader
             },
@@ -131,6 +132,7 @@ class Spreadsheet(Page):
                 "Header:": self.getHeaderName,
                 "Column:": self.getColumnName,
                 "Average:": self.getColumnAverage,
+                "Sort_column": self.sortColumn,
                 "Remove_column": self.dropColumn,
                 "Make_column_index": self.makeColumnIndex
             }

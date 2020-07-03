@@ -17,16 +17,16 @@ Tkinter widget is 'widget' attribute.
 Packed instantly because it always has to be inside a page.  
 
 ## Guiderules
- * Never use a widget directly, always go through an Element subclass.
+ * An Element always controls one widget.
+ * A tkinter widget only has .element attribute.
+ * Always use an Element's method if you can, otherwise you can always access element.widget to use tkinter directly.
  * .parentPage attribute in Label goes to Page.
  * .parentPart attribute in Label goes to Page's Frame.
  * Every part has a .parentPage and .parentPart attribute.
- * An Element can never have more than one widget.
- * A tkinter widget only has .element attribute.
  * Element can only be put inside a Page, not Frame, so create subpages if needed.
  * Elements are packed directly because they need a parent page.
+ 
  * Only have one method with the same name, even if it's shared.
- * Each feature can have it's own "cleanup_*" method which is called when removing part.
 
 ## Terms
 Term | Meaning
@@ -45,3 +45,5 @@ Widget      | -             | -             | -         | -             | -     
 ## Todo
 
 
+## Features
+ * App.widget.after can handle **kwargs and App.afters contains all queued "after" functions
