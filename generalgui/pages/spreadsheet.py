@@ -30,7 +30,6 @@ def ascending(attrName):
         def decorator(self, *args, **kwargs):
             """."""
             cellValue = getParameter(func, args, kwargs, "cellValue")
-            print(cellValue, self, attrName, getattr(self, attrName))
 
             ascending = True
             if getattr(self, attrName) == cellValue:
@@ -72,11 +71,6 @@ def headerValue(func):
 def _cellValue(func, self, args, kwargs, index=False, header=False):
     """Helper for indexValue and headerValue decorators"""
     cellValue = getParameter(func, args, kwargs, "cellValue")
-
-    # HERE ** Not sure why cellValue is None when element was pressed. Testing a new way to get clicked cell
-    ele = self.getElement()
-    ele.rainbow()
-    print(cellValue, self, self.app, ele)
 
     element = None
     if cellValue is None:
@@ -254,24 +248,17 @@ class Spreadsheet(Page):
     @ascending("previousRowSort")
     @loadDataFrame
     def sortRow(self, cellValue=None, ascending=None):
-        print("sortrow")
         """Sort a row in dataframe"""
         try:  # In case of mixed values
             self.dataFrame.sort_values(inplace=True, axis=1, by=[cellValue], ascending=ascending)
         except TypeError:
             return
 
-    @loadDataFrame
     @headerValue
-    def sortColumn(self, cellValue=None):
+    @ascending("previousColumnSort")
+    @loadDataFrame
+    def sortColumn(self, cellValue=None, ascending=None):
         """Sort a column in dataframe"""
-        print(cellValue)
-        ascending = True
-        if self.previousColumnSort == cellValue:
-            ascending = False
-            self.previousColumnSort = None
-        else:
-            self.previousColumnSort = cellValue
         try:  # In case of mixed values
             self.dataFrame.sort_values(inplace=True, axis=0, by=[cellValue], ascending=ascending)
         except TypeError:
@@ -372,12 +359,12 @@ class Spreadsheet(Page):
             size = Vec2(len(df.columns), 1)
             self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
             self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True,
-                                         onClick=lambda e: self.sortColumn(e), **self.cellConfig)
+                                         onClick=lambda e: self.sortColumn(cellValue=e), **self.cellConfig)
             self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
 
         if self.rowKeys:
             self.rowKeysGrid.fillGrid(Label, Vec2(0, 1), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
-                                      onClick=lambda e: self.sortRow(e), **self.cellConfig)
+                                      onClick=lambda e: self.sortRow(cellValue=e), **self.cellConfig)
 
         values = []
         for row in df.itertuples(index=False):
