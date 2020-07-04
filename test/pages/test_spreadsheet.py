@@ -17,38 +17,46 @@ class SpreadsheetTest(GuiTests):
                         spreadsheet = Spreadsheet(page, cellVSB=cellVSB, cellHSB=cellHSB, columnKeys=columnKeys, rowKeys=rowKeys)
 
                         # Named keys
-                        spreadsheet.loadDataFrame(pd.DataFrame([["foo", 5], ["bar", 2.2]], columns=["name", "number"], index=["row", "another"]))
+                        spreadsheet.loadDataFrame(pd.DataFrame([["foo", 5], ["bar", 2.2]], columns=["col_a", "col_b"], index=["row_a", "row_b"]))
+                        self.assertEqual(["foo", 5, "bar", 2.2], spreadsheet.getMainValues())
 
                         if columnKeys:
-                            values = [ele.getValue() for ele in spreadsheet.columnKeysGrid.getChildren() if isinstance(ele, Label)]
-                            self.assertEqual(["name", "number"], values)
+                            self.assertEqual(["col_a", "col_b"], spreadsheet.getHeaderValues())
                         else:
-                            self.assertIsNone(getattr(spreadsheet, "columnKeysGrid", None))
+                            self.assertIsNone(getattr(spreadsheet, "headerGrid", None))
 
                         if rowKeys:
-                            values = [ele.getValue() for ele in spreadsheet.rowKeysGrid.getChildren()]
-                            self.assertEqual(["row", "another"], values)
+                            self.assertEqual(["row_a", "row_b"], spreadsheet.getIndexValues())
                         else:
-                            self.assertIsNone(getattr(spreadsheet, "rowKeysGrid", None))
-
-                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
-                        self.assertEqual(["foo", 5, "bar", 2.2], cellValues)
+                            self.assertIsNone(getattr(spreadsheet, "indexGrid", None))
 
                         spreadsheet.sortIndex()
-                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
-                        self.assertEqual(["bar", 2.2, "foo", 5], cellValues)
+                        self.assertEqual(["foo", 5,
+                                          "bar", 2.2], spreadsheet.getMainValues())
+                        self.assertEqual(["col_a", "col_b"], spreadsheet.getHeaderValues())
+                        self.assertEqual(["row_a", "row_b"], spreadsheet.getIndexValues())
 
                         spreadsheet.sortHeader()
-                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
-                        self.assertEqual(["bar", 2.2, "foo", 5], cellValues)
+                        self.assertEqual(["foo", 5,
+                                          "bar", 2.2], spreadsheet.getMainValues())
+                        self.assertEqual(["col_a", "col_b"], spreadsheet.getHeaderValues())
+                        self.assertEqual(["row_a", "row_b"], spreadsheet.getIndexValues())
 
                         spreadsheet.sortHeader()
-                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
-                        self.assertEqual([2.2, "bar", 5, "foo"], cellValues)
+                        self.assertEqual([5, "foo",
+                                          2.2, "bar"], spreadsheet.getMainValues())
+                        self.assertEqual(["col_b", "col_a"], spreadsheet.getHeaderValues())
+                        self.assertEqual(["row_a", "row_b"], spreadsheet.getIndexValues())
 
                         spreadsheet.sortIndex()
-                        cellValues = [ele.getValue() for ele in spreadsheet.mainGrid.getChildren() if isinstance(ele, Label)]  # Left to right, row by row
-                        self.assertEqual([5, "foo", 2.2, "bar"], cellValues)
+                        self.assertEqual([2.2, "bar",
+                                          5, "foo"], spreadsheet.getMainValues())
+                        self.assertEqual(["col_b", "col_a"], spreadsheet.getHeaderValues())
+                        self.assertEqual(["row_b", "row_a"], spreadsheet.getIndexValues())
 
-
+                        spreadsheet.makeRowHeader("row_a")
+                        self.assertEqual(["col_b", "col_a",
+                                          2.2, "bar"], spreadsheet.getMainValues())
+                        self.assertEqual([5, "foo"], spreadsheet.getHeaderValues())
+                        self.assertEqual(["headers", "row_b"], spreadsheet.getIndexValues())
 

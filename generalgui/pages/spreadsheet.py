@@ -29,14 +29,15 @@ def ascending(attrName):
             """."""
             cellValue = getParameter(func, args, kwargs, "cellValue")
 
-            ascending = True
-            if getattr(self, attrName) == cellValue:
-                ascending = False
-                setattr(self, attrName, None)
-            else:
-                setattr(self, attrName, cellValue)
+            if getParameter(func, args, kwargs, "ascending") is None:
+                ascending = True
+                if getattr(self, attrName) == cellValue:
+                    ascending = False
+                    setattr(self, attrName, None)
+                else:
+                    setattr(self, attrName, cellValue)
 
-            changeArgsAndKwargs(func, args, kwargs, ascending=ascending)
+                changeArgsAndKwargs(func, args, kwargs, ascending=ascending)
 
             return func(self, *args, **kwargs)
         return decorator
@@ -157,13 +158,13 @@ class Spreadsheet(Page):
         if self.columnKeys:
             self.columnKeysPageContainer = Page(self, pack=True, fill="x")
             self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
-            self.columnKeysGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
-            self.columnKeysGrid.menu("Column", **menus["Column"])
+            self.headerGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
+            self.headerGrid.menu("Column", **menus["Column"])
 
         if self.rowKeys:
             self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
-            self.rowKeysGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
-            self.rowKeysGrid.menu("Row", **menus["Row"])
+            self.indexGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
+            self.indexGrid.menu("Row", **menus["Row"])
 
         self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
@@ -234,7 +235,7 @@ class Spreadsheet(Page):
 
     @loadDataFrame
     @ascending("previousRowSort")
-    def sortHeader(self, cellValue="header_thisvaluehastobeuniquesoimaddingthisfunstringwhichisverygoodpractice", ascending=None):
+    def sortHeader(self, cellValue=defaultHeaderName, ascending=None):
         """
         Sort headers in dataframe
         self.preivousRowSort is assigned to cellValue to keep track of ascending toggling
@@ -246,7 +247,7 @@ class Spreadsheet(Page):
 
     @loadDataFrame
     @ascending("previousColumnSort")
-    def sortIndex(self, cellValue="index_thisvaluehastobeuniquesoimaddingthisfunstringwhichisverygoodpractice", ascending=None):
+    def sortIndex(self, cellValue=defaultIndexName, ascending=None):
         """
         Sort index in dataframe
         self.previousColumnSort is assigned to cellValue to keep track of ascending toggling
@@ -369,14 +370,14 @@ class Spreadsheet(Page):
 
         if self.columnKeys:
             size = Vec2(len(df.columns), 1)
-            self.columnKeysGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
-            self.columnKeysGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True,
-                                         onClick=lambda e: self.sortColumn(cellValue=e), **self.cellConfig)
+            self.headerGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
+            self.headerGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True,
+                                     onClick=lambda e: self.sortColumn(cellValue=e), **self.cellConfig)
             self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
 
         if self.rowKeys:
-            self.rowKeysGrid.fillGrid(Label, Vec2(0, 1), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
-                                      onClick=lambda e: self.sortRow(cellValue=e), **self.cellConfig)
+            self.indexGrid.fillGrid(Label, Vec2(0, 1), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
+                                    onClick=lambda e: self.sortRow(cellValue=e), **self.cellConfig)
 
         values = []
         for row in df.itertuples(index=False):
@@ -407,12 +408,30 @@ class Spreadsheet(Page):
         if path:
             File.write(path, self.dataFrame, overwrite=True)
 
+    def getMainValues(self):
+        """Returns all label cell values from mainGrid in a list, going left to right row by row"""
+        return [ele.getValue() for ele in self.mainGrid.getChildren() if isinstance(ele, Label)]
+
+    def getHeaderValues(self):
+        """Returns all label cell values from headerGrid in a list, going left to right row by row"""
+        if self.columnKeys:
+            return [ele.getValue() for ele in self.headerGrid.getChildren() if isinstance(ele, Label)]
+        else:
+            return list(self.dataFrame.columns)
+
+    def getIndexValues(self):
+        """Returns all label cell values from indexGrid in a list, going left to right row by row"""
+        if self.rowKeys:
+            return [ele.getValue() for ele in self.indexGrid.getChildren() if isinstance(ele, Label)]
+        else:
+            return list(self.dataFrame.index)
+
     def _syncKeysScroll(self, _=None):
         """Sync header and index scrolling to main grid's"""
         if self.columnKeys:
-            self.columnKeysGrid.canvas.widget.xview_moveto(self.mainGrid.canvas.widget.xview()[0])
+            self.headerGrid.canvas.widget.xview_moveto(self.mainGrid.canvas.widget.xview()[0])
         if self.rowKeys:
-            self.rowKeysGrid.canvas.widget.yview_moveto(self.mainGrid.canvas.widget.yview()[0])
+            self.indexGrid.canvas.widget.yview_moveto(self.mainGrid.canvas.widget.yview()[0])
 
     def _syncColumnKeysWidth(self, test=False):
         """
@@ -421,7 +440,7 @@ class Spreadsheet(Page):
         if not self.columnKeys:
             return
 
-        columnSize = self.columnKeysGrid.getGridSize()
+        columnSize = self.headerGrid.getGridSize()
         mainSize = self.mainGrid.getGridSize()
 
         if columnSize.x != mainSize.x:
@@ -430,7 +449,7 @@ class Spreadsheet(Page):
         columnFrames = []
         mainFrames = []
         for pos in Vec2(0,0).range(Vec2(columnSize.x, 1)):
-            columnFrame = self.columnKeysGrid.getGridElement(pos)
+            columnFrame = self.headerGrid.getGridElement(pos)
             # print(columnFrame)
             columnFrame.widgetConfig(width=0)
             columnFrames.append(columnFrame)
@@ -458,7 +477,7 @@ class Spreadsheet(Page):
         """Set right width for index, also update filler if it exists"""
         if not self.rowKeys:
             return
-        children = self.rowKeysGrid.getChildren()
+        children = self.indexGrid.getChildren()
         if not children:
             return
 
