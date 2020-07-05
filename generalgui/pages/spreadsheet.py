@@ -308,18 +308,20 @@ class Spreadsheet(Page):
             self.dataFrame.columns.name = cellValue
         self.dropRow(cellValue)
 
-    @headerValue
     @loadDataFrame
+    @headerValue
     def makeColumnIndex(self, cellValue=None):
         """Turn a column to index and make current index a column in dataframe"""
         self.moveIndexToColumn()
 
         column = self.dataFrame[cellValue].values
         self.dataFrame.index = column
+
         if cellValue == self.defaultIndexName:
             self.dataFrame.index.name = None
         else:
             self.dataFrame.index.name = cellValue
+
         self.dropColumn(cellValue)
 
     @loadDataFrame

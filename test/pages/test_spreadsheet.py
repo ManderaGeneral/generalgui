@@ -60,3 +60,21 @@ class SpreadsheetTest(GuiTests):
                         self.assertEqual([5, "foo"], spreadsheet.getHeaderValues())
                         self.assertEqual(["headers", "row_b"], spreadsheet.getIndexValues())
 
+                        spreadsheet.makeRowHeader("headers")
+                        self.assertEqual([5, "foo",
+                                          2.2, "bar"], spreadsheet.getMainValues())
+                        self.assertEqual(["col_b", "col_a"], spreadsheet.getHeaderValues())
+                        self.assertEqual(["row_a", "row_b"], spreadsheet.getIndexValues())
+
+                        spreadsheet.makeColumnIndex("col_b")
+                        self.assertEqual(["row_a", "foo",
+                                          "row_b", "bar"], spreadsheet.getMainValues())
+                        self.assertEqual(["indexes", "col_a"], spreadsheet.getHeaderValues())
+                        self.assertEqual([5, 2.2], spreadsheet.getIndexValues())
+
+                        spreadsheet.makeColumnIndex("indexes")
+                        self.assertEqual([5, "foo",
+                                          2.2, "bar"], spreadsheet.getMainValues())
+                        self.assertEqual(["col_b", "col_a"], spreadsheet.getHeaderValues())
+                        self.assertEqual(["row_a", "row_b"], spreadsheet.getIndexValues())
+
