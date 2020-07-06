@@ -240,8 +240,13 @@ class Element_Page_App(Menu_Element_Page_App):
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        self.getTopWidget().update()
-        self.getTopWidget().destroy()
+        if typeChecker(self, "App", error=False):
+            self.getApps().remove(self)
+            # self.widget.update()
+            self.widget.quit()
+        else:
+            self.getTopWidget().update()
+            self.getTopWidget().destroy()
 
 
 

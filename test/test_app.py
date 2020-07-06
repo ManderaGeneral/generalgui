@@ -1,8 +1,12 @@
 """Tests for App"""
+
 import tkinter as tk
+
 from test.shared_methods import GuiTests
 
 from generalgui import App, Page
+
+from generallibrary.time import sleep
 
 
 class AppTest(GuiTests):
@@ -81,6 +85,64 @@ class AppTest(GuiTests):
 
         page2.show(mainloop=False)
         self.assertTrue(page2.isShown())
+
+    def test_after(self):
+        app = App()
+        self.assertEqual({}, app.afters)
+
+        one = app.widget.after(500, lambda: 5)
+        self.assertEqual({0: "after#0"}, app.afters)
+
+        two = app.widget.after(500, lambda: 5)
+        self.assertEqual({0: "after#0", 1: "after#1"}, app.afters)
+
+        app.widget.after_cancel(one)
+        self.assertEqual({1: "after#1"}, app.afters)
+
+        three = app.widget.after(500, lambda: print(5))
+        self.assertEqual({0: "after#2", 1: "after#1"}, app.afters)
+
+        app.widget.after_cancel(two)
+        app.widget.after_cancel(three)
+        self.assertEqual({}, app.afters)
+
+    def test_apps(self):
+        self.assertEqual([], App.getApps())
+
+        app = App()
+        self.assertEqual([app], app.getApps())
+
+        app2 = App()
+        self.assertEqual([app, app2], app.getApps())
+        self.assertEqual([app, app2], App.getApps())
+
+        app.remove()
+        self.assertEqual([app2], App.getApps())
+
+        app2.remove()
+        self.assertEqual([], App.getApps())
+
+    # HERE ** Go through all shared methods that app have
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

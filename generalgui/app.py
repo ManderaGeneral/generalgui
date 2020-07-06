@@ -75,10 +75,13 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
 
         self.menu("App", Rainbow=self.rainbow, Reset=lambda: self.rainbow(True))
 
-        # Mainly to remove focus from entries but had some mostly nice side-effects
-        def setFocus(e):
+        def setFocus(event):
+            """
+            Set focus on event's widget.
+            Mainly to remove focus from entries but had some mostly nice side-effects.
+            """
             try:
-                e.widget.focus_set()
+                event.widget.focus_set()
             except TclError:
                 pass
         self.createBind("<Button-1>", setFocus)
@@ -91,6 +94,7 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
 
     @classmethod
     def getApps(cls):
+        """Returns all apps including this one in a list"""
         return apps
 
     def mainloop(self):
@@ -118,11 +122,6 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         """
         if self.isShown():
             self.widget.withdraw()
-
-    def remove(self):
-        apps.remove(self)
-        # self.widget.update()
-        self.widget.quit()
 
 
 
