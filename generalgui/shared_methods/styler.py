@@ -1,5 +1,14 @@
 """
 Styler for app and elements.
+
+Classes:
+    * Styler
+    * StyleHandler
+    * Style
+
+Functions:
+    * styleDecorator_helper
+    * styleDecorator
 """
 
 from generallibrary.iterables import SortedList
