@@ -2,6 +2,10 @@
 
 from generalgui.shared_methods.decorators import ignore
 
+from generallibrary.types import hasMethod
+
+from typing import List
+
 
 class Page_App:
     """
@@ -56,4 +60,63 @@ class Page_App:
         :param part: Child part
         """
         part.widget.pack(**part.packParameters)
+
+    def getElementByValue(self, value):
+        """
+
+        :param generalgui.page.Page or generalgui.app.App self: Page or App
+        :param value:
+        """
+        parts = [self]  # type: List[any]
+        while parts:
+            part = parts[0]
+            partChildren = part.getChildren()
+            if partChildren:
+                parts.extend(partChildren)
+
+            elif hasMethod(part, "getValue"):
+                if part.getValue() == value:
+                    return part
+
+            del parts[0]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -52,13 +52,13 @@ class Element_Page_App(Menu_Element_Page_App):
 
     def getMouse(self):
         """
-        Get mouse vector2 from event
+        Get mouse vector2 from event, can be any part in whole app.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
         return Vec2(self.app.widget.winfo_pointerx(), self.app.widget.winfo_pointery()) - self.getWindowPos()
 
-    def getElement(self, pos=None):
+    def getElementByPos(self, pos=None):
         """
         Get element from pos
 
@@ -141,26 +141,18 @@ class Element_Page_App(Menu_Element_Page_App):
         """
         children = []
 
-        if includeParts:
-            for widget in self.getTopWidget().winfo_children():
-                if getattr(widget, "element", None) is None:
-                    continue
+        parentWidget = self.getTopWidget() if includeParts else self.getBaseWidget()
 
-                part = widget.element
-                if part not in ignore:
-                    children.append(part)
+        for widget in parentWidget.winfo_children():
+            if getattr(widget, "element", None) is None:
+                continue
+            part = widget.element
 
-        else:
-            for widget in self.getBaseWidget().winfo_children():
-                if getattr(widget, "element", None) is None:
-                    continue
+            if not includeParts and part.parentPage.topElement == part:
+                part = part.parentPage
 
-                part = widget.element
-                if part.parentPage.topElement == part:
-                    part = part.parentPage
-
-                if widget.element not in ignore and part not in ignore:
-                    children.append(part)
+            if widget.element not in ignore and part not in ignore:
+                children.append(part)
 
         return children
 

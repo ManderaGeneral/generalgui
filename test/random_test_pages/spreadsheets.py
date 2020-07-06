@@ -42,9 +42,6 @@ def addBig():
 app = App()
 page = ElementList(app, maxFirstSteps=4)
 
-Button(page, "Rainbow", onClick=app.rainbow)
-reset = Button(page, "Reset", onClick=lambda: app.rainbow(reset=True))
-
 columnKeys = ("color", "number", "name")
 Button(page, "Add row", onClick=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
 Button(page, "Add indexed row", onClick=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"], ["blue", 5, "zole"]], columns=columnKeys, index=["hello", "there"]))))

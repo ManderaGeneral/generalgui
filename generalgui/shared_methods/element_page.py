@@ -103,7 +103,7 @@ class Element_Page:
         bottomRightPos = self.getBottomRightPos()
 
         if not bottomRightPos <= appSize:
-            pos = pos.clamp(Vec2(0, 0), appSize - size - 2)
+            pos = pos.clamp(Vec2(0, 0), (appSize - size - 2).max(0))
             self._place(pos)
 
     def getTopPage(self):

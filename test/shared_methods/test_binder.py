@@ -5,7 +5,7 @@ from test.shared_methods import GuiTests
 from generalgui import App, Page, Label
 
 
-class FrameTest(GuiTests):
+class BinderTest(GuiTests):
     def test_init(self):
         page = Page(App())
         label = Label(page, "Text")
@@ -37,6 +37,16 @@ class FrameTest(GuiTests):
 
         label.createBind("<Button-1>", lambda: 5, name="hello", add=False)
         self.assertEqual([5], label.callBind("<Button-1>"))
+
+        label.onClick(lambda: 5, add=False)
+        label.onClick(lambda: 2)
+        self.assertEqual([5, 2], label.click(animate=False))
+        self.assertEqual([5, 2], label.click(animate=True))
+
+        label.onRightClick(lambda: 5, add=False)
+        label.onRightClick(lambda: 2)
+        self.assertEqual([5, 2], label.rightClick(animate=False))
+        self.assertEqual([5, 2], label.rightClick(animate=True))
 
         label.remove()
         self.assertRaises(AttributeError, label.callBind, "<Button-1>")

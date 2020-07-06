@@ -16,3 +16,8 @@ import pandas as pd
 # print(grid.getFirstEmptyPos(Vec2(1, -1), Vec2(0, -1)))
 
 
+page = Page(App())
+
+Button(page, value="testing")
+
+print(page.getElementByValue("testing"))

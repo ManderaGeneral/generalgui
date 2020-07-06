@@ -1,4 +1,6 @@
 
+from generallibrary.types import typeChecker
+
 
 class Menu_Element_Page_App:
     """Keep all menu functionality in this module"""
@@ -14,13 +16,32 @@ class Menu_Element_Page_App:
         """
         self.menuContent[name] = buttons
 
+    def showMenu(self):
+        """
+        Emulate a right click on this part to create the menu
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        self.app.createMenu(self)
+
+    def hideMenu(self):
+        """
+        Hide the menu
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        """
+        if self.app.menuPage:
+            self.app.menuPage.remove()
+            self.app.menuPage = None
+            self.app.menuTargetElement = None
+
 
 class Menu_App:
     """
-    Menu should probably inherit page so it becomes reuseable
-
     Menu feature for App.
     Shows a menu when right clicking a page that has a menu enabled.
+
+     * Menu should probably inherit page so it becomes reuseable
     """
     def __init__(self):
         """
@@ -34,10 +55,9 @@ class Menu_App:
         self.createBind("<Button-3>", self.menuButtonDown)
         self.createBind("<ButtonRelease-3>", self.menuButtonUp)
 
-    def menuButtonDown(self, event):
+    def menuButtonDown(self):
         """
         :param generalgui.app.App self:
-        :param event:
         """
         self.openMenuOnRelease = True
         self.hideMenu()
@@ -75,17 +95,21 @@ class Menu_App:
         button = self.Button(self.menuPage, text.replace("_", " "), func, fill="x")
         button.createBind("<ButtonRelease-1>", self.hideMenu, name="HideMenu")
 
-    def createMenu(self, event):
+    def createMenu(self, event_or_part):
         """
         :param generalgui.app.App self:
-        :param event:
+        :param event_or_part: Event filled by right clicking or part filled manually
         """
-        self.menuTargetElement = event.widget.element
+        if typeChecker(event_or_part, "event", error=False):
+            self.menuTargetElement = event_or_part.widget.element
+        else:
+            self.menuTargetElement = event_or_part
+
         if self.menuPage:
             self.menuPage.remove()
 
         self.menuPage = self.Page(self, relief="solid", borderwidth=1, padx=5, pady=5)
-        for part in event.widget.element.getParentPages(includeSelf=True, includeApp=True):
+        for part in self.menuTargetElement.getParentPages(includeSelf=True, includeApp=True):
             if part.menuContent:
                 self.addLine()
             for label, buttons in part.menuContent.items():
@@ -99,13 +123,6 @@ class Menu_App:
                         self.addButton(buttonText, buttonFunc)
 
         self.menuPage.place(self.getMouse())
-
-    def hideMenu(self):
-        """Hide the menu"""
-        if self.menuPage:
-            self.menuPage.remove()
-            self.menuPage = None
-            self.menuTargetElement = None
 
 
 
