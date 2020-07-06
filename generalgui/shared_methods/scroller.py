@@ -8,6 +8,9 @@ class Scroller:
     """
     Scroller feature for App.
     Enables scrolling right click drag and mouse wheel.
+    self.scrollWheelTarget is None or a page.canvas.
+
+    Note: I don't like how canvas is being used for target, it should all be targetting pages.
     """
     def __init__(self):
         """
@@ -36,16 +39,19 @@ class Scroller:
                     self.scrollWheelTarget = page.canvas
                     break
 
-    def getVisibleFraction(self, element):
+    def getVisibleFraction(self, canvas):
         """
-        HERE ** Move to elements. Handle what happens if not shown or doesnt exist.
+        Get visible fraction of a canvas, not meant to be used other than by scroll feature.
 
         :param generalgui.app.App self:
-        :param generalgui.element.Element element:
+        :param generalgui.Canvas canvas:
+        :raises AttributeError: If canvas is not shown
         """
-        canvasSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
-        scrollRegions = element.getWidgetConfig("scrollregion").split(" ")
-        print(scrollRegions)
+        if not canvas.isShown():
+            raise AttributeError("Canvas is not shown")
+
+        canvasSize = Vec2(canvas.widget.winfo_width(), canvas.widget.winfo_height())
+        scrollRegions = canvas.getWidgetConfig("scrollregion").split(" ")
         scrollSize = Vec2(int(scrollRegions[2]), int(scrollRegions[3]))
         visibleFraction = canvasSize / scrollSize
         return visibleFraction
@@ -62,11 +68,10 @@ class Scroller:
             self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
             self.scrollStyle.enable()
 
-    def scrollButtonRelease(self, event=None):
+    def scrollButtonRelease(self):
         """
 
         :param generalgui.app.App self:
-        :param event:
         """
         self.scrollWheelTarget = None
         self.scrollStyle.disable()
