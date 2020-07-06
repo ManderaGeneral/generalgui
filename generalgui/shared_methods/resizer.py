@@ -115,13 +115,11 @@ class Resizer:
         :param event:
         :param generalgui.app.App self:
         """
-        # print("heres", self.resizeHoverElement)
         self.checkIfResize(event)  # If moved to fast for cooldown
         if self.resizeHoverElement:
             self.resizeElement = self.resizeHoverElement
             self.resizeMouseStart = self.getMouse()
             return "break"
-
 
     def stopResize(self, event):
         """

@@ -23,7 +23,7 @@ class Scroller:
 
         self.scrollStyle = self.createStyle("Scroll", cursor="plus")
 
-    def checkEventForScrollTarget(self, event):
+    def _checkEventForScrollTarget(self, event):
         eventElement = event.widget.element
         if typeChecker(eventElement, "App", error=False):
             return
@@ -38,12 +38,14 @@ class Scroller:
 
     def getVisibleFraction(self, element):
         """
+        HERE ** Move to elements. Handle what happens if not shown or doesnt exist.
 
         :param generalgui.app.App self:
         :param generalgui.element.Element element:
         """
         canvasSize = Vec2(element.widget.winfo_width(), element.widget.winfo_height())
         scrollRegions = element.getWidgetConfig("scrollregion").split(" ")
+        print(scrollRegions)
         scrollSize = Vec2(int(scrollRegions[2]), int(scrollRegions[3]))
         visibleFraction = canvasSize / scrollSize
         return visibleFraction
@@ -54,7 +56,7 @@ class Scroller:
         :param generalgui.app.App self:
         :param event:
         """
-        self.checkEventForScrollTarget(event)
+        self._checkEventForScrollTarget(event)
         if self.scrollWheelTarget:
             self.startCoords = Vec2(event.x_root, event.y_root)
             self.startFraction = Vec2(self.scrollWheelTarget.widget.xview()[0], self.scrollWheelTarget.widget.yview()[0])
@@ -103,7 +105,7 @@ class Scroller:
         :param generalgui.app.App self:
         :param event:
         """
-        self.checkEventForScrollTarget(event)
+        self._checkEventForScrollTarget(event)
         if self.scrollWheelTarget:
             if not self.scrollWheelTarget.isShown(error=False):
                 self.scrollWheelTarget = None

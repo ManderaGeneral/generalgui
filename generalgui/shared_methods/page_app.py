@@ -4,7 +4,7 @@ from generalgui.shared_methods.decorators import ignore
 
 from generallibrary.types import hasMethod
 
-from typing import List
+from typing import List, Any
 
 
 class Page_App:
@@ -67,7 +67,7 @@ class Page_App:
         :param generalgui.page.Page or generalgui.app.App self: Page or App
         :param value:
         """
-        parts = [self]  # type: List[any]
+        parts = [self]  # type: List[Any]
         while parts:
             part = parts[0]
             partChildren = part.getChildren()

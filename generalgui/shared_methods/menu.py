@@ -10,9 +10,12 @@ class Menu_Element_Page_App:
     def menu(self, name, **buttons):
         """
         Define menu for this part.
+        End key string with ":" to create an information label.
+        All values in **buttons have to be callable.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        :param name:
+        :param str name: Title of menu for this part
+        :param buttons: Key is string, value should be a function
         """
         self.menuContent[name] = buttons
 
@@ -52,17 +55,17 @@ class Menu_App:
         self.menuTargetElement = None
 
         self.createBind("<Button-1>", self.hideMenu)
-        self.createBind("<Button-3>", self.menuButtonDown)
-        self.createBind("<ButtonRelease-3>", self.menuButtonUp)
+        self.createBind("<Button-3>", self._menuButtonDown)
+        self.createBind("<ButtonRelease-3>", self._menuButtonUp)
 
-    def menuButtonDown(self):
+    def _menuButtonDown(self):
         """
         :param generalgui.app.App self:
         """
         self.openMenuOnRelease = True
         self.hideMenu()
 
-    def menuButtonUp(self, event):
+    def _menuButtonUp(self, event):
         """
         :param generalgui.app.App self:
         :param event:
@@ -70,7 +73,7 @@ class Menu_App:
         if self.openMenuOnRelease:
             self.createMenu(event)
 
-    def addLine(self):
+    def _addLine(self):
         """
         :param generalgui.app.App self:
         """
@@ -79,14 +82,14 @@ class Menu_App:
         self.Frame(linePage, fill="x", height=2)
         self.Frame(linePage, fill="x", bg="gray")
 
-    def addLabel(self, text):
+    def _addLabel(self, text):
         """
         :param generalgui.app.App self:
         :param text:
         """
         self.Label(self.menuPage, text, fill="x")
 
-    def addButton(self, text, func):
+    def _addButton(self, text, func):
         """
         :param generalgui.app.App self:
         :param text:
@@ -97,6 +100,8 @@ class Menu_App:
 
     def createMenu(self, event_or_part):
         """
+        Create a menu for a part, used by part.showMenu()
+
         :param generalgui.app.App self:
         :param event_or_part: Event filled by right clicking or part filled manually
         """
@@ -111,16 +116,16 @@ class Menu_App:
         self.menuPage = self.Page(self, relief="solid", borderwidth=1, padx=5, pady=5)
         for part in self.menuTargetElement.getParentPages(includeSelf=True, includeApp=True):
             if part.menuContent:
-                self.addLine()
+                self._addLine()
             for label, buttons in part.menuContent.items():
-                self.addLabel(label)
+                self._addLabel(label)
                 for buttonText, buttonFunc in buttons.items():
                     if buttonText.endswith(":"):
                         buttonValue = buttonFunc()
                         if buttonValue is not None:
-                            self.addLabel(f"{buttonText} {buttonValue}")
+                            self._addLabel(f"{buttonText} {buttonValue}")
                     else:
-                        self.addButton(buttonText, buttonFunc)
+                        self._addButton(buttonText, buttonFunc)
 
         self.menuPage.place(self.getMouse())
 
