@@ -35,6 +35,7 @@ apps = []
 class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
     """
     Controls one tkinter Tk object and adds a lot of convenient features.
+    Creates a window automatically.
     """
     def __init__(self):
         Element_App.__init__(self)

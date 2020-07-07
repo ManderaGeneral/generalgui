@@ -62,13 +62,17 @@ class Element_Page_App(Menu_Element_Page_App):
         """
         Get element from pos
 
-        :param Vec2 pos: Pixel pos to search for element, defaults to getMouse().
+        :param Vec2 or float pos: Pixel pos to search for element, defaults to getMouse().
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
         if pos is None:
             pos = self.getMouse()
+        else:
+            pos = Vec2(pos)
         pos += self.getWindowPos()
-        return self.app.widget.winfo_containing(pos.x, pos.y).element
+        widget = self.app.widget.winfo_containing(pos.x, pos.y)
+
+        return getattr(widget, "element", None)
 
     def rainbow(self, reset=False):
         """
@@ -100,7 +104,7 @@ class Element_Page_App(Menu_Element_Page_App):
         pages = []
 
         if typeChecker(self, "App", error=False):
-            if includeApp:
+            if includeApp or includeSelf:
                 return [self]
             else:
                 return []
@@ -117,14 +121,15 @@ class Element_Page_App(Menu_Element_Page_App):
                 pages.append(parentPage)
             parentPage = parentPage.parentPage
 
-    def getFirstParentClass(self, className):
+    def getFirstParentClass(self, className, includeSelf=False):
         """
         Iterate parent pages to return first className match.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param className: Name or type of part, used by typeChecker
+        :param includeSelf:
         """
-        for part in self.getParentPages():
+        for part in self.getParentPages(includeSelf=includeSelf):
             if typeChecker(part, className, error=False):
                 return part
 
@@ -205,6 +210,7 @@ class Element_Page_App(Menu_Element_Page_App):
     def isShown(self, error=True):
         """
         Get whether an element's widget is shown or not.
+        Error only occurs if widget doesn't exist!
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param error: Whether to raise error if widget is destroyed or not
