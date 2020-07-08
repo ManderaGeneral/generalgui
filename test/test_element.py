@@ -148,18 +148,57 @@ class ElementTest(GuiTests):
         app = App()
         label = Label(Page(app, width=500, height=500), "testing", pack=False)
 
-
         label.place(Vec2(100, 100))
-        # print(label.getTopLeftPos())
-
-        # app.showChildren(mainloop=True)
         label.show(mainloop=False)
 
         self.assertEqual(Vec2(100, 100), label.getTopLeftPos())
 
+    def test_toggleShow(self):
+        app = App()
+        label = Label(Page(app), "testing")
 
+        self.assertEqual(True, label.isPacked())
+        label.toggleShow(mainloop=False)
+        self.assertEqual(False, label.isPacked())
+        label.toggleShow(mainloop=False)
+        self.assertEqual(True, label.isPacked())
 
+    def test_pos(self):
+        app = App()
+        label = Label(Page(app), "testing", pack=False)
+        self.assertEqual(Vec2(), label.getTopLeftPos())
+        self.assertEqual(Vec2(1), label.getSize())
 
+        label.show(mainloop=False)
+        self.assertEqual(True, label.getWindowPos().inrange(1, 500))
+        self.assertEqual(True, label.getSize().inrange(10, 100))
+
+        self.assertEqual(True, label.getTopLeftPos().inrange(0, 100))
+        self.assertLess(label.getTopLeftPos(), label.getBottomRightPos())
+        self.assertEqual(True, label.getSize().inrange(10, 100))
+
+    def test_states(self):
+        app = App()
+        label = Label(Page(app), "random", pack=False)
+
+        self.assertEqual(False, label.isShown())
+        self.assertEqual(True, label.exists())
+        self.assertEqual(False, label.isPacked())
+
+        label.show(mainloop=False)
+        self.assertEqual(True, label.isShown())
+        self.assertEqual(True, label.exists())
+        self.assertEqual(True, label.isPacked())
+
+        label.hide()
+        self.assertEqual(False, label.isShown())
+        self.assertEqual(True, label.exists())
+        self.assertEqual(False, label.isPacked())
+
+        label.remove()
+        self.assertEqual(False, label.isShown(error=False))
+        self.assertEqual(False, label.exists())
+        self.assertEqual(False, label.isPacked())
 
 
 

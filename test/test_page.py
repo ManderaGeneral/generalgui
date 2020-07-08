@@ -1,8 +1,12 @@
 """Tests for Page"""
+
 import tkinter as tk
+
 from test.shared_methods import GuiTests
 
 from generalgui import App, Page
+
+from generalvector import Vec2
 
 
 class PageTest(GuiTests):
@@ -131,6 +135,62 @@ class PageTest(GuiTests):
             self.assertTrue(page3.app.isShown())
             self.assertTrue(page2.app.isShown())
             self.assertTrue(page.app.isShown())
+
+    def test_place(self):
+        app = App()
+        Page(app, width=200, height=200).show(mainloop=False)
+        page = Page(app, width=10, height=10, bg="green")
+        app.showChildren(mainloop=False)
+
+        page.place(Vec2(100, 100))
+        self.assertEqual(Vec2(100, 100), page.getTopLeftPos())
+
+    def test_toggleShow(self):
+        app = App()
+        page = Page(app)
+
+        self.assertEqual(False, page.isPacked())
+        page.toggleShow(mainloop=False)
+        self.assertEqual(True, page.isPacked())
+        page.toggleShow(mainloop=False)
+        self.assertEqual(False, page.isPacked())
+
+    def test_pos(self):
+        app = App()
+        page = Page(app, width=200, height=100)
+        self.assertEqual(Vec2(), page.getTopLeftPos())
+        self.assertEqual(Vec2(1), page.getBottomRightPos())
+        self.assertEqual(Vec2(1), page.getSize())
+
+        page.show(mainloop=False)
+        self.assertEqual(True, page.getWindowPos().inrange(1, 500))
+        self.assertEqual(Vec2(200, 100), page.getSize())
+        self.assertEqual(Vec2(0), page.getTopLeftPos())
+        self.assertEqual(Vec2(200, 100), page.getBottomRightPos())
+
+    def test_states(self):
+        app = App()
+        page = Page(app)
+
+        self.assertEqual(False, page.isShown())
+        self.assertEqual(True, page.exists())
+        self.assertEqual(False, page.isPacked())
+
+        page.show(mainloop=False)
+        self.assertEqual(True, page.isShown())
+        self.assertEqual(True, page.exists())
+        self.assertEqual(True, page.isPacked())
+
+        page.hide()
+        self.assertEqual(False, page.isShown())
+        self.assertEqual(True, page.exists())
+        self.assertEqual(False, page.isPacked())
+
+        page.remove()
+        self.assertEqual(False, page.isShown(error=False))
+        self.assertEqual(False, page.exists())
+        self.assertEqual(False, page.isPacked())
+
 
 
 

@@ -71,16 +71,9 @@ class Page(Element_Page, Element_Page_App, Page_App):
             self.canvas.widget.create_window(0, 0, window=self.canvasFrame.widget, anchor="nw")
 
             def _canvasConfigure(_):
-                # print(self.canvasFrame.widget.winfo_height(), self.canvas.widget.winfo_height())
                 self.canvas.widgetConfig(scrollregion=self.canvas.widget.bbox("all"))
-                # print(self.canvas.widget.bbox("all"))
-                # self.canvas.widgetConfig(scrollregion=(0,0,self.canvasFrame.widget.winfo_width(), self.canvasFrame.widget.winfo_height()))
 
             self.canvasFrame.createBind("<Configure>", _canvasConfigure)
-
-            # if mouseScroll:
-            #     self.canvas.createBind("<Enter>", lambda: self.app.setScrollTarget(self.canvas))
-            #     self.canvas.createBind("<Leave>", lambda: self.app.removeScrollTarget(self.canvas))
 
             self.canvas.widgetConfig(yscrollincrement="1")
             self.canvas.widgetConfig(xscrollincrement="1")
