@@ -2,6 +2,7 @@
 * Makes tkinter easy to use with some built-in QoL improvements.
 * Built on top of tkinter, intended to extend features. Not replace.
 * Three main parts: App, Page and Element.
+* Cannot partially use generalgui, everything has to be from here or nothing.
 
 ## App
 Tk is 'widget' attribute.  

@@ -63,6 +63,9 @@ class Page_App:
 
     def getElementByValue(self, value):
         """
+        Get the first found element with a value.
+        Searches childrens' children etc.
+        Tries calling 'getValue()' on parts.
 
         :param generalgui.page.Page or generalgui.app.App self: Page or App
         :param value:

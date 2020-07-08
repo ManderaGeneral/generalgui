@@ -1,6 +1,6 @@
 """Shared methods by Element, Page and App"""
 
-import tkinter as tk
+from tkinter import TclError
 
 from generallibrary.types import typeChecker
 
@@ -17,6 +17,8 @@ class Element_Page_App(Menu_Element_Page_App):
     """
     def __init__(self):
         Menu_Element_Page_App.__init__(self)
+
+        self.removed = False
 
     def getWindowPos(self):
         """
@@ -209,46 +211,52 @@ class Element_Page_App(Menu_Element_Page_App):
 
     def isShown(self, error=True):
         """
-        Get whether an element's widget is shown or not.
+        Get whether a widget is shown or not.
         Error only occurs if widget doesn't exist!
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param error: Whether to raise error if widget is destroyed or not
         """
         try:
-            isMapped = not not self.getTopWidget().winfo_ismapped()
-        except tk.TclError as e:
+            return not not self.getTopWidget().winfo_ismapped()
+        except TclError as e:
             if error:
                 raise e
             else:
                 return False
-        return isMapped
 
     def exists(self):
         """
-        Get whether an element's widget is shown or not.
+        Get whether a widget exists or not.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        return not not self.getTopWidget().winfo_exists()
+        return not self.removed
 
     def isPacked(self):
         """
-        Get whether an element's widget is packed or not.
+        Get whether a widget is packed or not.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
-        return self.getTopWidget().winfo_manager() != ""
+        if self.removed:
+            return False  # For app.remove()
+
+        try:
+            return self.getTopWidget().winfo_manager() != ""
+        except TclError:
+            return False
 
     def remove(self):
         """
-        Remove an element's widget for good.
+        Remove a widget for good.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
+        self.removed = True
+
         if typeChecker(self, "App", error=False):
             self.getApps().remove(self)
-            # self.widget.update()
             self.widget.quit()
         else:
             self.getTopWidget().update()

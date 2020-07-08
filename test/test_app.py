@@ -4,7 +4,7 @@ import tkinter as tk
 
 from test.shared_methods import GuiTests
 
-from generalgui import App, Page, LabelEntry
+from generalgui import App, Page, LabelEntry, Button
 
 from generallibrary.time import sleep
 
@@ -93,16 +93,16 @@ class AppTest(GuiTests):
         self.assertEqual({}, app.afters)
 
         one = app.widget.after(500, lambda: 5)
-        self.assertEqual({0: "after#0"}, app.afters)
+        self.assertEqual([0], list(app.afters.keys()))
 
         two = app.widget.after(500, lambda: 5)
-        self.assertEqual({0: "after#0", 1: "after#1"}, app.afters)
+        self.assertEqual([0, 1], list(app.afters.keys()))
 
         app.widget.after_cancel(one)
-        self.assertEqual({1: "after#1"}, app.afters)
+        self.assertEqual([1], list(app.afters.keys()))
 
         three = app.widget.after(500, lambda: print(5))
-        self.assertEqual({0: "after#2", 1: "after#1"}, app.afters)
+        self.assertEqual([1, 0], list(app.afters.keys()))
 
         app.widget.after_cancel(two)
         app.widget.after_cancel(three)
@@ -200,20 +200,61 @@ class AppTest(GuiTests):
 
     def test_states(self):
         app = App()
-        LabelEntry(Page(app))
-
-        # HERE ** A bit weird that app exists and isPacked, or maybe it's fine
 
         self.assertEqual(False, app.isShown())
         self.assertEqual(True, app.exists())
         self.assertEqual(True, app.isPacked())
 
-
-        app.showChildren(mainloop=False)
-
+        app.show(mainloop=False)
         self.assertEqual(True, app.isShown())
         self.assertEqual(True, app.exists())
         self.assertEqual(True, app.isPacked())
+
+        app.hide()
+        self.assertEqual(False, app.isShown())
+        self.assertEqual(True, app.exists())
+        self.assertEqual(True, app.isPacked())
+
+        app.remove()
+        self.assertEqual(False, app.isShown())
+        self.assertEqual(False, app.exists())
+        self.assertEqual(False, app.isPacked())
+
+    def test_config(self):
+        app = App()
+        self.assertEqual(True, "bg" in app.getAllWidgetConfigs())
+        self.assertEqual("SystemButtonFace", app.getWidgetConfig("bg"))
+
+        app.widgetConfig(bg="red")
+        self.assertEqual("red", app.getWidgetConfig("bg"))
+
+        with self.assertRaises(tk.TclError):
+            app.getWidgetConfig("doesntexist")
+
+    def test_getElementByValue(self):
+        app = App()
+
+        labelEntry = LabelEntry(Page(app), value="value here")
+        self.assertEqual(labelEntry.label, app.getElementByValue("value here"))
+
+        button = Button(Page(Page(Page(app))), value="test val")
+        self.assertEqual(button, app.getElementByValue("test val"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

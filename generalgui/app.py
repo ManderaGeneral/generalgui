@@ -70,6 +70,7 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         self.LabelCheckbutton = gui.LabelCheckbutton
         self.LabelEntry = gui.LabelEntry
 
+
         Scroller.__init__(self)
         Resizer.__init__(self)
         Menu_App.__init__(self)
