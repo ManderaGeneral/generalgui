@@ -46,6 +46,8 @@ Widget      | -             | -             | -         | Element
 ## Todo
  * Menu should probably inherit page so it becomes reuseable
  * getElement(s)By* inspired by js
+ * Unique default style
+ * Automatic app and page creation
 
 ## Features
  * App.widget.after can handle **kwargs and App.afters contains all queued "after" functions

@@ -1,8 +1,12 @@
 """Tests for Element"""
+
 import tkinter as tk
+
 from test.shared_methods import GuiTests
 
 from generalgui import App, Page, Label, Button, Checkbutton
+
+from generalvector import Vec2
 
 
 class ElementTest(GuiTests):
@@ -127,7 +131,31 @@ class ElementTest(GuiTests):
         button.onRightClick(lambda: 5, add=False)
         self.assertEqual([5], button.rightClick())
 
+    def test_config(self):
+        app = App()
+        label = Label(Page(app), "testing")
 
+        self.assertEqual(True, "bg" in label.getAllWidgetConfigs())
+        self.assertEqual("SystemButtonFace", label.getWidgetConfig("bg"))
+
+        label.widgetConfig(bg="red")
+        self.assertEqual("red", label.getWidgetConfig("bg"))
+
+        with self.assertRaises(tk.TclError):
+            label.getWidgetConfig("doesntexist")
+
+    def test_place(self):
+        app = App()
+        label = Label(Page(app, width=500, height=500), "testing", pack=False)
+
+
+        label.place(Vec2(100, 100))
+        # print(label.getTopLeftPos())
+
+        # app.showChildren(mainloop=True)
+        label.show(mainloop=False)
+
+        self.assertEqual(Vec2(100, 100), label.getTopLeftPos())
 
 
 

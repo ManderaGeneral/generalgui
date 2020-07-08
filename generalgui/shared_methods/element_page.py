@@ -214,7 +214,8 @@ class Element_Page:
         for ele_page in self.getParentPages(includeSelf=True):
             if ele_page.isShown():
                 break
-            ele_page.pack()
+            if not ele_page.isPacked():
+                ele_page.pack()
 
         self.app.show(mainloop=mainloop)
 

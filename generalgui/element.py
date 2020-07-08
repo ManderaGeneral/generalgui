@@ -85,6 +85,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
         return f"Element: {self.__class__.__name__} {self.widget}"
 
     def resizeable(self):
+        """Make this elemetn resizeable"""
         self.app.makeResizeable(self)
 
     def makeBase(self):
