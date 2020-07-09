@@ -75,7 +75,7 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         Resizer.__init__(self)
         Menu_App.__init__(self)
 
-        self.menu("App", Rainbow=self.rainbow, Reset=lambda: self.rainbow(True))
+        self.menu("App", Rainbow=self.rainbow, Reset_Rainbow=lambda: self.rainbow(True))
 
         def setFocus(event):
             """

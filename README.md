@@ -5,19 +5,23 @@
 * Cannot partially use generalgui, everything has to be from here or nothing.
 
 ## App
+Main part.
+Controls everything.
 Tk is 'widget' attribute.  
 
 ## Page
+Middle part, controls Frame (and Canvas if scrollable).
 Has no 'widget'. getBaseWidget() / getTopWidget().
 Contains any amount of Elements and Pages.  
 Can be subclassed to create pre-built pages easily.
 Has to be packed manually.
 
 ## Element
+Smallest part, controls widget.
 Tkinter widget is 'widget' attribute.  
 Packed automatically because it always has to be inside a page.  
 
-## Guiderules
+## Guidelines
  * An Element always controls one widget. It also has the same name as the tkinter widget it's controlling.
  * A tkinter widget only has .element attribute.
  * Always use an Element's method if you can, otherwise you can always access element.widget to use tkinter directly.
@@ -48,6 +52,46 @@ Widget      | -             | -             | -         | Element
  * getElement(s)By* inspired by js
  * Unique default style
  * Automatic app and page creation
+ * Scale element
 
 ## Features
- * App.widget.after can handle **kwargs and App.afters contains all queued "after" functions
+ * Easily make pages resizeable or scrollable.
+ * Styler which handles multiple stacked styles and automatically updates config.
+ * Lists all queued "after" functions and allows **kwargs when creating one.
+ * Entry: Ctrl+Del/Backspace to remove entire words.
+ * Entry: Press enter to press the next Button.
+ * Entry: Click outside Entry to remove selection.
+ * Right click anywhere to show a menu, propagates through elements to combine menus.
+ * Spreadsheet with optional locked headers and capable of loading and saving TSV files.
+ * ElementList which nicely stacks groups of buttons for example in a certain pattern.
+ * Combined Elements such as LabelEntry which easily allows you to get/set values.
+ * Default menu option to 'Rainbow' which colors all widgets in a random color for debugging.
+ 
+#### Elements
+ * Button
+ * Canvas
+ * Checkbutton
+ * Entry
+ * Frame
+ * Label
+ * OptionMenu
+ * Scrollbar
+
+#### Combined Elements
+ * Grid(Page)
+ * Spreadsheet(Page: Grids)
+ * ElementList(Grid)
+ * InputList(ElementList)
+ * LabelCheckbutton(Page: Label and Checkbutton)
+ * LabelEntry(Page: Label and Entry)
+
+#### Unsupported Elements
+ * Radiobutton
+ * Combobox
+ * Listbox
+ * SizeGrip
+ * Text
+ * Progressbar
+ * Scale
+ * Spinbox
+ * -Probably missing some
