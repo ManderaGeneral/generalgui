@@ -14,7 +14,7 @@ setup(
     long_description_content_type='text/markdown',
     author='Rickard "Mandera" Abraham',
     url="https://github.com/Mandera/generalgui",
-    version="1.1.5",
+    version="1.1.6",
     description=(
         "Extends and simplifies tkinter functionality with built-in QoL improvements."
     ),
