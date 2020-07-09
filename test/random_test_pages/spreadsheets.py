@@ -30,9 +30,9 @@ def ss(func):
 
 def addBig():
     l = []
-    for x in range(10):
+    for x in range(20):
         l.append([])
-        for y in range(10):
+        for y in range(20):
             l[-1].append(random.randint(-100, 100))
 
     df = pd.DataFrame(l)

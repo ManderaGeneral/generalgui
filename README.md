@@ -1,22 +1,52 @@
 # generalgui
+Extends and simplifies tkinter functionality with built-in QoL improvements.
+
 * Makes tkinter easy to use with some built-in QoL improvements.
-* Built on top of tkinter, intended to extend features. Not replace.
+* Built on top of tkinter, intended to extend features.
 * Three main parts: App, Page and Element.
 * Cannot partially use generalgui, everything has to be from here or nothing.
 
-## App
+## Installation
+```
+pip install generalgui
+```
+
+## Usage example
+Simple Button
+```python
+from generalgui import App, Page, Button
+
+btn = Button(Page(App(), pack=True), "Click me", lambda: btn.setValue("Changed value"))
+btn.show()
+```
+
+Spreadsheet
+```python
+from generalgui import App, Page, Spreadsheet
+import pandas as pd
+import random
+
+df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
+page = Page(App())
+Spreadsheet(page, cellVSB=True).loadDataFrame(df)
+page.show()
+```
+
+
+## Parts
+#### App
 Main part.
 Controls everything.
 Tk is 'widget' attribute.  
 
-## Page
+#### Page
 Middle part, controls Frame (and Canvas if scrollable).
 Has no 'widget'. getBaseWidget() / getTopWidget().
 Contains any amount of Elements and Pages.  
 Can be subclassed to create pre-built pages easily.
 Has to be packed manually.
 
-## Element
+#### Element
 Smallest part, controls widget.
 Tkinter widget is 'widget' attribute.  
 Packed automatically because it always has to be inside a page.  

@@ -15,16 +15,14 @@ import pandas as pd
 
 # print(grid.getFirstEmptyPos(Vec2(1, -1), Vec2(0, -1)))
 
+from generalgui import App, Page, Spreadsheet
+import pandas as pd
+import random
 
-app = App()
-
-def f():
-    app.hide()
-    app.widget.after(1000, app.show)
-
-Button(Page(app), "test", f).show()
-
-
+df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
+page = Page(App())
+Spreadsheet(page, cellVSB=True).loadDataFrame(df)
+page.show()
 
 
 
