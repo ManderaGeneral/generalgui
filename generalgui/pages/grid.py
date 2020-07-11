@@ -46,6 +46,7 @@ class Grid(Page):
     def getGridSize(self):
         """
         Get current grid size as a Vec2.
+        Only looks at cell with greatest position, so you could say (gridSize - Vec2(1)) is just pos of bottom right cell.
         """
         size = self.getBaseWidget().grid_size()
         return Vec2(size[0], size[1])

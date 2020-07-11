@@ -114,6 +114,17 @@ class Spreadsheet(Page):
         Header (df.columns) -> Column keys
 
         Index (df.index) -> Row keys
+
+    Fillerframes for mainGrid:
+     *      xhhhh
+     *      xmmmm
+
+     * xx   xhhhh
+     * im   immmm
+     * im   immmm
+     * im   immmm
+
+    i=indexFrame, h=headerFrame, m=mainCell, x=empty, f=frame
     """
     def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
@@ -156,13 +167,16 @@ class Spreadsheet(Page):
         self.previousRowSort = None
 
         if self.columnKeys:
-            self.columnKeysPageContainer = Page(self, pack=True, fill="x")
-            self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
+            self.columnKeysPageContainer = Page(self, pack=True, fill="x", padx=1 if self.rowKeys else 0)
+
+            if self.rowKeys:
+                self.columnKeysFillerLeft = Frame(self.columnKeysPageContainer, side="left", fill="y")
+
             self.headerGrid = Grid(self.columnKeysPageContainer, height=30, pack=True, side="left", scrollable=True, mouseScroll=False, fill="x", expand=True)
             self.headerGrid.menu("Column", **menus["Column"])
 
         if self.rowKeys:
-            self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1)  # Pady=1 for frames in row 0 being 1 pixel high
+            self.rowKeysPageContainer = Page(self, pack=True, width=0, side="left", fill="y", pady=1 if self.columnKeys else 0)
             self.indexGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
             self.indexGrid.menu("Row", **menus["Row"])
 
@@ -372,21 +386,26 @@ class Spreadsheet(Page):
 
         if self.columnKeys:
             size = Vec2(len(df.columns), 1)
-            self.headerGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
-            self.headerGrid.fillGrid(Label, Vec2(0, 1), size, values=df.columns, removeExcess=True,
-                                     onClick=lambda e: self.sortColumn(cellValue=e), **self.cellConfig)
-            self.mainGrid.fillGrid(Frame, Vec2(0, 0), size, height=1)
+            self.headerGrid.fillGrid(Frame, Vec2(1, 0), size, height=1)
+            self.mainGrid.fillGrid(Frame, Vec2(1, 0), size, height=1)
+
+            self.headerGrid.fillGrid(Label, Vec2(1, 1), size, values=df.columns, removeExcess=True, onClick=lambda e: self.sortColumn(cellValue=e), **self.cellConfig)
 
         if self.rowKeys:
-            self.indexGrid.fillGrid(Label, Vec2(0, 1), Vec2(1, len(df.index)), values=df.index, removeExcess=True,
-                                    onClick=lambda e: self.sortRow(cellValue=e), **self.cellConfig)
+            size = Vec2(1, len(df.index))
+            self.indexGrid.fillGrid(Frame, Vec2(0, 1), size, width=1)
+            self.mainGrid.fillGrid(Frame, Vec2(0, 1), size, width=1)
+
+            self.indexGrid.fillGrid(Label, Vec2(1, 1), size, values=df.index, removeExcess=True, onClick=lambda e: self.sortRow(cellValue=e), **self.cellConfig)
+
 
         values = []
         for row in df.itertuples(index=False):
             values.extend(row)
-        self.mainGrid.fillGrid(Label, Vec2(0, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, **self.cellConfig)
+        self.mainGrid.fillGrid(Label, Vec2(1, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, **self.cellConfig)
 
         self._syncColumnKeysWidth()
+        self._syncRowKeysHeight()
         self._syncRowKeysWidth()
         self.app.widget.update()
         self._syncKeysScroll()
@@ -450,7 +469,7 @@ class Spreadsheet(Page):
 
         columnFrames = []
         mainFrames = []
-        for pos in Vec2(0,0).range(Vec2(columnSize.x, 1)):
+        for pos in Vec2(1, 0).range(Vec2(columnSize.x - 1, 1)):
             columnFrame = self.headerGrid.getGridElement(pos)
             # print(columnFrame)
             columnFrame.widgetConfig(width=0)
@@ -475,6 +494,46 @@ class Spreadsheet(Page):
             else:
                 columnFrame.widgetConfig(width=mainWidth)
 
+    def _syncRowKeysHeight(self, test=False):
+        """
+        Sync the heights of all cells with indexes
+        """
+        if not self.rowKeys:
+            return
+
+        rowSize = self.indexGrid.getGridSize()
+        mainSize = self.mainGrid.getGridSize()
+
+        if rowSize.y != mainSize.y:
+            raise AttributeError(f"Row mismatch {rowSize}, {mainSize}")
+
+        rowFrames = []
+        mainFrames = []
+        for pos in Vec2(0, 1).range(Vec2(1, rowSize.y - 1)):
+            rowFrame = self.indexGrid.getGridElement(pos)
+            # print(rowFrame)
+            rowFrame.widgetConfig(height=0)
+            rowFrames.append(rowFrame)
+
+            mainFrame = self.mainGrid.getGridElement(pos)
+            # print(mainFrame)
+            mainFrame.widgetConfig(height=0)
+            mainFrames.append(mainFrame)
+
+        if test:
+            return
+
+        self.app.widget.update_idletasks()
+
+        for i, rowFrame in enumerate(rowFrames):
+            mainFrame = mainFrames[i]
+            rowHeight = rowFrame.widget.winfo_height()
+            mainHeight = mainFrame.widget.winfo_height()
+            if rowHeight > mainHeight:
+                mainFrame.widgetConfig(height=rowHeight)
+            else:
+                rowFrame.widgetConfig(height=mainHeight)
+
     def _syncRowKeysWidth(self):
         """Set right width for index, also update filler if it exists"""
         if not self.rowKeys:
@@ -484,7 +543,7 @@ class Spreadsheet(Page):
             return
 
         self.app.widget.update()  # To get right width
-        rowTitleWidth = children[0].widget.winfo_width() + 5
+        rowTitleWidth = children[-1].widget.winfo_width() + 5
         self.rowKeysPageContainer.getTopElement().widgetConfig(width=rowTitleWidth)
 
         if self.columnKeys:

@@ -82,7 +82,8 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
             Set focus on event's widget.
             Mainly to remove focus from entries but had some mostly nice side-effects.
             """
-            # print(event.widget)
+            # e = event.widget.element
+            # print(event.widget, e.getSize())
             try:
                 event.widget.focus_set()
             except TclError:
