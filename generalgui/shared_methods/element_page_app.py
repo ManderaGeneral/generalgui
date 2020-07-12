@@ -57,8 +57,9 @@ class Element_Page_App(Menu_Element_Page_App):
         Set size of this part's widget.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
-        :param Vec2 size:
+        :param Vec2 or Float size:
         """
+        size = Vec2(size)
         return self.getTopElement().widgetConfig(width=size.x, height=size.y)
 
     def getMouse(self):

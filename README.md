@@ -82,7 +82,7 @@ Widget      | -             | -             | -         | Element
  * getElement(s)By* inspired by js
  * Unique default style
  * Automatic app and page creation
- * Scale element
+ * Scale element / element.setSize()
 
 ## Features
  * Easily make pages resizeable or scrollable.

@@ -20,7 +20,8 @@ import random
 
 
 def test():
-    print(spreadsheet.getSize(), app.getSize())
+    print(app.widget.winfo_screenwidth(), app.widget.winfo_screenheight())
+    spreadsheet.setSize(app.getSize())
 
 
 df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
@@ -31,6 +32,8 @@ page = Page(app)
 spreadsheet = Spreadsheet(page, cellVSB=True)
 spreadsheet.loadDataFrame(df)
 
+
+spreadsheet.setSize(10000)
 spreadsheet.menu("TESTING", Maximize=test)
 app.widget.state("zoomed")
 
