@@ -62,8 +62,10 @@ class Grid(Page):
         :param removeExcess: Whether to remove cells with a greater position than fill area
         :param parameters: Parameters to be given to objects
         """
-        currentSize = self.getGridSize()
+        if eleCls == Label and "anchor" not in parameters:
+            parameters["anchor"] = "w"
 
+        currentSize = self.getGridSize()
         maxSize = currentSize.max(start + size)
         fillRange = start.range(size)
 
@@ -81,9 +83,11 @@ class Grid(Page):
                     if element:
                         element.remove()
                     value = values[0] if values else None
-                    eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
 
-                    # element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
+                    parameters["bg"] = None if pos.y % 2 else "gray88"
+                    element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
+
+                    element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
 
                 del fillRange[0]
                 if values:
