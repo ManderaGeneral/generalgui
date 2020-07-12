@@ -51,7 +51,7 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
         self.mainlooped = False
 
         default_font = font.nametofont("TkDefaultFont")
-        default_font.configure(size=10, family="Helvetica")
+        default_font.configure(size=10, family="Consolas")
         self.widget.option_add("*Font", default_font)
         # print(default_font.actual())
 
