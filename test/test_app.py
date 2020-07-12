@@ -135,6 +135,10 @@ class AppTest(GuiTests):
         self.assertEqual(Vec2(200), app.getBottomRightPos())
         self.assertEqual(Vec2(200), app.getSize())
 
+        app.setSize(Vec2(250, 300))
+        app.widget.update()
+        self.assertEqual(Vec2(250, 300), app.getSize())
+
         page = Page(app, width=300, height=250)
         page.show(mainloop=False)
         self.assertEqual(Vec2(300, 250), app.getBottomRightPos())

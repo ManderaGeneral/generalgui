@@ -52,6 +52,15 @@ class Element_Page_App(Menu_Element_Page_App):
         """
         return Vec2(self.getTopWidget().winfo_width(), self.getTopWidget().winfo_height())
 
+    def setSize(self, size):
+        """
+        Set size of this part's widget.
+
+        :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
+        :param Vec2 size:
+        """
+        return self.getTopElement().widgetConfig(width=size.x, height=size.y)
+
     def getMouse(self):
         """
         Get mouse vector2 from event, can be any part in whole app.

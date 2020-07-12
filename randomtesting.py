@@ -18,11 +18,22 @@ import pandas as pd
 from generalgui import App, Page, Spreadsheet
 import random
 
+
+def test():
+    print(spreadsheet.getSize(), app.getSize())
+
+
 df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
 df = df.append(["hello\nthere"])
 
-page = Page(App())
-Spreadsheet(page, cellVSB=True).loadDataFrame(df)
+app = App()
+page = Page(app)
+spreadsheet = Spreadsheet(page, cellVSB=True)
+spreadsheet.loadDataFrame(df)
+
+spreadsheet.menu("TESTING", Maximize=test)
+app.widget.state("zoomed")
+
 page.show()
 
 

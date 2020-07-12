@@ -168,6 +168,10 @@ class PageTest(GuiTests):
         self.assertEqual(Vec2(0), page.getTopLeftPos())
         self.assertEqual(Vec2(200, 100), page.getBottomRightPos())
 
+        page.setSize(Vec2(250, 300))
+        app.widget.update()
+        self.assertEqual(Vec2(250, 300), page.getSize())
+
     def test_states(self):
         app = App()
         page = Page(app)

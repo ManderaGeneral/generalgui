@@ -165,7 +165,7 @@ class ElementTest(GuiTests):
 
     def test_pos(self):
         app = App()
-        label = Label(Page(app), "testing", pack=False)
+        label = Button(Page(app), "testing", pack=False)
         self.assertEqual(Vec2(), label.getTopLeftPos())
         self.assertEqual(Vec2(1), label.getSize())
 
