@@ -72,7 +72,7 @@ class Element_Page_App(Menu_Element_Page_App):
 
     def getElementByPos(self, pos=None):
         """
-        Get element from pos
+        Get element from pos, window seems to have to be active.
 
         :param Vec2 or float pos: Pixel pos to search for element, defaults to getMouse().
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App

@@ -32,10 +32,9 @@ page = Page(app)
 spreadsheet = Spreadsheet(page, cellVSB=True)
 spreadsheet.loadDataFrame(df)
 
+spreadsheet.app.maximize()
 
-spreadsheet.setSize(10000)
-spreadsheet.menu("TESTING", Maximize=test)
-app.widget.state("zoomed")
+# spreadsheet.menu("TESTING", Maximize=test)
 
 page.show()
 

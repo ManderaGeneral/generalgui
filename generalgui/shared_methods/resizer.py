@@ -75,7 +75,7 @@ class Resizer:
             self.resizeTimer = Timer()
 
             newSize = (self.resizeElementSize + mouse - self.resizeMouseStart).max(Vec2(10))
-            self.resizeElement.widgetConfig(width=newSize.x, height=newSize.y)
+            self.resizeElement.setSize(newSize)
 
         else:
             if self.checkTimer.seconds() < self.checkCD:

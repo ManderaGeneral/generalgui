@@ -2,7 +2,7 @@
 
 from generalgui.shared_methods.decorators import ignore
 
-from generallibrary.types import hasMethod
+from generallibrary.types import hasMethod, typeChecker
 
 from typing import List, Any
 
@@ -82,6 +82,18 @@ class Page_App:
                     return part
 
             del parts[0]
+
+    def maximize(self):
+        """
+        Maximize this page or app.
+        Pages' size are just set to 10000 because tkinter seems to handle it nicely.
+
+        :param generalgui.page.Page or generalgui.app.App self: Page or App
+        :return:
+        """
+        if typeChecker(self, "Page", error=False):
+            self.setSize(10000)
+        self.app.widget.state("zoomed")
 
 
 
