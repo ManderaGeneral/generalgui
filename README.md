@@ -125,3 +125,19 @@ Widget      | -             | -             | -         | Element
  * Scale
  * Spinbox
  * -Probably missing some
+
+## What's new
+#### 1.2.0
+ * Alternating bg color in grid by default.
+ * Left-align grid by default.
+ * Enabled hover color for grid by default.
+ 
+ 
+ * Added maximize().
+ * Added setSize().
+ * Added _syncRowKeysHeight to allow linebreak in a cell.
+ * Added all getFirstPatternPos parameters to ElementList.
+ 
+ 
+ * Fixed pixel alignments for spreadsheet.
+ * Allowed Float for setSize().
