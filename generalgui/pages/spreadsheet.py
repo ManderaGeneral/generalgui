@@ -218,8 +218,8 @@ class Spreadsheet(Page):
         """Return the row average"""
         try:
             return np.average(self.dataFrame.loc[[cellValue]].values[0])
-        except TypeError:
-            return None
+        except (TypeError, AttributeError):
+            pass
 
     @headerValue
     def getColumnAverage(self, cellValue=None):
@@ -375,7 +375,7 @@ class Spreadsheet(Page):
         if indexName not in self.dataFrame.columns:
             self.dataFrame.insert(0, indexName, self.dataFrame.index.values)
 
-    cellConfig = {"padx": 5, "relief": "groove", "bg": "gray85"}
+    cellConfig = {"padx": 5, "pady": 5, "relief": "raised", "borderwidth": 1}
     def loadDataFrame(self, df=None):
         """
         Update cells to represent current dataFrame
@@ -389,20 +389,20 @@ class Spreadsheet(Page):
             self.headerGrid.fillGrid(Frame, Vec2(1, 0), size, height=1)
             self.mainGrid.fillGrid(Frame, Vec2(1, 0), size, height=1)
 
-            self.headerGrid.fillGrid(Label, Vec2(1, 1), size, values=df.columns, removeExcess=True, onClick=lambda e: self.sortColumn(cellValue=e), **self.cellConfig)
+            self.headerGrid.fillGrid(Label, Vec2(1, 1), size, values=df.columns, removeExcess=True, onClick=lambda e: self.sortColumn(cellValue=e), anchor="c")
 
         if self.rowKeys:
             size = Vec2(1, len(df.index))
             self.indexGrid.fillGrid(Frame, Vec2(0, 1), size, width=1)
             self.mainGrid.fillGrid(Frame, Vec2(0, 1), size, width=1)
 
-            self.indexGrid.fillGrid(Label, Vec2(1, 1), size, values=df.index, removeExcess=True, onClick=lambda e: self.sortRow(cellValue=e), **self.cellConfig)
+            self.indexGrid.fillGrid(Label, Vec2(1, 1), size, values=df.index, removeExcess=True, onClick=lambda e: self.sortRow(cellValue=e))
 
 
         values = []
         for row in df.itertuples(index=False):
             values.extend(row)
-        self.mainGrid.fillGrid(Label, Vec2(1, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, **self.cellConfig)
+        self.mainGrid.fillGrid(Label, Vec2(1, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, color=True, **self.cellConfig)
 
         self._syncColumnKeysWidth()
         self._syncRowKeysHeight()

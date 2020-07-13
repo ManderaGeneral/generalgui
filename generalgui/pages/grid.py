@@ -51,7 +51,7 @@ class Grid(Page):
         size = self.getBaseWidget().grid_size()
         return Vec2(size[0], size[1])
 
-    def fillGrid(self, eleCls, start, size, values=None, removeExcess=False, **parameters):
+    def fillGrid(self, eleCls, start, size, values=None, removeExcess=False, color=False, **parameters):
         """
         Fill grid with values, using a start position and a size.
 
@@ -60,6 +60,7 @@ class Grid(Page):
         :param Vec2 size: Size of values as Vec2, needs to match values len
         :param values: Values to be given to object as 'value' parameter
         :param removeExcess: Whether to remove cells with a greater position than fill area
+        :param color: Whether to color alternating rows
         :param parameters: Parameters to be given to objects
         """
         if eleCls == Label and "anchor" not in parameters:
@@ -84,7 +85,10 @@ class Grid(Page):
                         element.remove()
                     value = values[0] if values else None
 
-                    parameters["bg"] = None if pos.y % 2 else "gray88"
+
+                    if color and pos.y:
+                        parameters["bg"] = None if pos.y % 2 else "gray88"
+
                     element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
 
                     element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")

@@ -16,7 +16,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
         """
         Create a new page that is hidden by default and controls one frame. Becomes scrollable if width or height is defined.
 
-        :param App or Page or None parentPage: Parent page, can be App, Page or None (Creates new App).
+        :param App or Page parentPage: Parent page, can be App, Page or None (Creates new App).
         :param removeSiblings: Remove all siblings on creations, to easily update a page for example by replacing it.
         :param None or int width: Width in pixels
         :param None or int height: Width in pixels

@@ -12,7 +12,7 @@ class ElementList(Grid):
     def __init__(self, parentPage=None, startPos=Vec2(0), firstStep=Vec2(0, 1), secondStep=Vec2(1, 0), maxFirstSteps=5, **parameters):
         """
 
-        :param generalgui.Page parentPage:
+        :param generalgui.App or generalgui.Page parentPage:
         :param Vec2 startPos:
         :param Vec2 firstStep:
         :param Vec2 secondStep:

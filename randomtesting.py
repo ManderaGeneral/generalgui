@@ -25,14 +25,16 @@ def test():
 
 
 df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
-df = df.append(["hello\nthere"])
+df = df.append(["hello\nthere"], ignore_index=True)
 
 app = App()
 page = Page(app)
 spreadsheet = Spreadsheet(page, cellVSB=True)
 spreadsheet.loadDataFrame(df)
 
-spreadsheet.app.maximize()
+# spreadsheet.maximize()
+spreadsheet.setSize(1000)
+
 
 # spreadsheet.menu("TESTING", Maximize=test)
 
