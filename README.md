@@ -83,6 +83,7 @@ Widget      | -             | -             | -         | Element
  * Unique default style
  * Automatic app and page creation
  * Scale element / element.setSize()
+ * nan in spreadsheet becomes <NA> after saving then loading
 
 ## Features
  * Easily make pages resizeable or scrollable.

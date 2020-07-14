@@ -380,6 +380,7 @@ class Spreadsheet(Page):
         """
         Update cells to represent current dataFrame
         """
+        self.mainGrid.getBaseElement().removeBind("<Configure>", name="Sync")
         if df is not None:
             self.dataFrame = df
         df = self.dataFrame
@@ -402,13 +403,18 @@ class Spreadsheet(Page):
         values = []
         for row in df.itertuples(index=False):
             values.extend(row)
-        self.mainGrid.fillGrid(Label, Vec2(1, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, color=True, **self.cellConfig)
+        self.mainGrid.fillGrid(Label, Vec2(1, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, color=True, **self.cellConfig, hideMultiline=True)
 
-        self._syncColumnKeysWidth()
-        self._syncRowKeysHeight()
-        self._syncRowKeysWidth()
-        self.app.widget.update()
-        self._syncKeysScroll()
+        self._syncSizes()
+        self.mainGrid.getBaseElement().createBind("<Configure>", self._syncSizes, name="Sync")
+
+    def _syncSizes(self):
+        if self.mainGrid.getGridSize() > 0:
+            self._syncColumnKeysWidth()
+            self._syncRowKeysHeight()
+            self._syncRowKeysWidth()
+            self.app.widget.update()
+            self._syncKeysScroll()
 
     def loadTSV(self):
         """

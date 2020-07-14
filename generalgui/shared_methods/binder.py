@@ -58,7 +58,7 @@ class Binder:
 
     def removeBind(self, key, bind=None, name=None):
         """
-        Remove a bind from events.
+        Remove a bind by key or bind object or name.
 
         :param generalgui.Element or generalgui.App self:
         :param key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
