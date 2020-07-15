@@ -188,13 +188,13 @@ class AppTest(GuiTests):
         self.assertEqual([app], app.getParentPages(includeApp=True))
         self.assertEqual([app], app.getParentPages(includeSelf=True, includeApp=True))
 
-    def test_getFirstParentClass(self):
+    def test_getFirstParentByClass(self):
         app = App()
         LabelEntry(Page(app))
 
-        self.assertEqual(None, app.getFirstParentClass("App"))
-        self.assertEqual(app, app.getFirstParentClass("App", includeSelf=True))
-        self.assertEqual(None, app.getFirstParentClass("LabelEntry", includeSelf=True))
+        self.assertEqual(None, app.getFirstParentByClass("App"))
+        self.assertEqual(app, app.getFirstParentByClass("App", includeSelf=True))
+        self.assertEqual(None, app.getFirstParentByClass("LabelEntry", includeSelf=True))
 
     def test_getBaseTopElementWidget(self):
         app = App()

@@ -86,7 +86,7 @@ def _cellValue(func, self, args, kwargs, index=False, header=False):
 
     if element is not None:
         grid = element.parentPage
-        spreadsheet = grid.getFirstParentClass("Spreadsheet")
+        spreadsheet = grid.getFirstParentByClass("Spreadsheet")
         if grid == spreadsheet.mainGrid:
             gridPos = grid.getGridPos(element)
             if index:
@@ -126,7 +126,7 @@ class Spreadsheet(Page):
 
     i=indexFrame, h=headerFrame, m=mainCell, x=empty, f=frame
     """
-    def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, **parameters):
+    def __init__(self, parentPage=None, width=300, height=300, cellHSB=False, cellVSB=False, columnKeys=True, rowKeys=True, hideMultiline=True, **parameters):
         super().__init__(parentPage=parentPage, width=width, height=height, relief="solid", borderwidth=1, resizeable=True, **parameters)
 
         # Menus to put in respective keys grid if they exist, otherwise it's put in main grid
@@ -165,6 +165,7 @@ class Spreadsheet(Page):
         self.rowKeys = rowKeys
         self.previousColumnSort = None
         self.previousRowSort = None
+        self.dataFrameIsLoading = False
 
         if self.columnKeys:
             self.columnKeysPageContainer = Page(self, pack=True, fill="x", padx=1 if self.rowKeys else 0)
@@ -180,7 +181,7 @@ class Spreadsheet(Page):
             self.indexGrid = Grid(self.rowKeysPageContainer, pack=True, side="top", width=100, scrollable=True, mouseScroll=False, fill="both", expand=True)
             self.indexGrid.menu("Row", **menus["Row"])
 
-        self.mainGrid = Grid(self, scrollable=True, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
+        self.mainGrid = Grid(self, scrollable=True, hideMultiline=hideMultiline, hsb=cellHSB, vsb=cellVSB, pack=True, fill="both", expand=True)
 
         if self.columnKeys:
             if cellVSB:
@@ -380,7 +381,8 @@ class Spreadsheet(Page):
         """
         Update cells to represent current dataFrame
         """
-        self.mainGrid.getBaseElement().removeBind("<Configure>", name="Sync")
+        self.dataFrameIsLoading = True
+
         if df is not None:
             self.dataFrame = df
         df = self.dataFrame
@@ -403,13 +405,15 @@ class Spreadsheet(Page):
         values = []
         for row in df.itertuples(index=False):
             values.extend(row)
-        self.mainGrid.fillGrid(Label, Vec2(1, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, color=True, **self.cellConfig, hideMultiline=True)
+        self.mainGrid.fillGrid(Label, Vec2(1, 1), Vec2(df.shape[1], df.shape[0]), values=values, removeExcess=True, color=True, **self.cellConfig)
 
-        self._syncSizes()
-        self.mainGrid.getBaseElement().createBind("<Configure>", self._syncSizes, name="Sync")
+        self.dataFrameIsLoading = False
+        self.syncSizes()
 
-    def _syncSizes(self):
-        if self.mainGrid.getGridSize() > 0:
+    def syncSizes(self):
+        if not self.dataFrameIsLoading and not self.dataFrame.columns.empty and not self.dataFrame.index.empty:
+            # print(self.getMouse())
+        # if self.mainGrid.getGridSize() > 0:
             self._syncColumnKeysWidth()
             self._syncRowKeysHeight()
             self._syncRowKeysWidth()

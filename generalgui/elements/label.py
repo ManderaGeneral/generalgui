@@ -9,7 +9,7 @@ from generallibrary.types import strToDynamicType
 
 class Label(Element):
     """Controls one tkinter Label"""
-    def __init__(self, parentPage, value=None, hideMultiline=False, **parameters):
+    def __init__(self, parentPage, value=None, hideMultiline=None, **parameters):
         """
         Create a Label element that controls a label.
 
@@ -19,6 +19,8 @@ class Label(Element):
         """
         if value is None:
             value = ""
+        if hideMultiline is None:
+            hideMultiline = parentPage.hideMultiline
 
         self.hiddenMultiline = hideMultiline
         self._value = value

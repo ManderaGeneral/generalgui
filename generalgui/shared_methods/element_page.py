@@ -1,6 +1,7 @@
 """Shared methods by Element and Page"""
 
 from generallibrary.types import typeChecker
+from generallibrary.functions import getParameter
 
 from generalgui.shared_methods.decorators import ignore
 
@@ -9,10 +10,39 @@ from generalvector import Vec2
 from tkinter import TclError
 
 
+def spreadsheetSyncSizesWrapper(func, *args, **kwargs):
+    """
+
+    :param generalgui.Page or generalgui.element.Element self:
+    :param func:
+    :param args:
+    :param kwargs:
+    :return:
+    """
+    r = func(*args, **kwargs)
+    self = args[0]
+
+    if spreadsheet := self.parentPage.getFirstParentByClass("Spreadsheet"):
+        spreadsheet.syncSizes()
+    return r
+
+
 class Element_Page:
     """
     Pure methods that Element and Page share.
     """
+    def __init_subclass__(cls, **kwargs):
+        """
+        Wrap subclasses functions that can effect a parent spreadsheet's cell sizes.
+
+        :param kwargs:
+        :return:
+        """
+        methodsToWrap = ("setSize", "setValue")
+        for methodName in methodsToWrap:
+            if method := getattr(cls, methodName, None):
+                setattr(cls, methodName, lambda *args, m=method, **kwargs: spreadsheetSyncSizesWrapper(m, *args, **kwargs))
+
     def hasGridParameters(self):
         """
         :param generalgui.element.Element or generalgui.Page self: Element or Page

@@ -133,9 +133,9 @@ class Element_Page_App(Menu_Element_Page_App):
                 pages.append(parentPage)
             parentPage = parentPage.parentPage
 
-    def getFirstParentClass(self, className, includeSelf=False):
+    def getFirstParentByClass(self, className, includeSelf=False):
         """
-        Iterate parent pages to return first className match.
+        Iterate parent pages to return first part with matching className or None.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param className: Name or type of part, used by typeChecker

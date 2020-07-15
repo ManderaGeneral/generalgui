@@ -29,7 +29,7 @@ df = df.append(["hello\nthere"], ignore_index=True)
 
 app = App()
 page = Page(app)
-spreadsheet = Spreadsheet(page, cellVSB=True)
+spreadsheet = Spreadsheet(page, cellVSB=True, hideMultiline=False)
 spreadsheet.loadDataFrame(df)
 
 # spreadsheet.maximize()
