@@ -165,7 +165,8 @@ class Element_Page_App(Menu_Element_Page_App):
                 continue
             part = widget.element
 
-            if not includeParts and part.parentPage.topElement == part:
+            partIsTopElement = part.parentPage.topElement == part
+            if not includeParts and partIsTopElement:
                 part = part.parentPage
 
             if widget.element not in ignore and part not in ignore:

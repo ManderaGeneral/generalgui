@@ -208,7 +208,14 @@ class Spreadsheet(Page):
         self.menu("Spreadsheet",
                   Save_as_tsv=self.saveAsTSV,
                   Load_tsv_file=self.loadTSV,
-                  Clear_all=self.clearAll)
+                  Clear_all=self.clearAll,
+                  )
+
+        if hideMultiline:
+            self.menu("Spreadsheet", add=True,
+                      Show_multilines=lambda: self.toggleMultilines(True),
+                      Hide_multilines=lambda: self.toggleMultilines(False),
+                      )
 
 
     defaultHeaderName = "headers"

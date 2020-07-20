@@ -84,6 +84,7 @@ Widget      | -             | -             | -         | Element
  * Automatic app and page creation
  * Scale element / element.setSize()
  * nan in spreadsheet becomes <NA> after saving then loading
+ * UnitTest for spreadsheet size syncs
 
 ## Features
  * Easily make pages resizeable or scrollable.

@@ -82,6 +82,12 @@ class Page(Element_Page, Element_Page_App, Page_App):
         if pack:
             self.pack()
 
+    def toggleMultilines(self, show):
+        for child in self.getChildren():
+            pass
+            # Get childrens children ** HERE **
+
+
     def __repr__(self):
         return f"{self.__class__.__name__}: [{self.topElement}]"
 

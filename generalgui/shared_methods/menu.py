@@ -7,7 +7,7 @@ class Menu_Element_Page_App:
     def __init__(self):
         self.menuContent = {}
 
-    def menu(self, name, **buttons):
+    def menu(self, name, add=False, **buttons):
         """
         Define menu for this part.
         End key string with ":" to create an information label.
@@ -15,9 +15,13 @@ class Menu_Element_Page_App:
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param str name: Title of menu for this part
+        :param add: Whether to add to menu or not
         :param buttons: Key is string, value should be a function
         """
-        self.menuContent[name] = buttons
+        if not add or name not in self.menuContent:
+            self.menuContent[name] = buttons
+        elif add:
+            self.menuContent.update(buttons)
 
     def showMenu(self):
         """

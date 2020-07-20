@@ -26,6 +26,8 @@ class Label(Element):
         self._value = value
         
         super().__init__(parentPage, tk.Label, text=self._getNewDisplayedValue(value), **parameters)
+        # self.updateColor
+        # HERE ** dont remember what I wanted to do here
 
         if hideMultiline:
             self.createBind("<Button-1>", self.toggleHideMultiline, name="HideOrShow")
