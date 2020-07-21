@@ -566,8 +566,11 @@ class Spreadsheet(Page):
         if self.columnKeys:
             self.columnKeysFillerLeft.widgetConfig(width=rowTitleWidth)
 
-
-
+    def toggleMultilines(self, show=None):
+        self.dataFrameIsLoading = True
+        super().toggleMultilines(show=show)
+        self.dataFrameIsLoading = False
+        self.syncSizes()
 
 
 
