@@ -21,7 +21,7 @@ class Menu_Element_Page_App:
         if not add or name not in self.menuContent:
             self.menuContent[name] = buttons
         elif add:
-            self.menuContent.update(buttons)
+            self.menuContent[name].update(buttons)
 
     def showMenu(self):
         """

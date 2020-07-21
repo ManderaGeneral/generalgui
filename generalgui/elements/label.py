@@ -4,8 +4,6 @@ import tkinter as tk
 
 from generalgui.element import Element
 
-from generallibrary.types import strToDynamicType
-
 
 class Label(Element):
     """Controls one tkinter Label"""
@@ -15,6 +13,7 @@ class Label(Element):
 
         :param generalgui.Page parentPage: Parent page
         :param str value: Text to be displayed
+        :param bool hideMultiline: Whether to have option to hide multilines or not
         :param parameters: Both config and pack parameters together
         """
         if value is None:
@@ -22,15 +21,22 @@ class Label(Element):
         if hideMultiline is None:
             hideMultiline = parentPage.hideMultiline
 
+        self.hideMultiline = hideMultiline
         self.hiddenMultiline = hideMultiline
         self._value = value
         
         super().__init__(parentPage, tk.Label, text=self._getNewDisplayedValue(value), **parameters)
-        # self.updateColor
-        # HERE ** dont remember what I wanted to do here
 
         if hideMultiline:
-            self.createBind("<Button-1>", self.toggleHideMultiline, name="HideOrShow")
+            self.createBind("<Button-1>", self.toggleMultilines, name="HideOrShow")
+            self.multilineStyle = self.createStyle("Multiline", fg="gray60")
+            self._updateStyle()
+
+    def _updateStyle(self):
+        if self.widget["text"].find(" ...") != -1 and str(self.getValue()).find("\n") != -1:
+            self.multilineStyle.enable()
+        else:
+            self.multilineStyle.disable()
 
     def _getNewDisplayedValue(self, value):
         if self.hiddenMultiline:
@@ -44,14 +50,23 @@ class Label(Element):
         else:
             return value
 
-
-    def toggleHideMultiline(self):
+    def toggleMultilines(self, show=None):
         """
         Bound to <Button-1> if hideMultiline is enabled.
         Toggles self.hiddenMultiline and then updates shown text.
+
+        :param bool show: Whether to show multiline or not. Leave as None to toggle state.
         """
-        self.hiddenMultiline = not self.hiddenMultiline
-        self.setValue(self.getValue())
+        if self.hideMultiline:
+            if show is None:
+                show = self.hiddenMultiline
+            hide = not show
+            value = self.getValue()
+            equals = self.hiddenMultiline == hide
+            hasNewline = str(value).find("\n") != -1
+            if not equals and hasNewline:
+                self.hiddenMultiline = hide
+                self.setValue(value)
 
     def setValue(self, value):
         """
@@ -64,6 +79,7 @@ class Label(Element):
         self._value = value
 
         self.widget["text"] = self._getNewDisplayedValue(value)
+        self._updateStyle()
 
     def getValue(self):
         """

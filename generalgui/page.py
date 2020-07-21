@@ -82,10 +82,15 @@ class Page(Element_Page, Element_Page_App, Page_App):
         if pack:
             self.pack()
 
-    def toggleMultilines(self, show):
-        for child in self.getChildren():
-            pass
-            # Get childrens children ** HERE **
+    def toggleMultilines(self, show=None):
+        """
+        Toggles all labels to show or hide multilines.
+
+        :param bool show: Whether to show multilines or not.
+        """
+        for child in self.getChildren(recurrent=True):
+            if getattr(child, "hideMultiline", None):
+                child.toggleMultilines(show=show)
 
 
 
