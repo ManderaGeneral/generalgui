@@ -44,13 +44,14 @@ class Label(Element):
         if self.hiddenMultiline:
             splitValue = str(value).split("\n")
             self.hiddenMultiline = len(splitValue) > 1
-
             if self.hiddenMultiline:
-                return f"{splitValue[0]} ..."
-            else:
-                return splitValue[0]
-        else:
-            return value
+                for line in splitValue:
+                    if line != "":
+                        break
+                else:
+                    line = ""
+                return f"{line} ..."
+        return value
 
     def toggleMultilines(self, show=None):
         """
