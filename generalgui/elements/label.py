@@ -27,16 +27,18 @@ class Label(Element):
         
         super().__init__(parentPage, tk.Label, text=self._getNewDisplayedValue(value), **parameters)
 
+        # Multiline hiding part is a mess, but it works
         if hideMultiline:
             self.createBind("<Button-1>", self.toggleMultilines, name="HideOrShow")
-            self.multilineStyle = self.createStyle("Multiline", fg="gray60")
+            self.multilineStyle = self.createStyle("Multiline", priority=0.5, fg="gray60")
             self._updateStyle()
 
     def _updateStyle(self):
-        if self.widget["text"].find(" ...") != -1 and str(self.getValue()).find("\n") != -1:
-            self.multilineStyle.enable()
-        else:
-            self.multilineStyle.disable()
+        if self.hideMultiline:
+            if self.hiddenMultiline:
+                self.multilineStyle.enable()
+            else:
+                self.multilineStyle.disable()
 
     def _getNewDisplayedValue(self, value):
         if self.hiddenMultiline:

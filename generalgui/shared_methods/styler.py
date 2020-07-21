@@ -150,6 +150,8 @@ class StyleHandler:
                     else:
                         value = copyStyle[key]
                 kwargs[key] = value
+
+        # print(kwargs, [id(style) for style in self.styles])
         self.changeFunc(kwargs)
 
     @styleDecorator
@@ -169,13 +171,14 @@ class StyleHandler:
 
         :param str or Style style: Style to be enabled.
         """
-        for key, value in style.kwargs.items():
-            if key not in self.originalStyle.kwargs:
-                originalValue = self.getOriginalFunc(key)
-                self.originalStyle[key] = originalValue
+        if style not in self.styles:
+            for key, value in style.kwargs.items():
+                if key not in self.originalStyle.kwargs:
+                    originalValue = self.getOriginalFunc(key)
+                    self.originalStyle[key] = originalValue
 
-        self.styles.add(style)
-        self.update()
+            self.styles.add(style)
+            self.update()
 
     @styleDecorator
     def disable(self, style):
@@ -186,7 +189,7 @@ class StyleHandler:
         """
         if style in self.styles:
             self.styles.remove(style)
-        self.update()
+            self.update()
 
     def getStyle(self, style, onlyEnabled=False):
         """
@@ -227,6 +230,9 @@ class Style:
         self.style = style
         self.priority = priority
         self.kwargs = kwargs
+
+    def __repr__(self):
+        return f"<Style {self.name} - Enabled: {self in self.styleHandler.styles} - Kwargs: {self.kwargs} - Priority: {self.priority}"
 
     def __getitem__(self, item):
         return self.kwargs[item]

@@ -79,6 +79,9 @@ class Grid(Page):
             if fillRange and pos == fillRange[0]:
                 if (element := self.getGridElement(pos)) and element.__class__ == eleCls:
                     if eleCls == Label and values:
+                        label = element  # type: Label
+                        if label.hideMultiline:
+                            label.hiddenMultiline = True
                         element.setValue(values[0])
                 else:
                     if element:

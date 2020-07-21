@@ -38,6 +38,15 @@ class StylerTest(GuiTests):
         self.assertRaises(AttributeError, blue.enable)
         self.assertEqual(False, blue.isEnabled())
 
+        self.assertEqual(2, len(label.styleHandler.allStyles))
+        self.assertEqual(1, len(label.styleHandler.styles.objects))
+        red.enable()
+        self.assertEqual(2, len(label.styleHandler.allStyles))
+        self.assertEqual(2, len(label.styleHandler.styles.objects))
+        red.enable()
+        self.assertEqual(2, len(label.styleHandler.allStyles))
+        self.assertEqual(2, len(label.styleHandler.styles.objects))
+
         page.app.remove()
 
     def test_animate(self):

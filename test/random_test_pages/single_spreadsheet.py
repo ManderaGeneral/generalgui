@@ -24,8 +24,10 @@ def test():
     spreadsheet.setSize(app.getSize())
 
 
-df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
-df = df.append(["hello\nthere"], ignore_index=True)
+# df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
+# df = df.append(["hello\nthere"], ignore_index=True)
+
+df = pd.DataFrame(["hello\nthere", "hello\nthere"])
 
 app = App()
 page = Page(app)
