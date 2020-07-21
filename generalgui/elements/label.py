@@ -4,6 +4,7 @@ import tkinter as tk
 
 from generalgui.element import Element
 
+import re
 
 class Label(Element):
     """Controls one tkinter Label"""
@@ -50,7 +51,7 @@ class Label(Element):
                         break
                 else:
                     line = ""
-                return f"{line} ..."
+                return f"{re.sub('^ +', '', line)} ..."
         return value
 
     def toggleMultilines(self, show=None):
