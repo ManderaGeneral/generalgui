@@ -13,39 +13,42 @@ class Page_App:
     """
 
     @ignore
-    def showChildren(self, ignore=None, mainloop=True):
+    def showChildren(self, ignore=None, recurrent=False, mainloop=True):
         """
         Calls the 'show' method on all children retrieved from the 'getChildren' method.
 
         :param generalgui.page.Page or generalgui.app.App self: Page or App
         :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
+        :param recurrent: Whether to include childrens' children or not
         :param mainloop: Whether to call mainloop or not
         """
-        for child in self.getChildren(ignore=ignore):
+        for child in self.getChildren(ignore=ignore, recurrent=recurrent):
             child.show(mainloop=False)
         if mainloop:
             self.app.mainloop()
 
     @ignore
-    def hideChildren(self, ignore=None):
+    def hideChildren(self, recurrent=False, ignore=None):
         """
         Calls the 'hide' method on all children retrieved from the 'getChildren' method.
 
         :param generalgui.page.Page or generalgui.app.App self: Page or App
         :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
+        :param recurrent: Whether to include childrens' children or not
         """
-        for child in self.getChildren(ignore=ignore):
+        for child in self.getChildren(ignore=ignore, recurrent=recurrent):
             child.hide()
 
     @ignore
-    def removeChildren(self, ignore=None):
+    def removeChildren(self, recurrent=False, ignore=None):
         """
         Calls the 'remove' method on all children retrieved from the 'getChildren' method.
 
         :param generalgui.page.Page or generalgui.app.App self: Page or App
         :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
+        :param recurrent: Whether to include childrens' children or not
         """
-        for child in self.getChildren(ignore=ignore):
+        for child in self.getChildren(ignore=ignore, recurrent=recurrent):
             child.remove()
 
     def packPart(self, part):

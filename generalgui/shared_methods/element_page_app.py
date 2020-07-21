@@ -3,6 +3,7 @@
 from tkinter import TclError
 
 from generallibrary.types import typeChecker
+from generallibrary.iterables import exclusive
 
 from generalvector import Vec, Vec2
 
@@ -19,6 +20,9 @@ class Element_Page_App(Menu_Element_Page_App):
         Menu_Element_Page_App.__init__(self)
 
         self.removed = False
+
+    def __repr__(self):
+        return f"<gui part: {self.__class__.__name__}>"
 
     def getWindowPos(self):
         """
@@ -146,16 +150,18 @@ class Element_Page_App(Menu_Element_Page_App):
                 return part
 
     @ignore
-    def getChildren(self, includeParts=False, ignore=None):
+    def getChildren(self, includeParts=False, ignore=None, recurrent=False):
         """
         Get children pages and elements that's one step below in hierarchy.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param includeParts: Whether to get page parts or one page
         :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
+        :param recurrent: Whether to include childrens' children or not
         :return: Children elements in list
         :rtype: list[generalgui.element.Element or generalgui.page.Page]
         """
+        kwargs = exclusive(locals(), "self")
         children = []
 
         parentWidget = self.getTopWidget() if includeParts else self.getBaseWidget()
@@ -171,6 +177,8 @@ class Element_Page_App(Menu_Element_Page_App):
 
             if widget.element not in ignore and part not in ignore:
                 children.append(part)
+                if recurrent:
+                    children.extend(part.getChildren(**kwargs))
 
         return children
 

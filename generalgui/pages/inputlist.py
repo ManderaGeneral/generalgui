@@ -93,7 +93,7 @@ class InputList(ElementList):
             return True
         return False
 
-    def removeChildren(self, ignore=None):
+    def removeChildren(self, recurrent=False, ignore=None):
         """
         Simple override to also reset inputElements.
         """

@@ -88,6 +88,10 @@ class AppTest(GuiTests):
         page2.show(mainloop=False)
         self.assertTrue(page2.isShown())
 
+        self.assertEqual([page, page2], app.getChildren(recurrent=True))
+        labelEntry = LabelEntry(page2)
+        self.assertEqual([page, page2, labelEntry, labelEntry.label, labelEntry.entry], app.getChildren(recurrent=True))
+
     def test_after(self):
         app = App()
         self.assertEqual({}, app.afters)

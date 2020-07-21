@@ -63,6 +63,7 @@ class ElementTest(GuiTests):
 
             # print(page.isScrollable(), page.getChildren())
             self.assertEqual(page.getChildren(), [text1, text2, page2])
+            self.assertEqual([text1, text2, page2, text3], page.getChildren(recurrent=True))
 
             self.assertFalse(text1.isShown())
             self.assertFalse(text2.isShown())

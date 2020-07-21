@@ -95,6 +95,8 @@ class PageTest(GuiTests):
             self.assertEqual(page.getChildren(ignore=(page2, page3)), [])
             self.assertEqual(page.getChildren(ignore=[page2, page3]), [])
 
+            self.assertEqual([page, page2, page3], page.app.getChildren(recurrent=True))
+
             self.assertFalse(page2.isShown())
             self.assertFalse(page3.isShown())
 
