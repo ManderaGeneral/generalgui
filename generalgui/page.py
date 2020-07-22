@@ -6,6 +6,8 @@ from generalgui.shared_methods.element_page import Element_Page
 from generalgui.shared_methods.element_page_app import Element_Page_App
 from generalgui.shared_methods.page_app import Page_App
 
+from generalvector import Vec2
+
 
 class Page(Element_Page, Element_Page_App, Page_App):
     """
@@ -74,6 +76,14 @@ class Page(Element_Page, Element_Page_App, Page_App):
             def _canvasConfigure(_):
                 self.canvas.widgetConfig(scrollregion=self.canvas.widget.bbox("all"))
 
+                # Trying to fix view being outside content, but it's tough
+                # scrollregion = self.canvas.getWidgetConfig("scrollregion").split(" ")
+                # regionSize = Vec2(scrollregion[2], scrollregion[3])
+                # canvasSize = self.canvas.getSize()
+                # view = Vec2(self.canvas.widget.xview()[0], self.canvas.widget.yview()[0])
+                # if not canvasSize <= regionSize or 1:
+                #     print(regionSize, canvasSize, view)
+
             self.canvasFrame.createBind("<Configure>", _canvasConfigure)
 
             self.canvas.widgetConfig(yscrollincrement="1")
@@ -82,7 +92,7 @@ class Page(Element_Page, Element_Page_App, Page_App):
         if pack:
             self.pack()
 
-    def toggleMultilines(self, show=None):
+    def toggleAllMultilines(self, show=None):
         """
         Toggles all labels to show or hide multilines.
 
@@ -90,7 +100,10 @@ class Page(Element_Page, Element_Page_App, Page_App):
         """
         for child in self.getChildren(recurrent=True):
             if getattr(child, "hideMultiline", None):
-                child.toggleMultilines(show=show)
+                if typeChecker(child, "Label", error=False):
+                    child.toggleMultilines(show=show)
+                else:
+                    child.toggleAllMultilines(show=show)
 
 
 

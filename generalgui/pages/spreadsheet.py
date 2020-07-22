@@ -213,8 +213,8 @@ class Spreadsheet(Page):
 
         if hideMultiline:
             self.menu("Spreadsheet", add=True,
-                      Show_multilines=lambda: self.toggleMultilines(True),
-                      Hide_multilines=lambda: self.toggleMultilines(False),
+                      Show_multilines=lambda: self.toggleAllMultilines(True),
+                      Hide_multilines=lambda: self.toggleAllMultilines(False),
                       )
 
 
@@ -566,9 +566,9 @@ class Spreadsheet(Page):
         if self.columnKeys:
             self.columnKeysFillerLeft.widgetConfig(width=rowTitleWidth)
 
-    def toggleMultilines(self, show=None):
+    def toggleAllMultilines(self, show=None):
         self.dataFrameIsLoading = True
-        super().toggleMultilines(show=show)
+        super().toggleAllMultilines(show=show)
         self.dataFrameIsLoading = False
         self.syncSizes()
 

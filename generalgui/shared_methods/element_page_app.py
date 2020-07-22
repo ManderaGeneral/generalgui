@@ -159,7 +159,7 @@ class Element_Page_App(Menu_Element_Page_App):
         :param any ignore: A single child or multiple children to ignore. Is converted to list through decorator.
         :param recurrent: Whether to include childrens' children or not
         :return: Children elements in list
-        :rtype: list[generalgui.element.Element or generalgui.page.Page]
+        :rtype: list[generalgui.page.Page or generalgui.Label or generalgui.Button or generalgui.Entry]
         """
         kwargs = exclusive(locals(), "self")
         children = []

@@ -85,7 +85,6 @@ class Scroller:
         if self.scrollWheelTarget:
             if not self.scrollWheelTarget.isShown(error=False):
                 self.scrollButtonRelease()
-                # self.scrollButtonRelease(None)  # This doesn't work because B3-Motion stops being called when removed. Would have to use Motion.
                 return
 
             coords = Vec2(event.x_root, event.y_root)
