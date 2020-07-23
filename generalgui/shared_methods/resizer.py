@@ -88,7 +88,7 @@ class Resizer:
                 if not element.exists():
                     removedElements.append(element)
                     continue
-                if not element.isShown():
+                if not element.isShown(error=False):
                     continue
 
                 self.resizeElementSize = element.getSize()
