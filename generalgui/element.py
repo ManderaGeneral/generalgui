@@ -57,13 +57,6 @@ class Element(Element_Page, Element_App, Element_Page_App):
 
         setattr(self.widget, "element", self)
 
-        if onClick:
-            parameters["cursor"] = "hand2"
-            self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
-            self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
-            self.createBind("<Return>", self.click)
-            self.onClick(onClick)
-
         configParameters = {}
         self.packParameters = {}
         allConfigKeys = self.getAllWidgetConfigs()
@@ -80,10 +73,12 @@ class Element(Element_Page, Element_App, Element_Page_App):
             self.pack()
         if resizeable:
             self.resizeable()
+        if onClick:
+            self.onClick(onClick)
 
 
     def resizeable(self):
-        """Make this elemetn resizeable"""
+        """Make this element resizeable"""
         self.app.makeResizeable(self)
 
     def makeBase(self):

@@ -45,6 +45,7 @@ class Styler:
             self.createBind(key=hookBindKey, func=newStyle.enable)
         if unhookBindKey:
             self.createBind(key=unhookBindKey, func=newStyle.disable)
+            # self.createBind(key=unhookBindKey, func=lambda x=newStyle: print(x))
 
         return newStyle
 
@@ -134,6 +135,7 @@ class StyleHandler:
 
         newStyle = Style(styleHandler=self, name=name, style=style, priority=priority, **kwargs)
         self.allStyles[name] = newStyle
+
         return newStyle
 
     def update(self):
@@ -176,7 +178,6 @@ class StyleHandler:
                 if key not in self.originalStyle.kwargs:
                     originalValue = self.getOriginalFunc(key)
                     self.originalStyle[key] = originalValue
-
             self.styles.add(style)
             self.update()
 
@@ -232,7 +233,7 @@ class Style:
         self.kwargs = kwargs
 
     def __repr__(self):
-        return f"<Style {self.name} - Enabled: {self in self.styleHandler.styles} - Kwargs: {self.kwargs} - Priority: {self.priority}"
+        return f"<Style {self.name} - Enabled: {self in self.styleHandler.styles} - Kwargs: {self.kwargs} - Priority: {self.priority}>"
 
     def __getitem__(self, item):
         return self.kwargs[item]
@@ -245,12 +246,14 @@ class Style:
         Enables a style by name or style.
         """
         self.styleHandler.enable(self)
+        # print(self.styleHandler.styles)
 
     def disable(self):
         """
         Disables a style by name or style.
         """
         self.styleHandler.disable(self)
+        # print(self.styleHandler.styles)
 
     def isEnabled(self):
         """

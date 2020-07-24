@@ -2,15 +2,13 @@
 
 
 from generalgui.shared_methods.styler import Styler
-from generalgui.shared_methods.binder import Binder
 
-class Element_App(Styler, Binder):
+class Element_App(Styler):
     """
     Pure methods that Element and App share.
     """
     def __init__(self):
         Styler.__init__(self)
-        Binder.__init__(self)
 
     def widgetConfig(self, **kwargs):
         """

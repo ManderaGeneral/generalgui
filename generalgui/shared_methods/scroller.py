@@ -27,6 +27,8 @@ class Scroller:
         self.scrollStyle = self.createStyle("Scroll", cursor="plus")
 
     def _checkEventForScrollTarget(self, event):
+        if not event:
+            return
         eventElement = event.widget.element
         if typeChecker(eventElement, "App", error=False):
             return

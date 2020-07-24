@@ -10,14 +10,16 @@ from generalvector import Vec, Vec2
 from generalgui.shared_methods.decorators import ignore
 
 from generalgui.shared_methods.menu import Menu_Element_Page_App
+from generalgui.shared_methods.binder import Binder
 
 
-class Element_Page_App(Menu_Element_Page_App):
+class Element_Page_App(Menu_Element_Page_App, Binder):
     """
     Pure methods that Element, Page and App all share.
     """
     def __init__(self):
         Menu_Element_Page_App.__init__(self)
+        Binder.__init__(self)
 
         self.removed = False
 
@@ -273,6 +275,9 @@ class Element_Page_App(Menu_Element_Page_App):
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         """
         self.removed = True
+
+        for part in (self.getChildren(recurrent=True) + self.getChildren(includeParts=True, recurrent=True)):
+            part.removed = True
 
         if typeChecker(self, "App", error=False):
             self.getApps().remove(self)

@@ -16,8 +16,8 @@ class Entry(Element):
         Create an Entry element that controls an entry.
 
         :param generalgui.Page parentPage: Parent page
-        :param default: What value to start with that is removed when clicking
-        :param width: Width of Entry in pixels
+        :param str default: What value to start with that is removed when clicking
+        :param int width: Width of Entry in pixels
         :param parameters: Both config and pack parameters together
         """
         super().__init__(parentPage, tk.Entry, width=width, **parameters)

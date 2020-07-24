@@ -8,6 +8,7 @@ from generalgui.shared_methods.page_app import Page_App
 from generalgui.shared_methods.scroller import Scroller
 from generalgui.shared_methods.resizer import Resizer
 from generalgui.shared_methods.menu import Menu_App
+from generalgui.shared_methods.binder import Binder_App
 
 from generallibrary.iterables import getFreeIndex
 
@@ -32,7 +33,7 @@ class tkTk(Tk):
         del self.element.afters[index]
 
 apps = []
-class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
+class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App, Binder_App):
     """
     Controls one tkinter Tk object and adds a lot of convenient features.
     Creates a window automatically.
@@ -40,6 +41,7 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
     def __init__(self):
         Element_App.__init__(self)
         Element_Page_App.__init__(self)
+        Binder_App.__init__(self)
 
         apps.append(self)
 
@@ -82,12 +84,13 @@ class App(Element_Page_App, Element_App, Page_App, Scroller, Resizer, Menu_App):
             Set focus on event's widget.
             Mainly to remove focus from entries but had some mostly nice side-effects.
             """
-            # e = event.widget.element
-            # print(event.widget, e.getSize())
-            try:
-                event.widget.focus_set()
-            except TclError:
-                pass
+            if event:
+                try:
+                    event.widget.focus_set()
+                except TclError:
+                    pass
+
+
         self.createBind("<Button-1>", setFocus)
 
         # def cleanAfters():

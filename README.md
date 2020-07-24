@@ -80,11 +80,12 @@ Widget      | -             | -             | -         | Element
 ## Todo
  * Menu should probably inherit page so it becomes reuseable
  * getElement(s)By* inspired by js
- * Unique default style
+ * Unique default style to distinguish my package from generic tkinter
  * Automatic app and page creation
  * Scale element / element.setSize()
  * nan in spreadsheet becomes <NA> after saving then loading
  * UnitTest for spreadsheet size syncs
+ * Make all parts visible by default
 
 ## Features
  * Easily make pages resizeable or scrollable.
@@ -98,6 +99,8 @@ Widget      | -             | -             | -         | Element
  * ElementList which nicely stacks groups of buttons for example in a certain pattern.
  * Combined Elements such as LabelEntry which easily allows you to get/set values.
  * Default menu option to 'Rainbow' which colors all widgets in a random color for debugging.
+ * Propagating stackable binds through entire app, allows creating one bind for entire Page or App.
+ * Bind propagation options to stop propagation anywhere.
  
 #### Elements
  * Button
@@ -129,6 +132,64 @@ Widget      | -             | -             | -         | Element
  * -Probably missing some
 
 ## What's new
+#### 1.3.0
+ * Made all binds go through App.
+ * Which allows us to propagate events through parts.
+ * Letting us for example bind an entire page.
+ * Changed bindPropagation to just prevent propagating after part.
+ * We can do that because we changed Button to use a tk.Label.
+ * Silenced error for calling events on removed parts.
+ * Made remove() iterate all children to set their 'removed' attribute to True.
+ * Made hover and click style enable even if bound after init.
+
+
+ * Silenced error for hiding resize element.
+
+
+ * Tried fixing scroll page out of view, but failed so commented.
+
+
+ * Made hideMultiline skip first spaces in line when hiding.
+
+
+ * Made hideMultiline skip first empty lines.
+
+
+ * Fixed multiline hiding for Label.
+ * Also made it work in grid, although it doesn't preserve states, but it's probably fine.
+ * Fixed issue with Styler where enabling an enabled style caused styles to stack. (Added to test)
+
+
+ * Overrode Page.toggleMultilines() in Spreadsheet.toggleMultilines() to only call syncSizes() once.
+
+
+ * Added toggleMultilines to Label and Page.
+ * Added style for hiddenMultiline Labels.
+
+
+ * Added 'recurrent' parameter to children methods.
+
+
+ * Added 'add' parameter for menu().
+ * Middle of toggleMultilines() for Page.
+
+
+ * Solution for syncing spreadsheet sizes automatically.
+ * Added spreadsheetSyncSizesWrappers for Element_Page.
+ * Added hideMultiline to Page, which affects all Labels inside it.
+ * Changed Label's hideMultiline parameter to default to it's parentPage.
+
+
+ * Added a 'hideMultiline' option to Label.
+ * Enabled this for all Labels in MainGrid in Spreadsheet.
+ * Put all _sync functions in _syncSizes() and bound them to '<Configure>' of MainGrid when df has been loaded.
+
+
+ * Made spreadsheet prettier.
+
+
+ * Changed default font to Consolas which is fixed-length and has no kerning. Aka monospace.
+
 #### 1.2.0
  * Alternating bg color in grid by default.
  * Left-align grid by default.

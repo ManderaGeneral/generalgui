@@ -3,6 +3,7 @@
 import tkinter as tk
 
 from generallibrary.types import strToDynamicType
+from generallibrary.functions import defaults
 
 from generalgui.element import Element
 
@@ -19,9 +20,9 @@ class Button(Element):
         :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        super().__init__(parentPage, tk.Button, text=value, onClick=onClick, **parameters)
+        super().__init__(parentPage, tk.Label, text=value, onClick=onClick, **defaults(parameters, relief="raised", padx=5, pady=5))
 
-        self.setBindPropagation("<Button-1>", False)
+        # self.setBindPropagation("<Button-1>", False)
 
     def setValue(self, value):
         """

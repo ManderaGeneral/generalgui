@@ -13,18 +13,23 @@ class BinderTest(GuiTests):
         bind = label.createBind("<Button-1>", lambda: 5)
         self.assertEqual([5], label.callBind("<Button-1>"))
 
-        label.setBindPropagation("<Button-1>", False)
-        self.assertEqual("break", label._bindCaller(True, "<Button-1>"))
-
-        label.removeBind("<Button-1>", bind=bind)
-        self.assertEqual("break", label._bindCaller(True, "<Button-1>"))
-
-        label.setBindPropagation("<Button-1>", True)
+        bind.remove()
         self.assertEqual([], label.callBind("<Button-1>"))
 
         label.createBind("<Button-1>", lambda: 5)
-        label.createBind("<Button-1>", lambda: 2)
+        page.createBind("<Button-1>", lambda: 2)
         self.assertEqual([5, 2], label.callBind("<Button-1>"))
+
+        label.setBindPropagation("<Button-1>", False)
+        self.assertEqual([5], label.callBind("<Button-1>"))
+
+        label.setBindPropagation("<Button-1>", True)
+        self.assertEqual([5, 2], label.callBind("<Button-1>"))
+
+        label.setBindPropagation("<Button-1>", False)
+        label.createBind("<Button-1>", lambda: 5)
+        label.createBind("<Button-1>", lambda: 2)
+        self.assertEqual([5, 5, 2], label.callBind("<Button-1>"))
 
         label.createBind("<Button-1>", lambda: 3, add=False)
         self.assertEqual([3], label.callBind("<Button-1>"))
@@ -49,7 +54,7 @@ class BinderTest(GuiTests):
         self.assertEqual([5, 2], label.rightClick(animate=True))
 
         label.remove()
-        self.assertRaises(AttributeError, label.callBind, "<Button-1>")
+        self.assertEqual([], label.callBind("<Button-1>"))
 
 
 

@@ -172,7 +172,7 @@ class AppTest(GuiTests):
         self.assertEqual(["Original", "Rainbow"], list(labelEntry.label.styleHandler.allStyles.keys()))
         self.assertEqual(True, labelEntry.label.styleHandler.getStyle("Rainbow").isEnabled())
 
-        self.assertEqual(["Original", "Rainbow"], list(labelEntry.entry.styleHandler.allStyles.keys()))
+        self.assertEqual(["Original", "Hover", "Click", "Rainbow"], list(labelEntry.entry.styleHandler.allStyles.keys()))
         self.assertEqual(True, labelEntry.entry.styleHandler.getStyle("Rainbow").isEnabled())
 
         self.assertEqual(["Original", "Rainbow"], list(app.getChildren()[0].frame.styleHandler.allStyles.keys()))
