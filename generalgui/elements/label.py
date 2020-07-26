@@ -3,6 +3,7 @@
 import tkinter as tk
 
 from generalgui.element import Element
+from generallibrary.functions import defaults
 
 import re
 
@@ -26,7 +27,7 @@ class Label(Element):
         self.hiddenMultiline = hideMultiline
         self._value = value
         
-        super().__init__(parentPage, tk.Label, text=self._getNewDisplayedValue(value), **parameters)
+        super().__init__(parentPage, tk.Label, text=self._getNewDisplayedValue(value), **defaults(parameters, justify="left"))
 
         # Multiline hiding part is a mess, but it works
         if hideMultiline:

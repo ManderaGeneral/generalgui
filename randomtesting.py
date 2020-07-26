@@ -19,7 +19,7 @@ page2a = Page(page2)
 page2b = Page(page2)
 Button(page2a, "hello").onClick(lambda: print(3))
 
-Label(page2b, "hi").setBindPropagation("<Button-1>", False)
+Label(page2b, "hi\nthere\nyo").setBindPropagation("<Button-1>", False)
 
 LabelEntry(page, "testing", "hello")
 Entry(page, "testing")
