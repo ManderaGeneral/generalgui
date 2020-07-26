@@ -27,7 +27,7 @@ def test():
 # df = pd.DataFrame([[random.randint(-100, 100) for _ in range(20)] for _ in range(20)])
 # df = df.append(["hello\nthere"], ignore_index=True)
 
-df = pd.DataFrame(["\n   hello\nthere", "   hello\nthere\nyo", "\n\n"])
+df = pd.DataFrame(["\n   hello\nthere", "   hello\nthere\nyo", "\n\n", "verylongstring verylongstring verylongstring verylongstring verylongstring"])
 
 app = App()
 page = Page(app)

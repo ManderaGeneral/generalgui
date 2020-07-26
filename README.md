@@ -85,6 +85,7 @@ Widget      | -             | -             | -         | Element
  * Scale element / element.setSize()
  * nan in spreadsheet becomes <NA> after saving then loading
  * UnitTest for spreadsheet size syncs
+ * UnitTest for label hiding
  * Make all parts visible by default
 
 ## Features

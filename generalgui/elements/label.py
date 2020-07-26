@@ -9,7 +9,7 @@ import re
 
 class Label(Element):
     """Controls one tkinter Label"""
-    def __init__(self, parentPage, value=None, hideMultiline=None, **parameters):
+    def __init__(self, parentPage, value=None, hideMultiline=None, maxLen=50, **parameters):
         """
         Create a Label element that controls a label.
 
@@ -25,6 +25,7 @@ class Label(Element):
 
         self.hideMultiline = hideMultiline
         self.hiddenMultiline = hideMultiline
+        self.maxLen = maxLen
         self._value = value
         
         super().__init__(parentPage, tk.Label, text=self._getNewDisplayedValue(value), **defaults(parameters, justify="left"))
@@ -42,17 +43,35 @@ class Label(Element):
             else:
                 self.multilineStyle.disable()
 
+    def _strShouldBeHidden(self, value):
+        value = str(value)
+        splitValue = value.split("\n")
+        multipleLines = len(splitValue) > 1
+        tooLong = len(value) > self.maxLen
+        return multipleLines or tooLong
+
     def _getNewDisplayedValue(self, value):
+        value = str(value)
+
+        # This part seems weird but it works
         if self.hiddenMultiline:
-            splitValue = str(value).split("\n")
-            self.hiddenMultiline = len(splitValue) > 1
+            self.hiddenMultiline = self._strShouldBeHidden(value)
             if self.hiddenMultiline:
-                for line in splitValue:
+                for line in value.split("\n"):
                     if line != "":
                         break
                 else:
                     line = ""
-                return f"{re.sub('^ +', '', line)} ..."
+
+                # Remove spaces from start
+                line = re.sub('^ +', '', line)
+
+                # Limit length
+                if len(line) > self.maxLen:
+                    line = line[0:self.maxLen]
+
+                return f"{line} ..."
+
         return value
 
     def toggleMultilines(self, show=None):
@@ -66,10 +85,10 @@ class Label(Element):
             if show is None:
                 show = self.hiddenMultiline
             hide = not show
-            value = self.getValue()
             equals = self.hiddenMultiline == hide
-            hasNewline = str(value).find("\n") != -1
-            if not equals and hasNewline:
+            value = self.getValue()
+
+            if not equals and self._strShouldBeHidden(value):
                 self.hiddenMultiline = hide
                 self.setValue(value)
 
