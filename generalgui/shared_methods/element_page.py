@@ -1,7 +1,7 @@
 """Shared methods by Element and Page"""
 
 from generallibrary.types import typeChecker
-from generallibrary.functions import getParameter
+from generallibrary.functions import defaults
 
 from generalgui.shared_methods.decorators import ignore
 
@@ -65,9 +65,7 @@ class Element_Page:
 
         :param generalgui.element.Element or generalgui.Page self: Element or Page
         """
-        packParameters = {"sticky": "NSEW"}
-        packParameters.update(self.packParameters)
-        self.getTopWidget().grid(**packParameters)
+        self.getTopWidget().grid(**defaults(self.packParameters, sticky="NSEW"))
 
     def getParentPartPage(self):
         """

@@ -1,8 +1,11 @@
 """Grid class that inherits Page"""
 
 from generalgui import Label, Page
+from generalgui.element import Element
 
 from generalvector import Vec2
+
+from generallibrary.types import typeChecker
 
 
 class Grid(Page):
@@ -77,7 +80,8 @@ class Grid(Page):
 
         for pos in Vec2(0).range(maxSize):
             if fillRange and pos == fillRange[0]:
-                if (element := self.getGridElement(pos)) and element.__class__ == eleCls:
+                valueIsElement = values and typeChecker(values[0], "Element", error=False) and values[0].__class__.__name__ != "type"
+                if (element := self.getGridElement(pos)) and element.__class__ == eleCls and not valueIsElement:
                     if eleCls == Label and values:
                         label = element  # type: Label
                         if label.hideMultiline:
@@ -87,12 +91,17 @@ class Grid(Page):
                     if element:
                         element.remove()
                     value = values[0] if values else None
+                    bgColor = None if pos.y % 2 else "gray88"
 
+                    if valueIsElement:
+                        element = value
+                        element.widgetConfig(bg=bgColor)
+                        element.grid(pos) # HERE ** something not rigbht
 
-                    if color and pos.y:
-                        parameters["bg"] = None if pos.y % 2 else "gray88"
-
-                    element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
+                    else:
+                        if color and pos.y:
+                            parameters["bg"] = bgColor
+                        element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
 
                     element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
 

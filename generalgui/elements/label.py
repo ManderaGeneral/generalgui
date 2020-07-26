@@ -9,7 +9,7 @@ import re
 
 class Label(Element):
     """Controls one tkinter Label"""
-    def __init__(self, parentPage, value=None, hideMultiline=None, maxLen=50, **parameters):
+    def __init__(self, parentPage, value=None, hideMultiline=None, maxLen=None, **parameters):
         """
         Create a Label element that controls a label.
 
@@ -20,6 +20,8 @@ class Label(Element):
         """
         if value is None:
             value = ""
+        if maxLen:
+            hideMultiline = True
         if hideMultiline is None:
             hideMultiline = parentPage.hideMultiline
 
@@ -31,7 +33,10 @@ class Label(Element):
         super().__init__(parentPage, tk.Label, text=self._getNewDisplayedValue(value), **defaults(parameters, justify="left"))
 
         # Multiline hiding part is a mess, but it works
-        if hideMultiline:
+        # Wont work very well if Labels's values are changed
+
+        if hideMultiline or maxLen:
+            # print(self)
             self.createBind("<Button-1>", self.toggleMultilines, name="HideOrShow")
             self.multilineStyle = self.createStyle("Multiline", priority=0.5, fg="gray60")
             self._updateStyle()
@@ -47,7 +52,7 @@ class Label(Element):
         value = str(value)
         splitValue = value.split("\n")
         multipleLines = len(splitValue) > 1
-        tooLong = len(value) > self.maxLen
+        tooLong = self.maxLen and len(value) > self.maxLen
         return multipleLines or tooLong
 
     def _getNewDisplayedValue(self, value):
@@ -67,7 +72,7 @@ class Label(Element):
                 line = re.sub('^ +', '', line)
 
                 # Limit length
-                if len(line) > self.maxLen:
+                if self.maxLen and len(line) > self.maxLen:
                     line = line[0:self.maxLen]
 
                 return f"{line} ..."
@@ -81,7 +86,7 @@ class Label(Element):
 
         :param bool show: Whether to show multiline or not. Leave as None to toggle state.
         """
-        if self.hideMultiline:
+        if self.hideMultiline and len(self.events["<Button-1>"]) == 2:  # Nothing more than style bind and multiline bind - Sketchily done though
             if show is None:
                 show = self.hiddenMultiline
             hide = not show
@@ -89,6 +94,7 @@ class Label(Element):
             value = self.getValue()
 
             if not equals and self._strShouldBeHidden(value):
+                # print("here", self.hideMultiline)
                 self.hiddenMultiline = hide
                 self.setValue(value)
 

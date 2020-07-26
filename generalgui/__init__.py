@@ -1,8 +1,8 @@
 
-from generalgui.elements.button import Button
 from generalgui.elements.optionmenu import OptionMenu
 from generalgui.elements.entry import Entry
 from generalgui.elements.label import Label
+from generalgui.elements.button import Button
 from generalgui.elements.checkbutton import Checkbutton
 from generalgui.elements.frame import Frame
 from generalgui.elements.canvas import Canvas

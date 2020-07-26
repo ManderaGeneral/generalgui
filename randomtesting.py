@@ -6,7 +6,12 @@ from generalgui import App, Grid, Page, Button, Label, OptionMenu, Checkbutton, 
 
 from generalvector import Vec2
 
+import pandas as pd
 
+
+print(pd.DataFrame([Vec2(5, 2)]))
+
+exit()
 
 app = App()
 
@@ -17,7 +22,7 @@ page2 = Page(app)
 
 page2a = Page(page2)
 page2b = Page(page2)
-Button(page2a, "hello").onClick(lambda: print(3))
+Button(page2a, "hello", maxLen=3,).onClick(lambda: print(3))
 
 Label(page2b, "hi\nthere\nyo").setBindPropagation("<Button-1>", False)
 

@@ -5,10 +5,10 @@ import tkinter as tk
 from generallibrary.types import strToDynamicType
 from generallibrary.functions import defaults
 
-from generalgui.element import Element
+from generalgui import Label
 
 
-class Button(Element):
+class Button(Label):
     """
     Controls one tkinter Button
     """
@@ -20,23 +20,7 @@ class Button(Element):
         :param str value: Text to be displayed
         :param function func: Shortcut for Button.onClick(func)
         """
-        super().__init__(parentPage, tk.Label, text=value, onClick=onClick, **defaults(parameters, relief="raised", padx=5, pady=5))
-
-        # self.setBindPropagation("<Button-1>", False)
-
-    def setValue(self, value):
-        """
-        Set the value (text) of the button.
-
-        :param str or float or bool or None value:
-        """
-        self.widget["text"] = str(value)
-
-    def getValue(self):
-        """
-        Get the value (text) of the button as a dynamic type.
-        """
-        return strToDynamicType(self.widget["text"])
+        super().__init__(parentPage, value=value, onClick=onClick, **defaults(parameters, relief="raised", padx=5, pady=5))
 
 
 

@@ -91,6 +91,7 @@ class Binder:
     def createBind(self, key, func, add=True, name=None):
         """
         Add a function to a list in dict that is called with _bindCaller().
+        If a bind exists with same name and key then it's overwritten.
 
         :param generalgui.Element or generalgui.Page or generalgui.App self:
         :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
@@ -98,11 +99,17 @@ class Binder:
         :param bool add: Add to existing binds instead of overwriting
         :param str name: Name of bind, if bind with that name exists then it's replaced
         :return: Bind
+        :raises NameError: If bind name exists with another key
         """
         if not add:
             self.removeBind(key)
         elif name:
-            self.removeBind(key, name=name)
+            existingBind = self.getBindByName(name)
+            if existingBind:
+                if existingBind.key == key:
+                    existingBind.remove()
+                else:
+                    raise NameError(f"{existingBind} is already using this name with another key")
 
         bind = Bind(element=self, key=key, func=func, name=name)
         addToListInDict(self.events, key, bind)
@@ -117,6 +124,21 @@ class Binder:
             self.createBind("<Return>", self.click)
 
         return bind
+
+    def getBindByName(self, name):
+        """
+        Get a bind by name.
+
+        :param str name: Name of bind
+        :rtype: Bind
+        """
+        if name is None:
+            raise NameError("Cannot get bind by name None")
+
+        for key, binds in self.events.items():
+            for bind in binds:
+                if bind.name == name:
+                    return bind
 
     def removeBind(self, key, bind=None, name=None):
         """
@@ -208,9 +230,12 @@ class Bind:
     """A specific bind that contains a func"""
     def __init__(self, element, key, func, name=None):
         self.element = element
+        self.name = name
         self.key = key
         self.func = func
-        self.name = name
+
+    def __repr__(self):
+        return f"<Bind - Name: {self.name} - Key: {self.key}>"
 
     def __call__(self, *args, **kwargs):
         return self.func(*args, **kwargs)

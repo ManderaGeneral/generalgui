@@ -391,6 +391,9 @@ class Spreadsheet(Page):
         self.dataFrameIsLoading = True
 
         if df is not None:
+            if not typeChecker(df, pd.DataFrame, error=False):
+                df = pd.DataFrame(df)
+                print(df.columns)
             self.dataFrame = df
         df = self.dataFrame
 
