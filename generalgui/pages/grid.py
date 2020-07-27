@@ -57,6 +57,7 @@ class Grid(Page):
     def fillGrid(self, eleCls, start, size, values=None, removeExcess=False, color=False, **parameters):
         """
         Fill grid with values, using a start position and a size.
+        If there already is an element in the cell then it's re-used, unless value is an Element.
 
         :param class eleCls: Class to be created in each cell
         :param Vec2 start: Start position
@@ -83,47 +84,76 @@ class Grid(Page):
             # Create cell with pos and values[0]
             if fillRange and pos == fillRange[0]:
 
-                valueIsElement = values and typeChecker(values[0], "Element", error=False) and values[0].__class__.__name__ != "type"
+                value = values[0] if values else None
+                valueIsElement = typeChecker(value, "Element", error=False) and value.__class__.__name__ != "type"
+                existingElement = self.getGridElement(pos)
 
+                # from generallibrary.values import debug
+                # debug(locals(), "eleCls", "pos", "value", "valueIsElement", "existingElement")
 
+                if valueIsElement:
+                    element = value
+                    if element.parentPage != self:
+                        raise AttributeError(f"{element}'s parentPage has to be grid {self}")
 
+                    if existingElement:
+                        existingElement.remove()  # HERE ** We rely on removing Elements, but if df has an Element as value then it's gonna break since we cannot re-create a removed element. If we do that first then we can remove elements freely and we also wont have to put all Elements on pos(0, 0)
 
+                    print(element, pos)
+                    element.grid(pos)
 
-
-                element = self.getGridElement(pos)
-
-                if element and element.__class__ == eleCls and not valueIsElement:
-                    if eleCls == Label and values:
-                        label = element  # type: Label
-                        if label.hideMultiline:
-                            label.hiddenMultiline = True
-                        element.setValue(values[0])
                 else:
-                    if element:
-                        element.remove()
-                    bgColor = None if pos.y % 2 else "gray88"
+                    if existingElement:
+                        sameCls = typeChecker(existingElement, eleCls, error=False)
+                        canSetValue = hasattr(existingElement, "setValue")
+                        if sameCls and (canSetValue or not value):
+                            if value:
+                                existingElement.setValue(value)
+                        else:
+                            existingElement = existingElement.remove()
 
-                    if valueIsElement:
-                        element = values[0]
-                        # element.widgetConfig(bg=bgColor)
-                        element.grid(pos)
-
-                    else:
-                        if color and pos.y:
-                            parameters["bg"] = bgColor
-                        value = values[0] if values else None
+                    if not existingElement:
                         element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
 
-                    element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
 
                 del fillRange[0]
                 if values:
                     del values[0]
 
-
             elif removeExcess and not pos <= start + size - 1:
                 if element := self.getGridElement(pos):
                     element.remove()
+
+
+
+
+
+
+
+                # if element and element.__class__ == eleCls and not valueIsElement:
+                #     if eleCls == Label and values:
+                #         label = element  # type: Label
+                #         if label.hideMultiline:
+                #             label.hiddenMultiline = True
+                #         element.setValue(values[0])
+                # else:
+                #     if element:
+                #         element.remove()
+                #     bgColor = None if pos.y % 2 else "gray88"
+                #
+                #     if valueIsElement:
+                #         element = values[0]
+                #         # element.widgetConfig(bg=bgColor)
+                #         element.grid(pos)
+                #
+                #     else:
+                #         if color and pos.y:
+                #             parameters["bg"] = bgColor
+                #         value = values[0] if values else None
+                #         element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
+                #
+                #     element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
+
 
     def confinePos(self, pos, maxPos=None):
         """

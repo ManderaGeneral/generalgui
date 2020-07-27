@@ -386,17 +386,17 @@ class Spreadsheet(Page):
     cellConfig = {"padx": 5, "pady": 5, "relief": "raised", "borderwidth": 1}
     def loadDataFrame(self, df=None):
         """
-        Update cells to represent current dataFrame
+        Update cells to represent a dataFrame with any types of values.
         """
         self.dataFrameIsLoading = True
 
         if df is not None:
             if not typeChecker(df, pd.DataFrame, error=False):
                 df = pd.DataFrame(df)
-                # print(df.columns)
 
             self.dataFrame = df
         df = self.dataFrame
+        # print(df.to_string())
 
         if self.columnKeys:
             size = Vec2(len(df.columns), 1)
@@ -486,6 +486,7 @@ class Spreadsheet(Page):
         mainSize = self.mainGrid.getGridSize()
 
         if columnSize.x != mainSize.x:
+            print(self.headerGrid.getChildren())
             raise AttributeError(f"Columns mismatch {columnSize}, {mainSize}")
 
         columnFrames = []

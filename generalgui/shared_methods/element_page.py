@@ -65,7 +65,12 @@ class Element_Page:
 
         :param generalgui.element.Element or generalgui.Page self: Element or Page
         """
-        self.getTopWidget().grid(**defaults(self.packParameters, sticky="NSEW"))
+        pars = defaults(self.packParameters, sticky="NSEW")
+        try:
+            self.getTopWidget().grid(**pars)
+        except Exception as e:
+            print(e, self, self.getTopWidget(), pars)
+            raise e
 
     def getParentPartPage(self):
         """

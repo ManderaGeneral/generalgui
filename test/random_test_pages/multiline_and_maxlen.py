@@ -36,14 +36,12 @@ page = Page(app)
 spreadsheet = Spreadsheet(app)
 
 for i, c in enumerate(combinations):
-    c["part"] = c["cls"](spreadsheet.mainGrid, c["value"], pos=Vec2(1), hideMultiline=c["hideMultiline"], maxLen=c["maxLen"], onClick=c["onClick"])
+    c["part"] = c["cls"](spreadsheet.mainGrid, c["value"], pos=Vec2(0), hideMultiline=c["hideMultiline"], maxLen=c["maxLen"], onClick=c["onClick"])
 
 
-df = pd.DataFrame(combinations)
-
-print(df.to_string())
-
-exit()
+# df = pd.DataFrame(combinations)
+# print(df.to_string())
+# exit()
 
 
 spreadsheet.loadDataFrame(combinations)
