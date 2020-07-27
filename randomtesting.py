@@ -8,6 +8,7 @@ from generalvector import Vec2
 
 import pandas as pd
 
+import inspect
 
 
 
@@ -18,7 +19,12 @@ import pandas as pd
 
 
 
+grid = Grid(App())
 
+grid.fillGrid(Label, Vec2(0, 0), Vec2(2, 1))
+grid.fillGrid(Label, Vec2(0, 0), Vec2(2, 1))
+
+print([grid.getGridPos(ele) for ele in grid.getChildren()])
 
 
 

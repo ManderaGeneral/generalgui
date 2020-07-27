@@ -8,21 +8,21 @@ from generalvector import Vec2
 
 import pandas as pd
 
-# combinations = combine(
-#     cls=(Label, Button),
-#     hideMultiline=(True, False),
-#     maxLen=(3, 10, None),
-#     onClick=(None, lambda: print(5)),
-#     value=("testing\nmultilines", "   leading spaces", "normal")
-# )
-
 combinations = combine(
-    cls=Label,
-    hideMultiline=True,
-    maxLen=(5, 2),
-    onClick=lambda: print(2),
-    value="normal"
+    cls=(Label, Button),
+    hideMultiline=(True, False),
+    maxLen=(7, None),
+    onClick=(None, lambda: print(5)),
+    value=("testing\nmultilines", "   leading spaces", "normal")
 )
+
+# combinations = combine(
+#     cls=Label,
+#     hideMultiline=True,
+#     maxLen=(5, 2),
+#     onClick=lambda: print(2),
+#     value="normal"
+# )
 
 
 
@@ -33,14 +33,14 @@ page = Page(app)
 # Button(page, "Set to single line", lambda: [part.setValue("hello") for part in grid.getChildren()], side="left")
 # Button(page, "Set to multiline", lambda: [part.setValue("hello\nthere") for part in grid.getChildren()], side="left")
 
-spreadsheet = Spreadsheet(app)
+spreadsheet = Spreadsheet(app, hideMultiline=False)
 
 for i, c in enumerate(combinations):
     c["part"] = c["cls"](spreadsheet.mainGrid, c["value"], pos=Vec2(0), hideMultiline=c["hideMultiline"], maxLen=c["maxLen"], onClick=c["onClick"])
 
-
 # df = pd.DataFrame(combinations)
 # print(df.to_string())
+# print(combinations[0]["part"], combinations[0]["part"] in df.values)
 # exit()
 
 

@@ -238,7 +238,8 @@ class Bind:
         return f"<Bind - Name: {self.name} - Key: {self.key}>"
 
     def __call__(self, *args, **kwargs):
-        return self.func(*args, **kwargs)
+        if not self.element.removed:
+            return self.func(*args, **kwargs)
 
     def remove(self):
         """Remove this bind from it's element"""

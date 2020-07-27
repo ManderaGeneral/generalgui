@@ -4,10 +4,11 @@ import inspect
 
 from generallibrary.types import typeChecker
 
-
 from generalgui.shared_methods.element_page import Element_Page
 from generalgui.shared_methods.element_page_app import Element_Page_App
 from generalgui.shared_methods.element_app import Element_App
+
+from generalvector import Vec2
 
 
 class Element(Element_Page, Element_App, Element_Page_App):
@@ -22,6 +23,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
         typeChecker(parentPage, "Page")
 
         if pos is not None:
+            pos = Vec2(pos)
             parameters["column"] = pos.x
             parameters["row"] = pos.y
 

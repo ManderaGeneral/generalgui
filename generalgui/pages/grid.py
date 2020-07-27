@@ -7,6 +7,8 @@ from generalvector import Vec2
 
 from generallibrary.types import typeChecker
 
+from generallibrary.values import debug
+
 
 class Grid(Page):
     """
@@ -21,6 +23,7 @@ class Grid(Page):
 
         :param Vec2 pos: Grid position to check
         """
+        pos = Vec2(pos)
         if not pos >= Vec2(0, 0):
             return None
 
@@ -54,12 +57,19 @@ class Grid(Page):
         size = self.getBaseWidget().grid_size()
         return Vec2(size[0], size[1])
 
+    def _removeOrHideEle(self, values, element):
+        """Don't remove an element that can be displayed as is"""
+        if element in values:
+            element.hide()
+        else:
+            element.remove()
+
     def fillGrid(self, eleCls, start, size, values=None, removeExcess=False, color=False, **parameters):
         """
         Fill grid with values, using a start position and a size.
         If there already is an element in the cell then it's re-used, unless value is an Element.
 
-        :param class eleCls: Class to be created in each cell
+        :param class eleCls: Class to be created in each cell unless value is an Element
         :param Vec2 start: Start position
         :param Vec2 size: Size of values as Vec2, needs to match values len
         :param list[str or generalgui.element.Element] values: Values to be given to object as 'value' parameter
@@ -80,7 +90,6 @@ class Grid(Page):
                 raise ValueError("Values length doesn't match fillRange's")
 
         for pos in Vec2(0).range(maxSize):
-
             # Create cell with pos and values[0]
             if fillRange and pos == fillRange[0]:
 
@@ -88,7 +97,6 @@ class Grid(Page):
                 valueIsElement = typeChecker(value, "Element", error=False) and value.__class__.__name__ != "type"
                 existingElement = self.getGridElement(pos)
 
-                # from generallibrary.values import debug
                 # debug(locals(), "eleCls", "pos", "value", "valueIsElement", "existingElement")
 
                 if valueIsElement:
@@ -97,20 +105,23 @@ class Grid(Page):
                         raise AttributeError(f"{element}'s parentPage has to be grid {self}")
 
                     if existingElement:
-                        existingElement.remove()  # HERE ** We rely on removing Elements, but if df has an Element as value then it's gonna break since we cannot re-create a removed element. If we do that first then we can remove elements freely and we also wont have to put all Elements on pos(0, 0)
+                        self._removeOrHideEle(values, existingElement)
 
-                    print(element, pos)
                     element.grid(pos)
 
                 else:
                     if existingElement:
                         sameCls = typeChecker(existingElement, eleCls, error=False)
                         canSetValue = hasattr(existingElement, "setValue")
-                        if sameCls and (canSetValue or not value):
-                            if value:
+
+                        # debug(locals(), "existingElement", "sameCls", "canSetValue", "value")
+
+                        if sameCls and (canSetValue or value is None):
+                            if value is not None:
                                 existingElement.setValue(value)
                         else:
-                            existingElement = existingElement.remove()
+                            self._removeOrHideEle(values, existingElement)
+                            existingElement = None
 
                     if not existingElement:
                         element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)

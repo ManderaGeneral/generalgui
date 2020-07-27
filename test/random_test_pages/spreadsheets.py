@@ -28,6 +28,9 @@ def ss(func):
     for spreadsheet in spreadsheets:
         func(spreadsheet)
 
+def addEles():
+    ss(lambda x: x.loadDataFrame(pd.DataFrame([[Label(x.mainGrid, "testing", pos=0), Label(x.mainGrid, "hi", pos=0)], [True, False]]).T))
+
 def addBig():
     l = []
     for x in range(20):
@@ -46,6 +49,7 @@ columnKeys = ("color", "number", "name")
 Button(page, "Add row", onClick=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["red", 5, "mandera"]], columns=columnKeys))))
 Button(page, "Add indexed row", onClick=lambda: ss(lambda x: x.loadDataFrame(pd.DataFrame([["yellow", 2, "buck"], ["blue", 5, "zole"]], columns=columnKeys, index=["hello", "there"]))))
 Button(page, "Add big", onClick=addBig)
+Button(page, "Add Elements", onClick=addEles)
 Button(page, "Small", onClick=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=200, width=200)))
 Button(page, "Big", onClick=lambda: ss(lambda x: x.getTopElement().widgetConfig(height=2000, width=2000)))
 Button(page, "Debug", onClick=debug)
@@ -67,7 +71,7 @@ for one in range(2):
         for three in range(2):
             for four in range(2):
                 # if not spreadsheets:
-                #     spreadsheets.append(Spreadsheet(rowPage, cellVSB=True, cellHSB=True, columnKeys=True, rowKeys=False, side="left", pack=True))
+                #     spreadsheets.append(Spreadsheet(rowPage, cellVSB=True, cellHSB=True, columnKeys=True, rowKeys=True, side="left", pack=True))
                 spreadsheets.append(Spreadsheet(rowPage, cellVSB=one, cellHSB=two, columnKeys=three, rowKeys=four, side="left", pack=True))
 
 
@@ -81,7 +85,7 @@ for one in range(2):
 
 # Label(page, "Menu").widget.place(x=100, y=250)
 
-app.showChildren()
+app.showChildren(recurrent=True)
 
 
 

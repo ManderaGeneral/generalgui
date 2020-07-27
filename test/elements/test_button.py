@@ -37,7 +37,7 @@ class ButtonTest(GuiTests):
         self.assertIs(True, button.getValue())
 
         button.setValue(None)
-        self.assertIs(None, button.getValue())
+        self.assertIs("", button.getValue())
 
 
 

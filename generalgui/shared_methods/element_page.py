@@ -65,6 +65,9 @@ class Element_Page:
 
         :param generalgui.element.Element or generalgui.Page self: Element or Page
         """
+        if self.removed:
+            raise AttributeError(f"{self} cannot be gridded since it's removed")
+
         pars = defaults(self.packParameters, sticky="NSEW")
         try:
             self.getTopWidget().grid(**pars)
