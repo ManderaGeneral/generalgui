@@ -6,15 +6,25 @@ from generalgui import App, Grid, Page, Button, Label, OptionMenu, Checkbutton, 
 
 from generalvector import Vec2
 
+import pandas as pd
 
+# combinations = combine(
+#     cls=(Label, Button),
+#     hideMultiline=(True, False),
+#     maxLen=(3, 10, None),
+#     onClick=(None, lambda: print(5)),
+#     value=("testing\nmultilines", "   leading spaces", "normal")
+# )
 
 combinations = combine(
-    cls=(Label, Button),
-    hideMultiline=(True, False),
-    maxLen=(3, 10, None),
-    onClick=(None, lambda: print(5)),
-    value=("testing\nmultilines", "   leading spaces", "normal")
+    cls=Label,
+    hideMultiline=True,
+    maxLen=(5, 2),
+    onClick=lambda: print(2),
+    value="normal"
 )
+
+
 
 
 app = App()
@@ -26,10 +36,16 @@ page = Page(app)
 spreadsheet = Spreadsheet(app)
 
 for i, c in enumerate(combinations):
-    c["part"] = c["cls"](spreadsheet, c["value"], hideMultiline=c["hideMultiline"], maxLen=c["maxLen"], onClick=c["onClick"])
+    c["part"] = c["cls"](spreadsheet.mainGrid, c["value"], pos=Vec2(1), hideMultiline=c["hideMultiline"], maxLen=c["maxLen"], onClick=c["onClick"])
 
 
-print(combinations)
+df = pd.DataFrame(combinations)
+
+print(df.to_string())
+
+exit()
+
+
 spreadsheet.loadDataFrame(combinations)
 
 spreadsheet.maximize()

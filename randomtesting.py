@@ -9,29 +9,18 @@ from generalvector import Vec2
 import pandas as pd
 
 
-print(pd.DataFrame([Vec2(5, 2)]))
 
-exit()
 
-app = App()
 
-page = Page(app)
-Label(page, "test", onClick=lambda: print(4))
+# page = Page(App())
+# label = Label("hello")
+# label.pack(page)
 
-page2 = Page(app)
 
-page2a = Page(page2)
-page2b = Page(page2)
-Button(page2a, "hello", maxLen=3,).onClick(lambda: print(3))
 
-Label(page2b, "hi\nthere\nyo").setBindPropagation("<Button-1>", False)
 
-LabelEntry(page, "testing", "hello")
-Entry(page, "testing")
 
-page2.onClick(lambda: print(2))
 
-app.showChildren(recurrent=True)
 
 
 

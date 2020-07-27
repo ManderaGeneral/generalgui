@@ -393,7 +393,8 @@ class Spreadsheet(Page):
         if df is not None:
             if not typeChecker(df, pd.DataFrame, error=False):
                 df = pd.DataFrame(df)
-                print(df.columns)
+                # print(df.columns)
+
             self.dataFrame = df
         df = self.dataFrame
 

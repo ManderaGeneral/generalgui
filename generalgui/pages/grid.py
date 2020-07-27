@@ -61,7 +61,7 @@ class Grid(Page):
         :param class eleCls: Class to be created in each cell
         :param Vec2 start: Start position
         :param Vec2 size: Size of values as Vec2, needs to match values len
-        :param values: Values to be given to object as 'value' parameter
+        :param list[str or generalgui.element.Element] values: Values to be given to object as 'value' parameter
         :param removeExcess: Whether to remove cells with a greater position than fill area
         :param color: Whether to color alternating rows
         :param parameters: Parameters to be given to objects
@@ -79,9 +79,20 @@ class Grid(Page):
                 raise ValueError("Values length doesn't match fillRange's")
 
         for pos in Vec2(0).range(maxSize):
+
+            # Create cell with pos and values[0]
             if fillRange and pos == fillRange[0]:
+
                 valueIsElement = values and typeChecker(values[0], "Element", error=False) and values[0].__class__.__name__ != "type"
-                if (element := self.getGridElement(pos)) and element.__class__ == eleCls and not valueIsElement:
+
+
+
+
+
+
+                element = self.getGridElement(pos)
+
+                if element and element.__class__ == eleCls and not valueIsElement:
                     if eleCls == Label and values:
                         label = element  # type: Label
                         if label.hideMultiline:
@@ -90,17 +101,17 @@ class Grid(Page):
                 else:
                     if element:
                         element.remove()
-                    value = values[0] if values else None
                     bgColor = None if pos.y % 2 else "gray88"
 
                     if valueIsElement:
-                        element = value
-                        element.widgetConfig(bg=bgColor)
-                        element.grid(pos) # HERE ** something not rigbht
+                        element = values[0]
+                        # element.widgetConfig(bg=bgColor)
+                        element.grid(pos)
 
                     else:
                         if color and pos.y:
                             parameters["bg"] = bgColor
+                        value = values[0] if values else None
                         element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
 
                     element.createStyle("Hover", "<Enter>", "<Leave>", bg="white")
@@ -108,6 +119,8 @@ class Grid(Page):
                 del fillRange[0]
                 if values:
                     del values[0]
+
+
             elif removeExcess and not pos <= start + size - 1:
                 if element := self.getGridElement(pos):
                     element.remove()
