@@ -103,8 +103,19 @@ class ElementTest(GuiTests):
             text3 = Label(page2, "in page 2")
 
             self.assertIs(text3.getTopPage(), page)
-            self.assertEqual(text3.getParentPages(), [page2, page])
-            self.assertEqual(text3.getParentPages(includeSelf=True), [text3, page2, page])
+            self.assertEqual(text3.getParents(), [page2, page])
+            self.assertEqual(text3.getParents(includeSelf=True), [text3, page2, page])
+
+            self.assertEqual([page2.frame, page2, page.frame, page], text3.getParents(includeParts=True))
+
+            page3 = Page(page2, scrollable=True)
+            text4 = Label(page3, "in page 3")
+
+            self.assertEqual([page2.frame, page2, page.frame, page], page3.getParents(includeParts=True))
+            self.assertEqual([page3.canvasFrame, page3.canvas, page3.frame, page3, page2.frame, page2, page.frame, page], text4.getParents(includeParts=True))
+
+
+
 
     def test_textOnClick(self):
         text = Label(Page(App()), "hello")

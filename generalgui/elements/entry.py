@@ -38,7 +38,7 @@ class Entry(Element):
 
         :return: Click's return value or False if no button was found
         """
-        for parentPage in self.getParentPages():
+        for parentPage in self.getParents():
 
             if self.parentPage == parentPage:
                 elements = self.getSiblings()

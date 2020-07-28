@@ -82,6 +82,7 @@ class Element(Element_Page, Element_App, Element_Page_App):
     def resizeable(self):
         """Make this element resizeable"""
         self.app.makeResizeable(self)
+        self.menu("Resize", Maximize=lambda x=self: x.parentPage.maximize())
 
     def makeBase(self):
         """

@@ -86,6 +86,22 @@ class Element_Page:
         else:
             return self.parentPart.parentPage
 
+    def getParentPartOrPage(self):
+        """
+        Get the parentPart of this part unless this part is topElement to it's parentPage, in which case parentPage is returned.
+
+        :param generalgui.element.Element or generalgui.Page self: Element or Page
+        """
+        if typeChecker(self.parentPage, "App", error=False):
+            return self.parentPage
+
+        elif self.parentPage.topElement == self:
+            return self.parentPage
+        else:
+            return self.parentPart
+
+
+
     def pack(self):
         """
         Packs this Element's widget using the packParameters attribute.
@@ -149,7 +165,7 @@ class Element_Page:
         :param generalgui.element.Element or generalgui.page.Page self: Element or Page
         :rtype: generalgui.page.Page
         """
-        parentPages = self.getParentPages(includeSelf=True)
+        parentPages = self.getParents(includeSelf=True)
         return parentPages[-1]
 
     @ignore
@@ -247,7 +263,7 @@ class Element_Page:
         if hideSiblings:
             self.parentPage.hideChildren()
 
-        for ele_page in self.getParentPages(includeSelf=True):
+        for ele_page in self.getParents(includeSelf=True):
             if ele_page.isShown():
                 break
             if not ele_page.isPacked():

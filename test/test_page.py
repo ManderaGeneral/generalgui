@@ -19,8 +19,8 @@ class PageTest(GuiTests):
     def test_siblings(self):
         for page in Page(App()), Page(App(), width=200, height=200):
             self.assertEqual(page.getChildren(), [])
-            self.assertEqual(page.getParentPages(), [])
-            self.assertEqual(page.getParentPages(includeSelf=True), [page])
+            self.assertEqual(page.getParents(), [])
+            self.assertEqual(page.getParents(includeSelf=True), [page])
             self.assertEqual(page.getTopPage(), page)
             self.assertEqual(page.getSiblings(), [])
             page.showSiblings(mainloop=False)
@@ -126,8 +126,8 @@ class PageTest(GuiTests):
         for page in Page(App()), Page(App(), width=200, height=200):
             page2 = Page(page)
             page3 = Page(page2)
-            self.assertEqual(page3.getParentPages(), [page2, page])
-            self.assertEqual(page3.getParentPages(includeSelf=True), [page3, page2, page])
+            self.assertEqual(page3.getParents(), [page2, page])
+            self.assertEqual(page3.getParents(includeSelf=True), [page3, page2, page])
             self.assertEqual(page3.getTopPage(), page)
 
             page3.show(mainloop=False)

@@ -183,14 +183,14 @@ class AppTest(GuiTests):
         self.assertEqual(False, labelEntry.entry.styleHandler.getStyle("Rainbow").isEnabled())
         self.assertEqual(False, app.getChildren()[0].frame.styleHandler.getStyle("Rainbow").isEnabled())
 
-    def test_getParentPages(self):
+    def test_getParents(self):
         app = App()
         LabelEntry(Page(app))
 
-        self.assertEqual([], app.getParentPages())
-        self.assertEqual([app], app.getParentPages(includeSelf=True))
-        self.assertEqual([app], app.getParentPages(includeApp=True))
-        self.assertEqual([app], app.getParentPages(includeSelf=True, includeApp=True))
+        self.assertEqual([], app.getParents())
+        self.assertEqual([app], app.getParents(includeSelf=True))
+        self.assertEqual([app], app.getParents(includeApp=True))
+        self.assertEqual([app], app.getParents(includeSelf=True, includeApp=True))
 
     def test_getFirstParentByClass(self):
         app = App()

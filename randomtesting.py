@@ -13,18 +13,14 @@ import inspect
 
 
 
-# page = Page(App())
-# label = Label("hello")
-# label.pack(page)
 
 
 
-grid = Grid(App())
+page = Page(App(), resizeable=True)
+label = Label(page, "hello")
 
-grid.fillGrid(Label, Vec2(0, 0), Vec2(2, 1))
-grid.fillGrid(Label, Vec2(0, 0), Vec2(2, 1))
+label.show()
 
-print([grid.getGridPos(ele) for ele in grid.getChildren()])
 
 
 

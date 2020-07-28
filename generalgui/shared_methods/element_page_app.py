@@ -110,13 +110,14 @@ class Element_Page_App(Menu_Element_Page_App, Binder):
         for element in self.getChildren(includeParts=True):
             element.rainbow(reset=reset)
 
-    def getParentPages(self, includeSelf=False, includeApp=False):
+    def getParents(self, includeSelf=False, includeApp=False, includeParts=False):
         """
         Retrieves parent pages from element or page going all the way up to a top page that has App as it's 'parentPage' attribute.
 
         :param generalgui.element.Element or generalgui.page.Page or generalgui.app.App self: Element, Page or App
         :param includeSelf: Whether to include self or not (Element or Page) as index 0
         :param includeApp: Whether to include app or not
+        :param includeParts: Whether to include parts or not
         :rtype: list[generalgui.element.Element or generalgui.page.Page]
         """
         pages = []
@@ -127,7 +128,7 @@ class Element_Page_App(Menu_Element_Page_App, Binder):
             else:
                 return []
 
-        parentPage = self.parentPage
+        parentPage = self.getParentPartOrPage() if includeParts else self.parentPage
         while True:
             if typeChecker(parentPage, "App", error=False):
                 if includeSelf:
@@ -137,7 +138,7 @@ class Element_Page_App(Menu_Element_Page_App, Binder):
                 return pages
             else:
                 pages.append(parentPage)
-            parentPage = parentPage.parentPage
+            parentPage = parentPage.getParentPartOrPage() if includeParts else parentPage.parentPage
 
     def getFirstParentByClass(self, className, includeSelf=False):
         """
@@ -147,7 +148,7 @@ class Element_Page_App(Menu_Element_Page_App, Binder):
         :param className: Name or type of part, used by typeChecker
         :param includeSelf:
         """
-        for part in self.getParentPages(includeSelf=includeSelf):
+        for part in self.getParents(includeSelf=includeSelf):
             if typeChecker(part, className, error=False):
                 return part
 

@@ -33,7 +33,7 @@ class Scroller:
         if typeChecker(eventElement, "App", error=False):
             return
 
-        pages = eventElement.getParentPages()
+        pages = eventElement.getParents()
         for page in pages:
             if page.scrollable and page.mouseScroll:
                 visibleFraction = self.getVisibleFraction(page.canvas)

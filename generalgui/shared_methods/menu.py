@@ -118,7 +118,7 @@ class Menu_App:
             self.menuPage.remove()
 
         self.menuPage = self.Page(self, relief="solid", borderwidth=1, padx=5, pady=5)
-        for part in self.menuTargetElement.getParentPages(includeSelf=True, includeApp=True):
+        for part in self.menuTargetElement.getParents(includeSelf=True, includeApp=True, includeParts=True):
             if part.menuContent:
                 self._addLine()
             for label, buttons in part.menuContent.items():

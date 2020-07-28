@@ -55,7 +55,7 @@ class Binder_App:
             return []
 
         returns = []
-        for part in element.getParentPages(includeSelf=True, includeApp=True):
+        for part in element.getParents(includeSelf=True, includeApp=True):
             for bind in part.events.get(key, []):
                 if leadingArgsCount(bind.func):
                     value = bind(event)

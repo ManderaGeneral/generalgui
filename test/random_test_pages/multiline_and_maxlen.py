@@ -46,7 +46,7 @@ for i, c in enumerate(combinations):
 
 spreadsheet.loadDataFrame(combinations)
 
-spreadsheet.maximize()
+# spreadsheet.maximize()
 
 app.showChildren(recurrent=True)
 
