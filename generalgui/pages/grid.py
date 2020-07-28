@@ -124,6 +124,8 @@ class Grid(Page):
                             existingElement = None
 
                     if not existingElement:
+                        if color and pos.y:
+                            parameters["bg"] = None if pos.y % 2 else "gray88"
                         element = eleCls(self, column=pos.x, row=pos.y, value=value, **parameters)
 
 
