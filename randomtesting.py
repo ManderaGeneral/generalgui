@@ -1,30 +1,53 @@
 """Random testing"""
 
-# from generallibrary.time import sleep
-#
-# from generalgui import App, Grid, Page, Button, Label, OptionMenu, Checkbutton, Entry, LabelCheckbutton, LabelEntry, Spreadsheet
-#
-# from generalvector import Vec2
-#
-# import pandas as pd
-#
-# import inspect
-
-
-# page = Page(App(), resizeable=True)
-# label = Label(page, "hello")
-#
-# label.show(
+import tkinter as tk
+from generallibrary import initBases
+import pickle
+import atexit
 
 
 
-# Label(page, "hello\nthere", hideMultiline=True).show()
+class Generic:
+    def __init__(self, parent):
+        self.parent = parent
+
+    @property
+    def app(self):
+        return
+
+class Create:
+    pass
 
 
-from tkinter import Tk, Label
 
-root = Tk()
-label = Label(root)
-label.pack()
-root.bind("<Motion>", lambda event: label.configure(text=f"{event.x}, {event.y}"))
-root.mainloop()
+
+
+
+@initBases
+class Label(Generic, Create):
+    def __init__(self, parent=None, value=None):
+        self.value = value
+
+
+
+
+x = atexit.register(print, 5)
+atexit.unregister(x)
+
+print(2)
+
+Label("hello")
+
+
+
+
+# x = pickle.dumps(Label("hello"))
+# y = pickle.loads(x)
+# print(y.value)
+
+
+# root = Tk()
+# label = Label(root)
+# label.pack()
+# root.bind("<Motion>", lambda event: label.configure(text=f"{event.x}, {event.y}"))
+# root.mainloop()
