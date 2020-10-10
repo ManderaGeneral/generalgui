@@ -1,6 +1,4 @@
 
-import tkinter as tk
-
 from generallibrary import getBaseClassNames
 
 class Create:
@@ -12,8 +10,11 @@ class Create:
     def __init__(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
         self._set_parent(parent=parent)
-        self.widget = None
+
         self.widget_sig_info = ...  # Defined by each class at bottom of hierarchy
+        self.widget = None
+
+
 
     def _set_parent(self, parent):
         """ :param generalgui.MethodGrouper self: """
@@ -29,7 +30,8 @@ class Create:
 
     def show(self):
         """ :param generalgui.MethodGrouper self: """
-        # HERE ** Set parent based on current one
+        assert self.widget_sig_info is not ...
+        self.widget_sig_info["master"] = self.parent
         self.widget = self.widget_sig_info()
 
     @property

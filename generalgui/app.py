@@ -10,9 +10,10 @@ from generalgui.properties import Generic, Create, Contain
 class App(Generic, Create, Contain):
     apps = []
     def __init__(self):
-        self._add_app()
-
         self.widget_sig_info = SigInfo(self.tk.Tk)
+        Create.widget(self.tk.Tk)
+
+        self._add_app()
 
     def _add_app(self):
         if not self.apps:

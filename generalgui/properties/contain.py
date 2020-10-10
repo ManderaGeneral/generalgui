@@ -1,5 +1,4 @@
 
 class Contain:
-    def show(self):
-        pass
+    pass
 
