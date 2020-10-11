@@ -1,4 +1,5 @@
 
 class Contain:
-    pass
+    def __init__(self):
+        self.children = []
 
