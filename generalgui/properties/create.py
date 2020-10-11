@@ -3,10 +3,11 @@ from generallibrary import getBaseClassNames
 
 
 class Widget:
-    def __init__(self, part, tk_widget, **kwargs):
+    def __init__(self, part, tk_widget_cls, **kwargs):
         self.part = part
-        self.tk_widget = tk_widget
+        self.tk_widget_cls = tk_widget_cls
         self.kwargs = kwargs
+        self.tk_widget = None
 
     def __getitem__(self, item):
         return self.kwargs[item]
@@ -15,28 +16,41 @@ class Widget:
         self.kwargs[key] = value
 
     def __call__(self, *args, **kwargs):
-        return self.tk_widget(**self.kwargs)
+        self.tk_widget = self.tk_widget_cls(**self.kwargs)
 
     @property
     def is_packed(self):
-        return
+        try:
+            return self.tk_widget.winfo_manager() != ""
+        except self.part.tk.TclError:
+            return False
 
 class Create:
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         self.parent = None
+        self.destroy_when_hidden = destroy_when_hidden
+        self.is_shown = True
 
         self.move_to(parent=parent)
 
     def remove(self):
-        """ Remove this part from it's parent's children and unpacks if packed.
+        """ Remove this part from it's parent's children and destroys widget.
 
             :param generalgui.MethodGrouper self: """
         if self.parent:
             self.parent.children.remove(self)
-        if self.widget.is_packed:
-            self.widget.unpack()
+
+        self.widget.destroy()
+
+    def hide(self):
+        if self.is_shown:
+            if self.destroy_when_hidden:
+                self.widget.destroy()
+            else:
+                self.widget.hide()
+            self.is_shown = False
 
     def move_to(self, parent=None):
         """ Move this part to a `Contain` parent.
@@ -44,6 +58,7 @@ class Create:
 
             :param generalgui.MethodGrouper self:
             :param None or generalgui.MethodGrouper parent: """
+        is_shown = self.is_shown  # HERE **
         self.remove()
         self.parent = self._auto_parent(parent=parent)
         self.parent.children.append(self)

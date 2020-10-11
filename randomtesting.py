@@ -7,11 +7,7 @@ import pickle
 from generalgui import Label
 
 
-# Automatically create Page and App
-# Moveable Elements and Pages, moving top page to another app's page should automatically close the first app
-# Save and loadable parts. Allowing us to dynamically delete and create instead of hiding and showing
-#   Three-way sync: Tkinter, GUI objects, JSON files
-# Automatic packing, but not instant. Meaning creating two pages and then hiding the first one should only ever render the second one
+# Automatic packing, but not instant. Meaning c reating two pages and then hiding the first one should only ever render the second one
 
 
 
