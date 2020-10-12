@@ -18,30 +18,70 @@ class Widget:
     def __call__(self, *args, **kwargs):
         self.tk_widget = self.tk_widget_cls(**self.kwargs)
 
-    @property
-    def is_packed(self):
-        try:
-            return self.tk_widget.winfo_manager() != ""
-        except self.part.tk.TclError:
-            return False
-
 class Create:
     def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         self.destroy_when_hidden = destroy_when_hidden
-        self.is_shown = True
 
+        self._exists = True
+        self._is_packed = True
         self._parent = None
-        self.parent = parent
+        self.move_to(parent=parent)
+
+    @property
+    def exists(self):
+        """ Get whether this part exists, ignoring if it's . """
+        return self._exists
+
+    @property
+    def is_packed(self):
+        """ Get whether this part is packed, ignoring if parents are packed. """
+        return self._is_packed
 
     @property
     def parent(self):
+        """ Get this part's parent. """
         return self._parent
 
-    @parent.setter  # HERE ** Probably dont wanna do this as we should generalize it, meaning we should do the same for is_shown, i.e. setting show=True instead of show(). And for show and all those methods we're going to want to support parameters.
-    def parent(self, parent):
+    @property
+    def is_shown(self):
+        """ Get whether this part is packed along with all its parents. """
+        for part in self.parents(include_self=True):
+            if not part.is_packed:
+                return False
+        return True
+
+    def remove(self):
+        """ Remove this part from it's parent's children and destroys widget.
+
+            :param generalgui.MethodGrouper self: """
+        if self.parent:
+            self.parent.children.remove(self)
+
+        self._parent = None
+        self._is_packed = False
+        self._exists = False
+        self.widget.destroy()
+
+    def hide(self):
+        if self.is_shown:
+            if self.destroy_when_hidden:
+                self.widget.destroy()
+            else:
+                self.widget.hide()
+            self._is_shown = False
+
+    def move_to(self, parent=None):
+        """ Move this part to a `Contain` parent.
+            Repacks if it was packed.
+
+            :param generalgui.MethodGrouper self:
+            :param None or generalgui.MethodGrouper parent: """
+        is_shown = self.is_shown
+        self.remove()
         self._parent = self._auto_parent(parent=parent)
+        self.parent.children.append(self)
 
     def _auto_parent(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
@@ -54,34 +94,6 @@ class Create:
                 parent = self.Page()
         assert "contain" in getBaseClassNames(parent)
         return parent
-
-    def remove(self):
-        """ Remove this part from it's parent's children and destroys widget.
-
-            :param generalgui.MethodGrouper self: """
-        if self.parent:
-            self.parent.children.remove(self)
-
-        self.widget.destroy()
-
-    def hide(self):
-        if self.is_shown:
-            if self.destroy_when_hidden:
-                self.widget.destroy()
-            else:
-                self.widget.hide()
-            self.is_shown = False
-
-    def move_to(self, parent=None):
-        """ Move this part to a `Contain` parent.
-            Repacks if it was packed.
-
-            :param generalgui.MethodGrouper self:
-            :param None or generalgui.MethodGrouper parent: """
-        is_shown = self.is_shown
-        self.remove()
-        self.parent = self._auto_parent(parent=parent)
-        self.parent.children.append(self)
 
 
 
