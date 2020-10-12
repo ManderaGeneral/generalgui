@@ -18,26 +18,26 @@ class Widget:
     def __call__(self, *args, **kwargs):
         self.tk_widget = self.tk_widget_cls(**self.kwargs)
 
+    def destroy(self):
+        pass
+
+    def hide(self):
+        pass
+
 class Create:
     def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         self.destroy_when_hidden = destroy_when_hidden
 
-        self._exists = True
-        self._is_packed = True
+        self._hidden = True
         self._parent = None
         self.move_to(parent=parent)
 
     @property
-    def exists(self):
-        """ Get whether this part exists, ignoring if it's . """
-        return self._exists
-
-    @property
-    def is_packed(self):
-        """ Get whether this part is packed, ignoring if parents are packed. """
-        return self._is_packed
+    def hidden(self):
+        """ Get whether this part is hidden, ignoring if parents are hidden. """
+        return self._hidden
 
     @property
     def parent(self):
@@ -46,9 +46,9 @@ class Create:
 
     @property
     def is_shown(self):
-        """ Get whether this part is packed along with all its parents. """
+        """ Get whether this part and all its parents aren't hidden. """
         for part in self.parents(include_self=True):
-            if not part.is_packed:
+            if part.hidden:
                 return False
         return True
 
@@ -60,17 +60,14 @@ class Create:
             self.parent.children.remove(self)
 
         self._parent = None
-        self._is_packed = False
-        self._exists = False
         self.widget.destroy()
 
     def hide(self):
-        if self.is_shown:
-            if self.destroy_when_hidden:
-                self.widget.destroy()
-            else:
-                self.widget.hide()
-            self._is_shown = False
+        self._hidden = True
+        if self.destroy_when_hidden:
+            return self.remove()
+        else:
+            self.widget.hide()
 
     def move_to(self, parent=None):
         """ Move this part to a `Contain` parent.
@@ -78,10 +75,11 @@ class Create:
 
             :param generalgui.MethodGrouper self:
             :param None or generalgui.MethodGrouper parent: """
-        is_shown = self.is_shown
         self.remove()
         self._parent = self._auto_parent(parent=parent)
         self.parent.children.append(self)
+
+        # HERE ** Create widget
 
     def _auto_parent(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
