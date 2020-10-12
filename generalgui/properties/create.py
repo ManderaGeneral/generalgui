@@ -29,11 +29,31 @@ class Create:
     def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
-        self.parent = None
         self.destroy_when_hidden = destroy_when_hidden
         self.is_shown = True
 
-        self.move_to(parent=parent)
+        self._parent = None
+        self.parent = parent
+
+    @property
+    def parent(self):
+        return self._parent
+
+    @parent.setter  # HERE ** Probably dont wanna do this as we should generalize it, meaning we should do the same for is_shown, i.e. setting show=True instead of show(). And for show and all those methods we're going to want to support parameters.
+    def parent(self, parent):
+        self._parent = self._auto_parent(parent=parent)
+
+    def _auto_parent(self, parent=None):
+        """ :param generalgui.MethodGrouper self: """
+        if parent is None:
+            if self.is_app:
+                parent = self
+            elif self.is_page:
+                parent = self.App()
+            else:
+                parent = self.Page()
+        assert "contain" in getBaseClassNames(parent)
+        return parent
 
     def remove(self):
         """ Remove this part from it's parent's children and destroys widget.
@@ -58,22 +78,10 @@ class Create:
 
             :param generalgui.MethodGrouper self:
             :param None or generalgui.MethodGrouper parent: """
-        is_shown = self.is_shown  # HERE **
+        is_shown = self.is_shown
         self.remove()
         self.parent = self._auto_parent(parent=parent)
         self.parent.children.append(self)
-
-    def _auto_parent(self, parent=None):
-        """ :param generalgui.MethodGrouper self: """
-        if parent is None:
-            if self.is_app:
-                parent = self
-            elif self.is_page:
-                parent = self.App()
-            else:
-                parent = self.Page()
-        assert "contain" in getBaseClassNames(parent)
-        return parent
 
 
 
