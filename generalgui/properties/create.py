@@ -15,8 +15,11 @@ class Widget:
     def __setitem__(self, key, value):
         self.kwargs[key] = value
 
-    def __call__(self, *args, **kwargs):
+    def create(self, *args, **kwargs):
         self.tk_widget = self.tk_widget_cls(**self.kwargs)
+
+    def is_packed(self):
+        pass
 
     def destroy(self):
         pass
@@ -28,7 +31,7 @@ class Create:
     def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
-        self.destroy_when_hidden = destroy_when_hidden
+        self.destroy_when_hidden = destroy_when_hidden  # Doesn't activate if parent is hidden
 
         self._hidden = True
         self._parent = None
@@ -78,8 +81,7 @@ class Create:
         self.remove()
         self._parent = self._auto_parent(parent=parent)
         self.parent.children.append(self)
-
-        # HERE ** Create widget
+        self.show()
 
     def _auto_parent(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
@@ -106,10 +108,15 @@ class Create:
         self.widget = Widget(part=self, tk_widget=tk_widget, **kwargs)
 
     def show(self):
-        """ :param generalgui.MethodGrouper self: """
+        """ Show this part.
+            If this part is
+
+            :param generalgui.MethodGrouper self: """
         assert self.widget
+
         self.widget["master"] = self.parent
-        self.widget()
+
+        self.widget.create()
 
 
 
