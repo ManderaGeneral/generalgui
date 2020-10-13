@@ -1,55 +1,93 @@
 
-from generallibrary import getBaseClassNames
+from generallibrary import getBaseClassNames, initBases
 
 
+
+# destroy, pack, hide, create, is_existing, is_packed, is_shown, master
 class Widget:
-    def __init__(self, part, tk_widget_cls, **kwargs):
+    """ Handles one created tk widget for a Part. """
+    def __init__(self, part):
+        """ :param generalgui.MethodGrouper part: """
         self.part = part
-        self.tk_widget_cls = tk_widget_cls
-        self.kwargs = kwargs
-        self.tk_widget = None
+        self.tk_widget = self.create()
 
-    def __getitem__(self, item):
-        return self.kwargs[item]
-
-    def __setitem__(self, key, value):
-        self.kwargs[key] = value
-
-    def create(self, *args, **kwargs):
-        self.tk_widget = self.tk_widget_cls(**self.kwargs)
-
-    def is_packed(self):
-        pass
+    def create(self):
+        return self.tk_widget_cls(**self.part.)
 
     def destroy(self):
+        pass
+
+    def pack(self):
         pass
 
     def hide(self):
         pass
 
-class Create:
-    def __init__(self, parent=None, destroy_when_hidden=True):
-        """ :param generalgui.MethodGrouper self: """
-        self.widget = None
-        self.destroy_when_hidden = destroy_when_hidden  # Doesn't activate if parent is hidden
+    def is_existing(self):
+        pass
 
-        self._hidden = True
+    def is_packed(self):
+        pass
+
+    def is_shown(self):
+        pass
+
+    def master(self):
+        pass
+
+
+class Config:
+    def init_config(self):
+        return
+
+    def post_config(self):
+        return
+
+    def init_config(self):
+        return
+
+
+class Construct:
+    """ Should contain all data necessary to encode. """
+    def __init__(self, parent=None):
+        """ :param generalgui.MethodGrouper self: """
+        self._hidden = False
         self._parent = None
+
+        self._tk_widget_cls = None
+        self._kwargs = None
+
+        self.widget = None
+
         self.move_to(parent=parent)
+
+    def widget_prepare(self, tk_widget_cls, **kwargs):
+        """ Prepare a tk widget for this Part.
+
+            :param generalgui.MethodGrouper self:
+            :param tk_widget_cls: """
+        self._tk_widget_cls = tk_widget_cls
+        self._kwargs = kwargs
 
     @property
     def hidden(self):
-        """ Get whether this part is hidden, ignoring if parents are hidden. """
+        """ Get whether this part is hidden, ignoring if parents are hidden.
+
+            :param generalgui.MethodGrouper self: """
         return self._hidden
 
     @property
     def parent(self):
-        """ Get this part's parent. """
+        """ Get this part's parent.
+
+            :param generalgui.MethodGrouper self: """
         return self._parent
 
     @property
     def is_shown(self):
-        """ Get whether this part and all its parents aren't hidden. """
+        """ Get whether this part and all its parents aren't hidden.
+
+            :param generalgui.MethodGrouper self: """
         for part in self.parents(include_self=True):
             if part.hidden:
                 return False
@@ -66,6 +104,7 @@ class Create:
         self.widget.destroy()
 
     def hide(self):
+        """ :param generalgui.MethodGrouper self: """
         self._hidden = True
         if self.destroy_when_hidden:
             return self.remove()
@@ -95,30 +134,20 @@ class Create:
         assert "contain" in getBaseClassNames(parent)
         return parent
 
-
-
-
-
-
-    def widget_prepare(self, tk_widget, **kwargs):
-        """ Prepare a tk widget for this Part.
-
-            :param generalgui.MethodGrouper self:
-            :param tk_widget: """
-        self.widget = Widget(part=self, tk_widget=tk_widget, **kwargs)
-
     def show(self):
         """ Show this part.
             If this part is
 
             :param generalgui.MethodGrouper self: """
-        assert self.widget
+        if self.widget is None:
+            self.widget = Widget(part=self)
 
-        self.widget["master"] = self.parent
-
-        self.widget.create()
-
-
+@initBases
+class Create(Construct, Config):
+    def __init__(self, parent=None, destroy_when_hidden=True):
+        """ :param generalgui.MethodGrouper self: """
+        self.widget = None
+        self.destroy_when_hidden = destroy_when_hidden  # Doesn't activate if parent is hidden
 
     @property
     def app(self):
