@@ -1,9 +1,9 @@
 
 from generallibrary import getBaseClassNames, initBases
 
+from generalgui.decorators import group_top
 
 
-# destroy, pack, hide, create, is_existing, is_packed, is_shown, master
 class Widget:
     """ Handles one created tk widget for a Part. """
     def __init__(self, part):
@@ -12,7 +12,7 @@ class Widget:
         self.tk_widget = self.create()
 
     def create(self):
-        return self.tk_widget_cls(**self.part.)
+        return self.part.tk_cls(**self.part.get_init_config())
 
     def destroy(self):
         pass
@@ -36,18 +36,29 @@ class Widget:
         pass
 
 
-class Config:
-    def init_config(self):
-        return
+class Create_Config:
+    def __init__(self):
+        self.tk_cls = None
 
-    def post_config(self):
-        return
+    def config(self, tk_cls=None):
+        """ Handles all widget configuration such as cls, master, side etc.
+            Has to be called in each Part's dunder init.
+            If an init config is changed then widget will automatically be re-created if needed.
+            That allows us to change master or even cls. """
+        if tk_cls is not None:  # Iterate locals instead
+            self.tk_cls = tk_cls
 
-    def init_config(self):
-        return
+    def get_init_config(self):
+        return {}
+
+    def get_pack_config(self):
+        return {}
+
+    def get_post_config(self):
+        return {}
 
 
-class Construct:
+class Create_Construct:
     """ Should contain all data necessary to encode. """
     def __init__(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
@@ -55,19 +66,10 @@ class Construct:
         self._parent = None
 
         self._tk_widget_cls = None
-        self._kwargs = None
 
         self.widget = None
 
         self.move_to(parent=parent)
-
-    def widget_prepare(self, tk_widget_cls, **kwargs):
-        """ Prepare a tk widget for this Part.
-
-            :param generalgui.MethodGrouper self:
-            :param tk_widget_cls: """
-        self._tk_widget_cls = tk_widget_cls
-        self._kwargs = kwargs
 
     @property
     def hidden(self):
@@ -93,6 +95,7 @@ class Construct:
                 return False
         return True
 
+    @group_top  # Change self to top part in possible group
     def remove(self):
         """ Remove this part from it's parent's children and destroys widget.
 
@@ -143,7 +146,7 @@ class Construct:
             self.widget = Widget(part=self)
 
 @initBases
-class Create(Construct, Config):
+class Create(Create_Construct, Create_Config):
     def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
