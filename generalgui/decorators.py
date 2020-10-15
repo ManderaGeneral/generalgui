@@ -2,25 +2,26 @@
 from generallibrary import SigInfo
 
 
-
-def _group_helper():
+def deco_set_grouped_container(**arg_and_index):
+    """ Changes `self` to outermost or innermost Container in possible group. """
     def _decorator(func):
-        """ Changes `self` to outer Container in possible group. """
         def _wrapper(*args, **kwargs):
             sigInfo = SigInfo(func, *args, **kwargs)
 
-            part = sigInfo["self"]  # type: MethodGrouper
-            if part.grouped_containers:
-                if part != part.grouped_containers[0]:
-                    sigInfo["self"] = part.grouped_containers[0]
+            for arg_name, i in arg_and_index:
+                part = sigInfo[arg_name]
+                if part is not None and part.grouped_containers and part != part.grouped_containers[i]:
+                    sigInfo[arg_name] = part.grouped_containers[i]
+
             return sigInfo()
         return _wrapper
     return _decorator
 
-def group_top():
-    return _group_helper("top")
 
-from generalgui import MethodGrouper
+deco_group_top = deco_set_grouped_container(self=0)
+deco_group_bottom = deco_set_grouped_container(self=-1)
+
+
 
 
 

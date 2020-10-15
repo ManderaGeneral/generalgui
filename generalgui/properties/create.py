@@ -1,11 +1,11 @@
 
 from generallibrary import getBaseClassNames, initBases
 
-from generalgui.decorators import group_top
+from generalgui.decorators import deco_set_grouped_container, deco_group_top
 
 
 class Widget:
-    """ Handles one created tk widget for a Part. """
+    """ Handles one created tk widget for a Part. """  # HERE ** Isn't this what a Part does?
     def __init__(self, part):
         """ :param generalgui.MethodGrouper part: """
         self.part = part
@@ -40,7 +40,7 @@ class Create_Config:
     def __init__(self):
         self.tk_cls = None
 
-    def config(self, tk_cls=None):
+    def config(self, tk_cls=None):  # Maybe we can include `is_hidden` here so that everything for encoding is stored together?
         """ Handles all widget configuration such as cls, master, side etc.
             Has to be called in each Part's dunder init.
             If an init config is changed then widget will automatically be re-created if needed.
@@ -71,41 +71,42 @@ class Create_Construct:
 
         self.move_to(parent=parent)
 
-    @property
-    def hidden(self):
-        """ Get whether this part is hidden, ignoring if parents are hidden.
+    @deco_group_top
+    def is_hidden(self):
+        """ Get whether this part is is_hidden, ignoring if parents are is_hidden.
 
             :param generalgui.MethodGrouper self: """
         return self._hidden
 
-    @property
+    @deco_group_top
     def parent(self):
         """ Get this part's parent.
 
             :param generalgui.MethodGrouper self: """
         return self._parent
 
-    @property
+    @deco_group_top
     def is_shown(self):
-        """ Get whether this part and all its parents aren't hidden.
+        """ Get whether this part and all its parents aren't is_hidden.
 
             :param generalgui.MethodGrouper self: """
         for part in self.parents(include_self=True):
-            if part.hidden:
+            if part.is_hidden():
                 return False
         return True
 
-    @group_top  # Change self to top part in possible group
+    @deco_group_top
     def remove(self):
         """ Remove this part from it's parent's children and destroys widget.
 
             :param generalgui.MethodGrouper self: """
-        if self.parent:
-            self.parent.children.remove(self)
+        if self.parent():
+            self.parent().children.remove(self)
 
         self._parent = None
         self.widget.destroy()
 
+    @deco_group_top
     def hide(self):
         """ :param generalgui.MethodGrouper self: """
         self._hidden = True
@@ -114,6 +115,7 @@ class Create_Construct:
         else:
             self.widget.hide()
 
+    @deco_group_top
     def move_to(self, parent=None):
         """ Move this part to a `Contain` parent.
             Repacks if it was packed.
@@ -121,11 +123,10 @@ class Create_Construct:
             :param generalgui.MethodGrouper self:
             :param None or generalgui.MethodGrouper parent: """
         self.remove()
-        self._parent = self._auto_parent(parent=parent)
-        self.parent.children.append(self)
-        self.show()
+        self._auto_create_parent(parent=parent)
 
-    def _auto_parent(self, parent=None):
+    @deco_set_grouped_container(self=0, parent=-1)
+    def _auto_create_parent(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
         if parent is None:
             if self.is_app:
@@ -135,28 +136,45 @@ class Create_Construct:
             else:
                 parent = self.Page()
         assert "contain" in getBaseClassNames(parent)
-        return parent
 
+        self._parent = parent
+        parent.add_child(part=self)
+
+        if not self.is_hidden():
+            self.show()
+
+
+    @deco_group_top
     def show(self):
         """ Show this part.
-            If this part is
+            If this part doesn't have a widget then it's created.
+            If widget is hidden then it's re-packed.
+
 
             :param generalgui.MethodGrouper self: """
         if self.widget is None:
             self.widget = Widget(part=self)
+
+        elif not self.widget.is_packed():
+            self.widget.pack()
+
+        if not self.is_shown():
+            for parent in self.get_parents():
+                if parent
+
 
 @initBases
 class Create(Create_Construct, Create_Config):
     def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
-        self.destroy_when_hidden = destroy_when_hidden  # Doesn't activate if parent is hidden
+        self.destroy_when_hidden = destroy_when_hidden  # Doesn't activate if parent is is_hidden
 
     @property
     def app(self):
         """ :param generalgui.MethodGrouper self: """
         while True:
-            return self if self.__class__ == self.App else self.parent.app
+            return self if self.__class__ == self.App else self.parent().app
 
 
 

@@ -1,7 +1,7 @@
 
 import unittest
 
-from generalgui import Page, Label
+from generalgui import Frame, Label
 
 class CreateTest(unittest.TestCase):
     def test(self):
