@@ -18,7 +18,7 @@ class Contain_Group:
         grouped_containers = list(parts) + [self]
         for part in grouped_containers:
             part.grouped_containers = grouped_containers
-        # TODO: Assert they're connected
+        # TODO: Assert they're connected. Also want to be able to group non-containers (Imagine grabbing Label in LabelEntry to move it)
 
     def group_dissolve(self):
         """ Dissolves the group for all parts in it. """

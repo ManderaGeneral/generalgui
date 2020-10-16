@@ -4,40 +4,61 @@ from generallibrary import getBaseClassNames, initBases
 from generalgui.decorators import deco_set_grouped_container, deco_group_top
 
 
-class Widget:
-    """ Handles one created tk widget for a Part. """  # HERE ** Isn't this what a Part does?
-    def __init__(self, part):
-        """ :param generalgui.MethodGrouper part: """
-        self.part = part
-        self.tk_widget = self.create()
+class Create_Widget:
+    def __init__(self):
+        """ :param generalgui.MethodGrouper self: """
+        self.tk_widget = None
 
-    def create(self):
-        return self.part.tk_cls(**self.part.get_init_config())
+    def _create(self):
+        """ :param generalgui.MethodGrouper self: """
+        self.tk_widget = self.tk_cls(**self.part.get_init_config())
 
-    def destroy(self):
+    def _destroy(self):
+        """ :param generalgui.MethodGrouper self: """
         pass
 
-    def pack(self):
+    def _pack(self):
+        """ :param generalgui.MethodGrouper self: """
         pass
 
-    def hide(self):
+    def _hide(self):
+        """ :param generalgui.MethodGrouper self: """
         pass
 
-    def is_existing(self):
+    def _is_existing(self):
+        """ :param generalgui.MethodGrouper self: """
         pass
 
-    def is_packed(self):
+    def _is_packed(self):
+        """ :param generalgui.MethodGrouper self: """
         pass
 
-    def is_shown(self):
+    def _is_shown(self):
+        """ :param generalgui.MethodGrouper self: """
         pass
 
-    def master(self):
+    def _master(self):
+        """ :param generalgui.MethodGrouper self: """
         pass
 
 
 class Create_Config:
-    def __init__(self):
+    _init_args = ["cls", "master"]
+    _pack_args = ["side", "grid"]
+    _post_args = ["is_hidden", "cursor", "border"]
+    def __init__(self):  # HERE ** Plan was to store all args as attributes. BUT: they should be protected. I dont want to make a property for each attribute.
+        # WANT: Easy autocompletion for each arg
+        # WANT: Ability to configure multiple
+        # WANT: Automatic updating when changing a value
+        # WANT: Allowing adding to args lower in hierarchy (i.e. value for Label)
+
+        # DONT: Update after changing one of multiple values, only once
+        # DONT: Rely on manual updating as it's prone for de-sync issues
+
+        # IDEA: Remove config method, make them all attributes,
+        # IDEA: Convert old Styler to a config class for generallibrary, use that here
+        # Give combined lists to Config class, then add code for our purpose
+        """ :param generalgui.MethodGrouper self: """
         self.tk_cls = None
 
     def config(self, tk_cls=None):  # Maybe we can include `is_hidden` here so that everything for encoding is stored together?
@@ -49,12 +70,17 @@ class Create_Config:
             self.tk_cls = tk_cls
 
     def get_init_config(self):
+        """ Are all init configs required?
+
+            :param generalgui.MethodGrouper self: """
         return {}
 
     def get_pack_config(self):
+        """ :param generalgui.MethodGrouper self: """
         return {}
 
     def get_post_config(self):
+        """ :param generalgui.MethodGrouper self: """
         return {}
 
 
@@ -66,8 +92,6 @@ class Create_Construct:
         self._parent = None
 
         self._tk_widget_cls = None
-
-        self.widget = None
 
         self.move_to(parent=parent)
 
@@ -160,14 +184,14 @@ class Create_Construct:
 
         if not self.is_shown():
             for parent in self.get_parents():
-                if parent
+                pass
+                # if parent
 
 
 @initBases
-class Create(Create_Construct, Create_Config):
+class Create(Create_Construct, Create_Config, Create_Widget):
     def __init__(self, parent=None, destroy_when_hidden=True):
         """ :param generalgui.MethodGrouper self: """
-        self.widget = None
         self.destroy_when_hidden = destroy_when_hidden  # Doesn't activate if parent is is_hidden
 
     @property
