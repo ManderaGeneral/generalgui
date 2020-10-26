@@ -74,8 +74,11 @@ class Config:
 
 # HERE ** Add this code to generallibrary after disabling travis and setting up github actions
 # Hoping we can automatically versionize and upload to pypi once sucessful.
+# Would be awesome as it would remove all need of manual syncing as it could automatically package all successful pushes to master.
 
-# Config()._generate_code("Test", a=1, foo="bar")
+# Need config to create a class that's easily changeable with hooks
+
+Config()._generate_code("Test", a=1, foo="bar")
 
 
 

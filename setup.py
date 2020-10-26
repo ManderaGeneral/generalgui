@@ -13,7 +13,7 @@ setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     author='Rickard "Mandera" Abraham',
-    url="https://github.com/Mandera/generalgui",
+    url="https://github.com/ManderaGeneral/generalgui",
     version="1.3.0",
     description=(
         "Extends and simplifies tkinter functionality with built-in QoL improvements."
