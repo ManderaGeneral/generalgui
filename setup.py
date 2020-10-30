@@ -20,6 +20,7 @@ setup(
     ),
     packages=find_packages(),
     install_requires=["wheel", "generallibrary", "generalvector", "generalfile", "pandas", "numpy"],
+    license="MIT",
     classifiers=[
         "Operating System :: Microsoft :: Windows :: Windows 7",
         "Programming Language :: Python :: 3.8",

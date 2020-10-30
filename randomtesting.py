@@ -1,46 +1,12 @@
 """Random testing"""
 
 import tkinter as tk
-from generallibrary import initBases, getBaseClasses
+from generallibrary import initBases, getBaseClasses, CodeGen
 import pickle
 
 from generalgui import Label
 
 
-def args_to_attrs(local_dict):
-    """ Print code for a dunder init method to store all arguments as attributes. """
-    code = CodeGen()
-    for key, value in local_dict.items():
-        if key != "self":
-            code.add(2, f"self.{key} = {key}")
-    code.print()
-
-class _Line:
-    def __init__(self, indent, code_str, space_before=0, space_after=0):
-        self.indent = indent
-        self.code_str = code_str
-        self.space_before = space_before
-        self.space_after = space_after
-
-class CodeGen:
-    """ Tool to help with printing code line by line. """
-    indent = " " * 4
-    def __init__(self):
-        self.lines = []
-
-    def add(self, indent, code_str, space_before=0, space_after=0):
-        """ Add a new line. """
-        self.lines.append(_Line(indent=indent, code_str=code_str, space_before=space_before, space_after=space_after))
-
-    def print(self):
-        print("############### GENERATED CODE ###############")
-        for line in self.lines:
-            for _ in range(line.space_before):
-                print()
-            print(f"{self.indent * line.indent}{line.code_str}")
-            for _ in range(line.space_after):
-                print()
-        print("##############################################")
 
 
 import json
@@ -72,13 +38,14 @@ class Config:
 
 
 
-# HERE ** Add this code to generallibrary after disabling travis and setting up github actions
-# Hoping we can automatically versionize and upload to pypi once sucessful.
-# Would be awesome as it would remove all need of manual syncing as it could automatically package all successful pushes to master.
-
 # Need config to create a class that's easily changeable with hooks
 
-Config()._generate_code("Test", a=1, foo="bar")
+# Config()._generate_code("Test", a=1, foo="bar")
+
+# HERE ** Learning git subtree add in SSH
+
+
+
 
 
 
