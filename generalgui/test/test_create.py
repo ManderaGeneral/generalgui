@@ -10,5 +10,5 @@ class CreateTest(unittest.TestCase):
         self.assertEqual(False, label.is_hidden_directly())
 
         app = label.app
-        label.move_to(None)
+        label.master = False
         self.assertEqual(False, app.widget.is_existing())
