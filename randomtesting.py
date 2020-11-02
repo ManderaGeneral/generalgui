@@ -3,10 +3,6 @@
 import atexit
 import tkinter as tk
 from generallibrary import initBases, getBaseClasses
-import pickle
-
-# from generalgui import Label
-# Label("hello")
 
 
 
@@ -35,7 +31,6 @@ class Create:
         return parent
 
 
-
 class App:
     pass
 
@@ -53,10 +48,12 @@ class Label(Create):
         self.value = value
 
 
+
+
 label = Label("hello")
 
 
-print(label, label.parent, label.parent.parent)  # HERE ** Start like this! Don't bother with tkinter yet
+print(label, label.parent, label.parent.parent)
 
 
 
