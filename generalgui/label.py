@@ -10,3 +10,4 @@ class Label(Generic, Generic.Create, Generic.Create.Value):
 
 Generic.Label = Label
 
+
