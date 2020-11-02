@@ -1,5 +1,6 @@
 """Random testing"""
 
+import atexit
 import tkinter as tk
 from generallibrary import initBases, getBaseClasses
 import pickle
@@ -7,7 +8,61 @@ import pickle
 # from generalgui import Label
 # Label("hello")
 
-print(...)
+
+
+class _Contain:
+    def __init__(self):
+        self.children = []
+
+class Create:
+    Contain = _Contain
+
+    args_create = ["parent"]
+    args_pack = []
+    args_config = []
+
+    def __init__(self, parent):
+        self.parent = self.set_parent(parent)
+
+    def __repr__(self):
+        return self.__class__.__name__
+
+    def set_parent(self, parent):
+        if parent is None and self.__class__ != Page:
+            parent = Page()
+
+        self.parent = parent
+        return parent
+
+
+
+class App:
+    pass
+
+
+@initBases
+class Page(Create, Create.Contain):
+    def __init__(self, parent=None):
+        pass
+
+@initBases
+class Label(Create):
+    args_config = Create.args_config + ["value"]
+
+    def __init__(self, value=None, parent=None):
+        self.value = value
+
+
+label = Label("hello")
+
+
+print(label, label.parent, label.parent.parent)  # HERE ** Start like this! Don't bother with tkinter yet
+
+
+
+
+
+
 
 
 # HERE ** Plan was to store all args as attributes. BUT: they should be protected. I dont want to make a property for each attribute.
