@@ -1,31 +1,11 @@
 
-import atexit
-
-from generallibrary import initBases, SigInfo
-
-from generalgui.properties import Generic, Create, Contain
+from generalgui.properties.generic import Generic
 
 
-@initBases
-class App(Generic, Create, Contain):
+class App(Generic):
     apps = []
     def __init__(self):
-        self.config(tk_cls=self.tk.Tk)
-
-        self._add_app()
-
-    def _add_app(self):
-        if not self.apps:
-            atexit.register(App._mainloop)
-
         self.apps.append(self)
-
-    @classmethod
-    def _mainloop(cls):
-        for app in cls.apps:
-            app.show()
-
-        cls.tk.mainloop()
 
 Generic.App = App
 

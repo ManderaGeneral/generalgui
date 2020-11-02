@@ -1,9 +1,9 @@
 
 from generalgui.app import App
-from generalgui.frame import Frame
+from generalgui.page import Page
 from generalgui.label import Label
 
 
-class MethodGrouper(App, Frame, Label):
+class MethodGrouper(App, Page, Label):
     """ For code auto completion through reST docs. """
     pass
