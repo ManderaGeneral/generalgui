@@ -1,10 +1,10 @@
 
 from generallibrary import initBases
 
-from generalgui.properties.generic import Generic
+from generalgui import Generic
 
 @initBases
-class Page(Generic, Generic.Create, Generic.Create.Contain):
+class Page(Generic.Create.Contain):
     def __init__(self, parent=None):
         pass
 

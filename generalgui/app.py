@@ -1,7 +1,9 @@
 
-from generalgui.properties.generic import Generic
+from generallibrary import initBases
 
+from generalgui import Generic
 
+@initBases
 class App(Generic):
     apps = []
     def __init__(self):

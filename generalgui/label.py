@@ -1,10 +1,10 @@
 
 from generallibrary import initBases
 
-from generalgui.properties.generic import Generic
+from generalgui import Generic
 
 @initBases
-class Label(Generic, Generic.Create, Generic.Create.Value):
+class Label(Generic.Create.Value):
     def __init__(self, value=None, parent=None):
         pass
 

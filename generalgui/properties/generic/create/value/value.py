@@ -1,6 +1,10 @@
 
+from generallibrary import initBases
 
-class _Value:
+from generalgui import Generic
+
+@initBases
+class Value(Generic.Create):
     def __init__(self, value=None):
         self._value = None
 
@@ -12,4 +16,4 @@ class _Value:
     def set_value(self, value):
         self._value = value
 
-
+Generic.Create.Value = Value

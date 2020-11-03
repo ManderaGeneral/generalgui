@@ -1,6 +1,7 @@
 
 from generallibrary import initBases
-from generalgui.decorators import deco_group_bottom
+
+from generalgui import Generic
 
 # class Contain_Group:
 #     def __init__(self):
@@ -28,12 +29,12 @@ from generalgui.decorators import deco_group_bottom
 
 # class Contain(Contain_Group):
 @initBases
-class _Contain:
+class Contain(Generic.Create):
     def __init__(self):
         self.children = []
 
-    @deco_group_bottom
     def _add_child(self, part):
         assert part.parent() == self
         self.children.append(part)
 
+Generic.Create.Contain = Contain

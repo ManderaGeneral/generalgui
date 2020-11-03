@@ -7,19 +7,19 @@ from generalgui import Label
 
 
 
-label = Label("hello")
-
-
-print(label, label.parent, label.parent.parent)
+Label()
 
 
 
+# print(find_namespace_packages())
+# print(find_packages())
+
+
+# label = Label("hello")
+# print(label, label.parent, label.parent.parent)
 
 
 
-
-
-# HERE ** Plan was to store all args as attributes. BUT: they should be protected. I dont want to make a property for each attribute.
 # WANT: Easy autocompletion for each arg
 # WANT: Ability to configure multiple
 # WANT: Automatic updating when changing a value

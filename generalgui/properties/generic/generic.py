@@ -1,0 +1,13 @@
+
+import tkinter
+
+
+class Generic:
+    Create = ...
+
+    App = ...
+    Page = ...
+    Label = ...
+
+    tk = tkinter
+
