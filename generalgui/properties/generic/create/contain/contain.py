@@ -33,8 +33,12 @@ class Contain(Generic.Create):
     def __init__(self):
         self.children = []
 
-    def _add_child(self, part):
-        assert part.parent() == self
-        self.children.append(part)
+    def add_child(self, part):
+        """ :param generalgui.MethodGrouper self:
+            :param generalgui.MethodGrouper part: """
+        if part.get_parent() == self:
+            self.children.append(part)
+        else:
+            part.set_parent(self)
 
 Generic.Create.Contain = Contain

@@ -7,16 +7,10 @@ from generalgui import Label
 
 
 
-Label()
+# Writing get_parent() instead of parent is weird
 
-
-
-# print(find_namespace_packages())
-# print(find_packages())
-
-
-# label = Label("hello")
-# print(label, label.parent, label.parent.parent)
+label = Label("hello")
+print(label, label.get_parent(), label.get_parent().get_parent())
 
 
 

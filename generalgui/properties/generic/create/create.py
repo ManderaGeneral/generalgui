@@ -5,7 +5,7 @@ from generalgui import Generic
 
 
 class _Create_Construct:
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         """ :param generalgui.MethodGrouper self: """
         self._parent = self.set_parent(parent)
 
@@ -20,10 +20,14 @@ class _Create_Construct:
 
             :param generalgui.MethodGrouper self:
             :param generalgui.MethodGrouper parent: """
-        if parent is None and self.__class__ != self.Page:
+        self._parent = parent
+
+        if parent is None and not self.is_page:
             parent = self.Page()
 
-        self._parent = parent
+        if parent is not None:
+            parent.add_child(self)
+
         return parent
 
 

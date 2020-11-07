@@ -8,6 +8,5 @@ from generalgui.page import Page
 from generalgui.label import Label
 
 
-class MethodGrouper(App, Page, Label):
+class MethodGrouper(App, Page, Label, Value, Contain, Create, Generic):
     """ For code auto completion through reST docs. """
-    pass
