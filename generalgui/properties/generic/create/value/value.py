@@ -1,10 +1,10 @@
 
 from generallibrary import initBases
 
-from generalgui import Generic
+from generalgui import Create
 
 @initBases
-class Value(Generic.Create):
+class Value(Create):
     def __init__(self, value=None):
         self._value = self.set_value(value)
 
@@ -15,4 +15,5 @@ class Value(Generic.Create):
         self._value = value
         return value
 
-Generic.Create.Value = Value
+    generic = Create.generic
+Create.generic.contain = Value

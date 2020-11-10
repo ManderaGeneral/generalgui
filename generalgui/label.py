@@ -1,13 +1,14 @@
 
 from generallibrary import initBases
 
-from generalgui import Generic
+from generalgui import Value
 
 @initBases
-class Label(Generic.Create.Value):
+class Label(Value):
     def __init__(self, value=None, parent=None):
         pass
 
-Generic.Label = Label
+    generic = Value.generic
+Value.generic.label = Label
 
 

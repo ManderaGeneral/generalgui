@@ -1,11 +1,12 @@
 
 from generallibrary import initBases
 
-from generalgui import Generic
+from generalgui import Contain
 
 @initBases
-class Page(Generic.Create.Contain):
+class Page(Contain):
     def __init__(self, parent=None):
         pass
 
-Generic.Page = Page
+    generic = Contain.generic
+Contain.generic.page = Page

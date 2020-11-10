@@ -23,7 +23,7 @@ class _Create_Construct:
         self._parent = parent
 
         if parent is None and not self.is_page:
-            parent = self.Page()
+            parent = self.page()
 
         if parent is not None:
             parent.add_child(self)
@@ -42,10 +42,8 @@ class _Create_Store:
 @initBases
 class Create(Generic, _Create_Construct, _Create_Relations, _Create_Store):
     """ Contains all methods having to do with creating a GUI part. """
-    Contain = ...
-    Value = ...
-
-Generic.Create = Create
+    generic = Generic
+Generic.create = Create
 
 
 

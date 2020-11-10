@@ -1,7 +1,7 @@
 
 from generallibrary import initBases
 
-from generalgui import Generic
+from generalgui import Create
 
 # class Contain_Group:
 #     def __init__(self):
@@ -29,7 +29,7 @@ from generalgui import Generic
 
 # class Contain(Contain_Group):
 @initBases
-class Contain(Generic.Create):
+class Contain(Create):
     def __init__(self):
         self.children = []
 
@@ -41,4 +41,6 @@ class Contain(Generic.Create):
         else:
             part.set_parent(self)
 
-Generic.Create.Contain = Contain
+    generic = Create.generic
+Create.generic.contain = Contain
+

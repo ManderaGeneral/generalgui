@@ -9,6 +9,7 @@ class App(Generic):
     def __init__(self):
         self.apps.append(self)
 
-Generic.App = App
+    generic = Generic
+Generic.app = App
 
 
