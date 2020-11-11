@@ -7,7 +7,8 @@ from generalgui import Generic
 class _Create_Construct:
     def __init__(self, parent):
         """ :param generalgui.MethodGrouper self: """
-        self._parent = self.set_parent(parent)
+        self._parent = self.set_parent(parent)  # Parent isn't needed for recreation
+        self.set_class_name(self.__class__.__name__)
 
     def get_parent(self, index=0):
         """ Get this part's parent.
@@ -32,12 +33,11 @@ class _Create_Construct:
 
     def get_class_name(self):
         """ :param generalgui.MethodGrouper self: """
-        return self.__class__.__name__
+        return self.storage["class"]
 
     def set_class_name(self, name):
         """ :param generalgui.MethodGrouper self: """
-        part = getattr(getattr(self, "Generic"), name)()
-        part.apply_store_dict(self.store_get_dict())
+        self.storage["class"] = name
 
 
 class _Create_Relations:
@@ -58,30 +58,31 @@ class _Create_Relations:
 
 
 class _Create_Store:
+    """ Store everything that's needed for full re-creation. """
     def __init__(self):
-        self.storages = []
-        self.store_add("class", lambda x=self: x.__class__.__name__)
+        self.storage = {"_instance": self}
 
-    def store_add(self, name, getter, setter=None):
-        """ :param generalgui.MethodGrouper self: """
-        self.storages.append(Storage(name=name, getter=getter, setter=setter))
-        return setter
+    def save(self):
+        new = self.storage.copy()
 
-    def store_get_dict(self):
-        """ :param generalgui.MethodGrouper self: """
-        return {storage.name: storage.getter() for storage in self.storages}
+        children = [new]
+        while children:
+            storage = children[0].copy()
 
+            for key in [key for key in storage.keys() if key.startswith("_")]:
+                del storage[key]
+
+            if "children" in storage:
+                children.extend(storage["children"])
+
+            del children[0]
+
+        return new
 
 @initBases
-class Create(Generic, _Create_Construct, _Create_Relations, _Create_Store):
+class Create(Generic, _Create_Store, _Create_Construct, _Create_Relations):
     """ Contains all methods having to do with creating a GUI part. """
 
-
-class Storage:
-    def __init__(self, name, getter, setter):
-        self.name = name
-        self.getter = getter
-        self.setter = setter
 
 
 

@@ -5,9 +5,15 @@ import tkinter as tk
 from generallibrary import initBases, getBaseClasses, Timer
 from generalgui import Label, Page, App
 
+from pprint import pprint
 
 
-label = Label("hello")
+label = Label("test", Page(Page()))
+Label("hello", label.get_parent(1))
+
+pprint(label.app.save())  # Make save recursive so that we can create a pure copy
+# pprint(label.app.storage)
+
 
 
 
@@ -15,7 +21,7 @@ label = Label("hello")
 
 # print(label.get_parent().storages)
 
-print(label.app.store_get_dict())
+# print(label.app.store_get_dict())
 
 
 # WANT: Easy autocompletion for each arg

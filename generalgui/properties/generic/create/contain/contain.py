@@ -7,8 +7,7 @@ from generalgui import Create
 class _Contain_Relations:
     def __init__(self):
         """ :param generalgui.MethodGrouper self: """
-        self._children = []
-        self.store_add("children", lambda x=self: [child.store_get_dict() for child in x.all_children()])
+        self.storage["children"] = []
 
     def add_child(self, part):
         """ Add a createable child to this container. Chained with Create.set_parent().
@@ -16,13 +15,13 @@ class _Contain_Relations:
             :param generalgui.MethodGrouper self:
             :param generalgui.Create part: """
         if part.get_parent() == self:
-            self._children.append(part)
+            self.storage["children"].append(part.storage)
         else:
             part.set_parent(self)
 
     def all_children(self):
         """ :param generalgui.MethodGrouper self: """
-        return self._children
+        return [child_storage["_instance"] for child_storage in self.storage["children"]]
 
 
 @initBases

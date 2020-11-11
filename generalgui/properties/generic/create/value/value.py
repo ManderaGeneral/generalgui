@@ -8,13 +8,12 @@ class Value(Create):
     def __init__(self, value=None):
         """ :param generalgui.MethodGrouper self:
             :param value: """
-        self._value = self.store_add("value", self.get_value, self.set_value)(value)
-
+        self.storage["value"] = self.set_value(value)
 
     def get_value(self):
-        return self._value
+        return self.storage["value"]
 
     def set_value(self, value):
-        self._value = value
+        self.storage["value"] = value
         return value
 

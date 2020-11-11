@@ -4,7 +4,7 @@ from generallibrary import getBaseClasses, SigInfo, HierarchyStorer
 
 
 class Generic(metaclass=HierarchyStorer, base="Generic"):
-    Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ...  # Wet for autocompletion
+    Generic, Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ..., ...  # Wet for autocompletion
 
     tk = tkinter
 
@@ -12,3 +12,6 @@ class Generic(metaclass=HierarchyStorer, base="Generic"):
         cls = self.__class__
         self.is_app = cls is self.App
         self.is_page = cls is self.Page
+
+    def __repr__(self):
+        return f"<GUI {self.__class__.__name__}>"
