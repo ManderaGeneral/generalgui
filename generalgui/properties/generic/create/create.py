@@ -30,6 +30,15 @@ class _Create_Construct:
 
         return parent
 
+    def get_class_name(self):
+        """ :param generalgui.MethodGrouper self: """
+        return self.__class__.__name__
+
+    def set_class_name(self, name):
+        """ :param generalgui.MethodGrouper self: """
+        part = getattr(getattr(self, "Generic"), name)()
+        part.apply_store_dict(self.store_get_dict())
+
 
 class _Create_Relations:
     @property
@@ -56,6 +65,7 @@ class _Create_Store:
     def store_add(self, name, getter, setter=None):
         """ :param generalgui.MethodGrouper self: """
         self.storages.append(Storage(name=name, getter=getter, setter=setter))
+        return setter
 
     def store_get_dict(self):
         """ :param generalgui.MethodGrouper self: """

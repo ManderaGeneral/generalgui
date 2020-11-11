@@ -2,7 +2,7 @@
 
 import atexit
 import tkinter as tk
-from generallibrary import initBases, getBaseClasses
+from generallibrary import initBases, getBaseClasses, Timer
 from generalgui import Label, Page, App
 
 
@@ -14,6 +14,7 @@ label = Label("hello")
 # print(label, label.all_parents())
 
 # print(label.get_parent().storages)
+
 print(label.app.store_get_dict())
 
 

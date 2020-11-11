@@ -8,8 +8,8 @@ class Value(Create):
     def __init__(self, value=None):
         """ :param generalgui.MethodGrouper self:
             :param value: """
-        self._value = self.set_value(value)
-        self.store_add("value", self.get_value, self.set_value)
+        self._value = self.store_add("value", self.get_value, self.set_value)(value)
+
 
     def get_value(self):
         return self._value
