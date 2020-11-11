@@ -7,6 +7,3 @@ from generalgui import Contain
 class Page(Contain):
     def __init__(self, parent=None):
         pass
-
-    generic = Contain.generic
-Contain.generic.page = Page

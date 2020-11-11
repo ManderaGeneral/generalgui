@@ -15,5 +15,3 @@ class Value(Create):
         self._value = value
         return value
 
-    generic = Create.generic
-Create.generic.contain = Value

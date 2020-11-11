@@ -41,6 +41,4 @@ class Contain(Create):
         else:
             part.set_parent(self)
 
-    generic = Create.generic
-Create.generic.contain = Contain
 
