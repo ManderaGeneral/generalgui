@@ -3,6 +3,45 @@ from generallibrary import initBases
 
 from generalgui import Create
 
+
+class _Contain_Relations:
+    def __init__(self):
+        """ :param generalgui.MethodGrouper self: """
+        self._children = []
+        self.store_add("children", lambda x=self: [child.store_get_dict() for child in x.all_children()])
+
+    def add_child(self, part):
+        """ Add a createable child to this container. Chained with Create.set_parent().
+
+            :param generalgui.MethodGrouper self:
+            :param generalgui.Create part: """
+        if part.get_parent() == self:
+            self._children.append(part)
+        else:
+            part.set_parent(self)
+
+    def all_children(self):
+        """ :param generalgui.MethodGrouper self: """
+        return self._children
+
+
+@initBases
+class Contain(Create, _Contain_Relations):
+    """ Contains all methods having to do with containing a part. """
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # class Contain_Group:
 #     def __init__(self):
 #         self.grouped_containers = list()
@@ -27,18 +66,10 @@ from generalgui import Create
 #             del self.grouped_containers[0]
 
 
-# class Contain(Contain_Group):
-@initBases
-class Contain(Create):
-    def __init__(self):
-        self.children = []
 
-    def add_child(self, part):
-        """ :param generalgui.MethodGrouper self:
-            :param generalgui.MethodGrouper part: """
-        if part.get_parent() == self:
-            self.children.append(part)
-        else:
-            part.set_parent(self)
+
+
+
+
 
 

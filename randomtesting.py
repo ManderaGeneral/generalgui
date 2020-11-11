@@ -3,16 +3,18 @@
 import atexit
 import tkinter as tk
 from generallibrary import initBases, getBaseClasses
-from generalgui import Label
+from generalgui import Label, Page, App
 
 
-
-# Writing get_parent() instead of parent is weird
 
 label = Label("hello")
-print(label, label.get_parent(), label.get_parent().get_parent())
 
 
+
+# print(label, label.all_parents())
+
+# print(label.get_parent().storages)
+print(label.app.store_get_dict())
 
 
 # WANT: Easy autocompletion for each arg

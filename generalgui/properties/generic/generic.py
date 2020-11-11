@@ -4,7 +4,7 @@ from generallibrary import getBaseClasses, SigInfo, HierarchyStorer
 
 
 class Generic(metaclass=HierarchyStorer, base="Generic"):
-    Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ...
+    Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ...  # Wet for autocompletion
 
     tk = tkinter
 

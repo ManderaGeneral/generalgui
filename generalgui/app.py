@@ -1,10 +1,10 @@
 
 from generallibrary import initBases
 
-from generalgui import Generic
+from generalgui import Contain
 
 @initBases
-class App(Generic):
+class App(Contain):
     apps = []
     def __init__(self):
         self.apps.append(self)
