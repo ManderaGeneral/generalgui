@@ -34,7 +34,16 @@ from pprint import pprint
 
 # LIB
 
-class Node:
+class Test(type):
+    def __init__(cls, name, bases, clsdict, *_, **__):
+        if "Node" in [base.__name__ for base in bases]:
+            print(name)  # HERE ** Automatically fill data_keys
+        type.__init__(cls, name, bases, clsdict)
+
+
+class Node(metaclass=Test):
+    data_keys = []
+
     def __init__(self, parent=None, children_dicts=None):
         self._parent = None
         self.set_parent(parent=parent)
@@ -52,13 +61,22 @@ class Node:
             old_parent.children.remove(self)
 
         if parent:
+            if self in parent.all_parents():
+                raise AttributeError(f"Cannot set {parent} as parent for {self} as it becomes circular. ")
             parent.children.append(self)
 
         self._parent = parent
-        return parent
+        return self
 
     def get_parent(self):
         return self._parent
+
+    def all_parents(self):
+        part = self
+        parents = []
+        while part := part.get_parent():
+            parents.append(part)
+        return parents
 
     def save(self):
         """ Recursively save by returning a new dictionary. """
@@ -70,6 +88,12 @@ class Node:
     def load(cls, d, parent=None):
         return cls(parent=parent, **d)
 
+    def copy_to(self, node):
+        return self.load(d=self.save(), parent=node)
+
+    def remove(self):
+        self.set_parent(None)
+
     def __repr__(self):
         return f"<{self.__class__.__name__} {self.children}>"
 
@@ -78,26 +102,55 @@ class Node:
             self.data[key] = value
         object.__setattr__(self, key, value)
 
-    data_keys = []
-
 # USER
 
 @initBases
 class Part(Node):
-    data_keys = ["class_name"]
-    def __init__(self, parent, class_name):
+    data_keys = []
+
+    def __init__(self, class_name=None):
+        if not self.data_keys:
+            self.data_keys = list(locals().keys())
+            self.data_keys.remove("self")
+
+
         self.class_name = class_name
 
 
 
-part = Part(None, "Label")
-Part(part, "Button")
-Part(part, "Dropdown")
-saved = part.save()
+part1 = Part(class_name="Parent")
+part2 = Part(class_name="Middle").set_parent(part1)
+part3 = Part(class_name="Bottom").set_parent(part2)
 
-print(part)
-print(saved)
-print(Part.load(saved))
+print(part1.save())
+part2.remove()
+print(part1.save())
+
+
+# part3.set_parent(part1)
+# print(part1.save())
+# copied = part1.copy_to(part1)
+# print(part1.save())
+
+
+
+
+
+# print(part1.save())
+
+
+
+
+# Save / Load
+# part = Part(None, "Label")
+# Part(part, "Button")
+# Part(part, "Dropdown")
+# saved = part.save()
+# print(part)
+# print(saved)
+# part_loaded = Part.load(saved)
+# print(part_loaded)
+# print(part_loaded.save())
 
 # HERE ** Nice tree concept, see if we can create another layer here and hook into it somehow
 
