@@ -23,6 +23,14 @@ class _Contain_Relations:
         """ :param generalgui.MethodGrouper self: """
         return [child_storage["_instance"] for child_storage in self.storage["children"]]
 
+    def get_child(self, index=0):
+        """ :param generalgui.MethodGrouper self:
+            :param index: """
+        try:
+            return self.storage["children"][index]["_instance"]
+        except IndexError:
+            return None
+
 
 @initBases
 class Contain(Create, _Contain_Relations):

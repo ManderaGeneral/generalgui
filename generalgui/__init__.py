@@ -5,8 +5,8 @@ from generalgui.properties.generic.create.value.value import Value
 
 from generalgui.app import App
 from generalgui.page import Page
-from generalgui.label import Label
+from generalgui.elements import Label, Button
 
 
-class MethodGrouper(App, Page, Label, Value, Contain, Create, Generic):
+class MethodGrouper(App, Page, Label, Button, Value, Contain, Create, Generic):
     """ For code auto completion through reST docs. """

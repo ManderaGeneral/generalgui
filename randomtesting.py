@@ -8,12 +8,101 @@ from generalgui import Label, Page, App
 from pprint import pprint
 
 
-label = Label("test", Page(Page()))
-Label("hello", label.get_parent(1))
 
-pprint(label.app.save())  # Make save recursive so that we can create a pure copy
+
+# Relation methods
+# Instructions for storage values (get, set)
+# Load method to replace a part's storage and iterate it to sync
+
+
+
+# label = Label("test")
+#
+# label.set_class_name("Button")
+#
+# storage = label.app.save()
+#
+# new = label.load(storage)
+#
+# for x in (label.app, new):
+#     print(x, x.get_child(), x.get_child().get_child())
+#     print(id(x.storage), id(x.get_child().storage), id(x.get_child().get_child().storage))
+#     print(id(x.storage["children"]), id(x.get_child().storage["children"]))
+
+
+
+
+# LIB
+
+class Node:
+    def __init__(self, parent=None, children_dicts=None):
+        self._parent = None
+        self.set_parent(parent=parent)
+
+        self.children = []
+        self.data = {}
+
+        if children_dicts:
+            for child_dict in children_dicts:
+                self.load(child_dict, parent=self)
+
+    def set_parent(self, parent):
+        old_parent = self.get_parent()
+        if old_parent:
+            old_parent.children.remove(self)
+
+        if parent:
+            parent.children.append(self)
+
+        self._parent = parent
+        return parent
+
+    def get_parent(self):
+        return self._parent
+
+    def save(self):
+        """ Recursively save by returning a new dictionary. """
+        data = self.data.copy()
+        data["children_dicts"] = [child.save() for child in self.children]
+        return data
+
+    @classmethod
+    def load(cls, d, parent=None):
+        return cls(parent=parent, **d)
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {self.children}>"
+
+    def __setattr__(self, key, value):
+        if key in self.data_keys:
+            self.data[key] = value
+        object.__setattr__(self, key, value)
+
+    data_keys = []
+
+# USER
+
+@initBases
+class Part(Node):
+    data_keys = ["class_name"]
+    def __init__(self, parent, class_name):
+        self.class_name = class_name
+
+
+
+part = Part(None, "Label")
+Part(part, "Button")
+Part(part, "Dropdown")
+saved = part.save()
+
+print(part)
+print(saved)
+print(Part.load(saved))
+
+# HERE ** Nice tree concept, see if we can create another layer here and hook into it somehow
+
+
 # pprint(label.app.storage)
-
 
 
 
