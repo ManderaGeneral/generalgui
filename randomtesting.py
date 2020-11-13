@@ -9,16 +9,22 @@ from pprint import pprint
 
 
 
-
-label = Label()
-label.value = 5
-
-label.copy_to(label.get_parent())
-
-Label(parent=label.get_parent())
+app = App(test=3)
 
 
-print(App.load(label.app().save()).save())
+
+
+
+# label = Label()
+# label.value = 5
+
+# copy = label.copy_to(label.get_parent())
+
+
+
+# Label(parent=label.get_parent())
+
+# print(App.load(label.app().save()).save())
 
 
 
@@ -37,7 +43,6 @@ print(App.load(label.app().save()).save())
 # print(part_loaded)
 # print(part_loaded.save())
 
-# HERE ** Nice tree concept, see if we can create another layer here and hook into it somehow
 
 
 # pprint(label.app.storage)
