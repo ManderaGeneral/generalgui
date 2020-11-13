@@ -7,3 +7,4 @@ from generalgui import Contain
 class Page(Contain):
     def __init__(self, parent=None):
         pass
+

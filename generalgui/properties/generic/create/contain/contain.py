@@ -4,38 +4,19 @@ from generallibrary import initBases
 from generalgui import Create
 
 
-class _Contain_Relations:
-    def __init__(self):
-        """ :param generalgui.MethodGrouper self: """
-        self.storage["children"] = []
-
-    def add_child(self, part):
-        """ Add a createable child to this container. Chained with Create.set_parent().
-
-            :param generalgui.MethodGrouper self:
-            :param generalgui.Create part: """
-        if part.get_parent() == self:
-            self.storage["children"].append(part.storage)
-        else:
-            part.set_parent(self)
-
-    def all_children(self):
-        """ :param generalgui.MethodGrouper self: """
-        return [child_storage["_instance"] for child_storage in self.storage["children"]]
-
-    def get_child(self, index=0):
-        """ :param generalgui.MethodGrouper self:
-            :param index: """
-        try:
-            return self.storage["children"][index]["_instance"]
-        except IndexError:
-            return None
 
 
 @initBases
-class Contain(Create, _Contain_Relations):
+class Contain(Create):
     """ Contains all methods having to do with containing a part. """
+    def __init__(self):
+        self.hook_add_child = self._enable_add_child
 
+    def _enable_add_child(self, child):
+        if child.is_app():
+            raise AttributeError(f"'{child}' can never be added as child.")
+        elif self.is_app() and not child.is_page():
+            raise AttributeError(f"'App {self} can only have Page as child, not '{child}'.")
 
 
 

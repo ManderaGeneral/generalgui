@@ -10,128 +10,18 @@ from pprint import pprint
 
 
 
-# Relation methods
-# Instructions for storage values (get, set)
-# Load method to replace a part's storage and iterate it to sync
+label = Label()
+label.value = 5
+
+label.copy_to(label.get_parent())
+
+Label(parent=label.get_parent())
+
+
+print(App.load(label.app().save()).save())
 
 
 
-# label = Label("test")
-#
-# label.set_class_name("Button")
-#
-# storage = label.app.save()
-#
-# new = label.load(storage)
-#
-# for x in (label.app, new):
-#     print(x, x.get_child(), x.get_child().get_child())
-#     print(id(x.storage), id(x.get_child().storage), id(x.get_child().get_child().storage))
-#     print(id(x.storage["children"]), id(x.get_child().storage["children"]))
-
-
-
-
-# LIB
-
-class Test(type):
-    def __init__(cls, name, bases, clsdict, *_, **__):
-        if "Node" in [base.__name__ for base in bases]:
-            cls.data_keys = SigInfo(cls).names
-        type.__init__(cls, name, bases, clsdict)
-
-
-class Node(metaclass=Test):
-    """ Saveable tree diagram with optional storage. """
-    data_keys = []
-
-    def __init__(self, parent=None, children_dicts=None):
-        self._parent = None
-        self.set_parent(parent=parent)
-
-        self.children = []
-        self.data = {}
-
-        if children_dicts:
-            for child_dict in children_dicts:
-                self.load(child_dict, parent=self)
-
-    def set_parent(self, parent):
-        old_parent = self.get_parent()
-        if old_parent:
-            old_parent.children.remove(self)
-
-        if parent:
-            if self in parent.all_parents():
-                raise AttributeError(f"Cannot set {parent} as parent for {self} as it becomes circular. ")
-            parent.children.append(self)
-
-        self._parent = parent
-        return self
-
-    def get_parent(self):
-        return self._parent
-
-    def all_parents(self):
-        part = self
-        parents = []
-        while part := part.get_parent():
-            parents.append(part)
-        return parents
-
-    def save(self):
-        """ Recursively save by returning a new dictionary. """
-        data = self.data.copy()
-        data["children_dicts"] = [child.save() for child in self.children]
-        return data
-
-    @classmethod
-    def load(cls, d, parent=None):
-        return cls(parent=parent, **d)
-
-    def copy_to(self, node):
-        return self.load(d=self.save(), parent=node)
-
-    def remove(self):
-        self.set_parent(None)
-
-    def __repr__(self):
-        return f"<{self.__class__.__name__} {self.children}>"
-
-    def __setattr__(self, key, value):
-        if key in self.data_keys:
-            self.data[key] = value
-        object.__setattr__(self, key, value)
-
-
-# USER
-
-@initBases
-class Part(Node):
-    def __init__(self, class_name=None):
-        self.class_name = class_name
-
-
-
-# part1 = Part(class_name="Parent")
-# part2 = Part(class_name="Middle").set_parent(part1)
-# part3 = Part(class_name="Bottom").set_parent(part2)
-#
-# print(part1.save())
-# part2.remove()
-# print(part1.save())
-
-
-# part3.set_parent(part1)
-# print(part1.save())
-# copied = part1.copy_to(part1)
-# print(part1.save())
-
-
-
-
-
-# print(part1.save())
 
 
 
