@@ -2,7 +2,7 @@
 
 import atexit
 import tkinter as tk
-from generallibrary import initBases, getBaseClasses, Timer
+from generallibrary import initBases, getBaseClasses, Timer, SigInfo
 from generalgui import Label, Page, App
 
 from pprint import pprint
@@ -37,11 +37,12 @@ from pprint import pprint
 class Test(type):
     def __init__(cls, name, bases, clsdict, *_, **__):
         if "Node" in [base.__name__ for base in bases]:
-            print(name)  # HERE ** Automatically fill data_keys
+            cls.data_keys = SigInfo(cls).names
         type.__init__(cls, name, bases, clsdict)
 
 
 class Node(metaclass=Test):
+    """ Saveable tree diagram with optional storage. """
     data_keys = []
 
     def __init__(self, parent=None, children_dicts=None):
@@ -102,29 +103,23 @@ class Node(metaclass=Test):
             self.data[key] = value
         object.__setattr__(self, key, value)
 
+
 # USER
 
 @initBases
 class Part(Node):
-    data_keys = []
-
     def __init__(self, class_name=None):
-        if not self.data_keys:
-            self.data_keys = list(locals().keys())
-            self.data_keys.remove("self")
-
-
         self.class_name = class_name
 
 
 
-part1 = Part(class_name="Parent")
-part2 = Part(class_name="Middle").set_parent(part1)
-part3 = Part(class_name="Bottom").set_parent(part2)
-
-print(part1.save())
-part2.remove()
-print(part1.save())
+# part1 = Part(class_name="Parent")
+# part2 = Part(class_name="Middle").set_parent(part1)
+# part3 = Part(class_name="Bottom").set_parent(part2)
+#
+# print(part1.save())
+# part2.remove()
+# print(part1.save())
 
 
 # part3.set_parent(part1)
