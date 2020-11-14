@@ -3,6 +3,7 @@ from generallibrary import initBases
 
 from generalgui import Create
 
+
 @initBases
 class Value(Create):
     def __init__(self, value=None):

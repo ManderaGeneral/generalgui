@@ -4,8 +4,6 @@ from generallibrary import initBases
 from generalgui import Create
 
 
-
-
 @initBases
 class Contain(Create):
     """ Contains all methods having to do with containing a part. """

@@ -1,18 +1,14 @@
 """Random testing"""
 
-import atexit
-import tkinter as tk
-from generallibrary import initBases, getBaseClasses, Timer, SigInfo
-from generalgui import Label, Page, App
+from generallibrary import initBases, getBaseClasses, Timer
 
-from pprint import pprint
+# from generalgui import Label, Page, App
+from generalgui.cartridge.tkinter import Label, Page, App
 
 
 
-app = App(test=3)
 
-
-
+print(Label().tk)
 
 
 # label = Label()
@@ -25,6 +21,15 @@ app = App(test=3)
 # Label(parent=label.get_parent())
 
 # print(App.load(label.app().save()).save())
+
+
+
+
+
+# app = App()
+
+# print(app.App)
+
 
 
 

@@ -1,7 +1,7 @@
 
 from generallibrary import initBases
-
 from generalgui import Contain
+
 
 @initBases
 class Page(Contain):

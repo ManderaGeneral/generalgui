@@ -1,12 +1,9 @@
 
-import tkinter
-from generallibrary import getBaseClasses, SigInfo, HierarchyStorer
+from generallibrary import HierarchyStorer
 
 
 class Generic(metaclass=HierarchyStorer, base="Generic"):
     Generic, Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ..., ...  # Wet for autocompletion
-
-    tk = tkinter
 
     def is_app(self):
         return self.__class__ is self.App
