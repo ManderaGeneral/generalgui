@@ -18,3 +18,4 @@ class App(App):
         atexit.register(self.tk.mainloop)
     hook_create = create
 
+# HERE ** experimenting with cartridges, would be nice to default to tkinter cartridge somehow, being able to import directly from generalgui

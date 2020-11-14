@@ -2,13 +2,16 @@
 
 from generallibrary import initBases, getBaseClasses, Timer
 
-# from generalgui import Label, Page, App
-from generalgui.cartridge.tkinter import Label, Page, App
+from generalgui import Label, Page, App
+# from generalgui.cartridge.tkinter import Label, Page, App
 
 
 
 
-print(Label().tk)
+
+
+
+Label()
 
 
 # label = Label()
