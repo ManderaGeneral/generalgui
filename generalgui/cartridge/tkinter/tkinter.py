@@ -3,13 +3,27 @@ import atexit
 import tkinter
 
 
-def create(self):
-    """ :param generalgui.MethodGrouper self: """
-    if self.is_app():
+# Type self.hook to see all available hooks with their signatures
+
+class App:
+    def hook_create(self):
+        """ :param generalgui.MethodGrouper self: """
         tkinter.Tk()
         atexit.register(tkinter.mainloop)
 
 
-def load_cartridge(cls):
+
+print(locals())
+
+classes = ("App", )  # HERE ** Get classes automatically by iterating all recursive bases of Generic and see if their cls exists in locals()
+
+def load_cartridge(generic):
     """ Load tkinter hooks into parts and Tree diagram. """
-    cls.hook_create = create
+    for hook_cls_name in classes:
+        hook_cls = globals()[hook_cls_name]
+        for hook_name in [x for x in dir(hook_cls) if not x.startswith("_")]:
+
+            cls = getattr(generic, hook_cls_name)
+            hook_method = getattr(hook_cls, hook_name)
+            setattr(cls, hook_name, hook_method)
+

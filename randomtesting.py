@@ -7,10 +7,6 @@ from generalgui import Label, Page, App
 
 
 
-
-
-
-
 Label()
 
 

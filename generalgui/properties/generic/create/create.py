@@ -18,9 +18,8 @@ class Create(TreeDiagram, Generic):
         """ :param generalgui.MethodGrouper self: """
         return self if self.is_app() else self.get_parent(-1)
 
-    def _disable_add_child(self, child):
+    def hook_add_child(self, child):
         raise AttributeError(f"'{self}' hasn't inherited Container.")
-    hook_add_child = _disable_add_child
 
 
 

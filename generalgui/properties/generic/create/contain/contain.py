@@ -7,12 +7,11 @@ from generalgui import Create
 @initBases
 class Contain(Create):
     """ Contains all methods having to do with containing a part. """
-    def _enable_add_child(self, child):
+    def hook_add_child(self, child):
         if child.is_app():
             raise AttributeError(f"'{child}' can never be added as child.")
         elif self.is_app() and not child.is_page():
             raise AttributeError(f"'App {self} can only have Page as child, not '{child}'.")
-    hook_add_child = _enable_add_child
 
 
 
