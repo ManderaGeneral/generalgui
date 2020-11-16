@@ -2,12 +2,11 @@
 
 from generallibrary import initBases, getBaseClasses, Timer
 
-from generalgui import Label, Page, App
+from generalgui import Label, Page, App, Value
 # from generalgui.cartridge.tkinter import Label, Page, App
 
 
-
-Label()
+Label("hello!")
 
 
 # label = Label()
