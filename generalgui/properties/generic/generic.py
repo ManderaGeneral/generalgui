@@ -5,8 +5,6 @@ from generallibrary import HierarchyStorer
 class Generic(metaclass=HierarchyStorer, base="Generic"):
     Generic, Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ..., ...  # Wet for autocompletion
 
-
-
     _cartridge = None
     def __init__(self):
         if self.get_cartridge() is None:
