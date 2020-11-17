@@ -7,15 +7,20 @@ from generalgui import Generic
 @initBases
 class Create(TreeDiagram, Generic):
     """ Contains all methods having to do with creating a GUI part. """
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, bgcolor=None):
+        self.data_keys.append("bgcolor")
+        self.bgcolor = bgcolor
+
         if parent is None and not self.is_app():
             parent = self.App() if self.is_page() else self.Page()
 
         if parent and self.get_parent() != parent:
             self.set_parent(parent=parent)
 
-        self.hook_create_post_create()
-    def hook_create_post_create(self): pass
+    def hook_draw(self): pass
+
+    def draw(self):
+        self.hook_draw()
 
     def app(self):
         """ :param generalgui.MethodGrouper self: """

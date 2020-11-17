@@ -8,5 +8,7 @@ class App(Contain):
     apps = []
     def __init__(self):
         self.apps.append(self)
+        self._atexit_funcs.insert(0, self.draw)
+
 
 

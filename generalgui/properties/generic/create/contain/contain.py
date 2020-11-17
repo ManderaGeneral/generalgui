@@ -7,6 +7,11 @@ from generalgui import Create
 @initBases
 class Contain(Create):
     """ Contains all methods having to do with containing a part. """
+    def draw(self):
+        super().draw()
+        for child in self.get_children():
+            child.draw()
+
     def hook_add_child(self, child):
         if child.is_app():
             raise AttributeError(f"'{child}' can never be added as child.")

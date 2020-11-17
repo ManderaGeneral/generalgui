@@ -6,7 +6,25 @@ from generalgui import Label, Page, App, Value
 # from generalgui.cartridge.tkinter import Label, Page, App
 
 
-Label("hello!")
+app = App()
+app.bgcolor = "green"
+
+page = Page(app)
+page.bgcolor = "yellow"
+
+label = Label("hello!", page)
+label.bgcolor = "red"
+
+label2 = Label("bar", page)
+label2.bgcolor = "blue"
+
+
+
+
+
+
+
+
 
 
 # label = Label()

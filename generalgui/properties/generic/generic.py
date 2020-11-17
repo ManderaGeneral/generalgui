@@ -1,14 +1,21 @@
 
 from generallibrary import HierarchyStorer, attributes
 
+import atexit
+
+
 class Generic(metaclass=HierarchyStorer, base="Generic"):
     Generic, Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ..., ...  # Wet for autocompletion
-
     _cartridge = None
+    _atexit_funcs = []
     def __init__(self):
         if self.get_cartridge() is None:
-
             self.__class__.set_cartridge("tkinter")
+
+    @classmethod
+    def _atexit(cls):
+        for func in cls._atexit_funcs:
+            func()
 
     @classmethod
     def get_cartridge(cls):
@@ -43,3 +50,6 @@ class Generic(metaclass=HierarchyStorer, base="Generic"):
 
     def __repr__(self):
         return f"<GUI {self.__class__.__name__}>"
+
+atexit.unregister(Generic._atexit)
+atexit.register(Generic._atexit)
