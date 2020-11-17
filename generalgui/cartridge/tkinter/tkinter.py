@@ -2,15 +2,36 @@
 import tkinter as tk
 
 
+class _Attr:
+    def __init__(self, name, tk_name, inittable, configurable):
+        self.name = name
+        self.tk_name = tk_name
+        self.inittable = inittable
+        self.configurable = configurable
+
+class Attrs:
+    def __init__(self):
+        self.attrs = []
+
+    @property
+    def names(self):
+        return [attr.name for attr in self.attrs]
+
+    def add(self, name, tk_name, inittable, configurable):
+        if name not in self.names:
+            self.attrs.append(_Attr(name, tk_name, inittable, configurable))
+
 class Create:
     """ Incomplete inheritence like this is possible. """
     widget = None
     class_map = {"Label": "Label", "Button": "Button", "App": "Tk", "Page": "Frame"}
 
+
     init_map = {"bgcolor": "bg"}
     config_map = {}
 
-    # HERE ** Make a class for config values to define whether they can be changed in init and/or config only
+    attrs = Attrs()
+    attrs.add(name="bgcolor", tk_name="bg", inittable=True, configurable=True)  # HERE ** switch over to this
 
     def hook_draw(self):
         """ Default draw behaviour.
