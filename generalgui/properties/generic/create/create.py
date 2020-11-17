@@ -15,8 +15,7 @@ class Create(TreeDiagram, Generic):
             self.set_parent(parent=parent)
 
         self.hook_create_post_create()
-
-    def hook_create_post_create(self): pass  # Todo: Would be nice if we didn't have to create a hook for this. Wrap any inheriter's method?
+    def hook_create_post_create(self): pass
 
     def app(self):
         """ :param generalgui.MethodGrouper self: """
