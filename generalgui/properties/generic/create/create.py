@@ -8,8 +8,7 @@ from generalgui import Generic
 class Create(TreeDiagram, Generic):
     """ Contains all methods having to do with creating a GUI part. """
     def __init__(self, parent=None, bgcolor=None):
-        self.data_keys.append("bgcolor")
-        self.bgcolor = bgcolor
+        self.bgcolor = self.data_keys_add("bgcolor", bgcolor)
 
         if parent is None and not self.is_app():
             parent = self.App() if self.is_page() else self.Page()

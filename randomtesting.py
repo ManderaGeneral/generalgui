@@ -1,25 +1,22 @@
 """Random testing"""
 
-from generallibrary import initBases, getBaseClasses, Timer
+from generallibrary import initBases, getBaseClasses, Timer, attributes, getClassFromMethod
 
 from generalgui import Label, Page, App, Value
 # from generalgui.cartridge.tkinter import Label, Page, App
 
 
-app = App()
-app.bgcolor = "green"
-
-page = Page(app)
-page.bgcolor = "yellow"
-
-label = Label("hello!", page)
-label.bgcolor = "red"
-
-label2 = Label("bar", page)
-label2.bgcolor = "blue"
-
-
-
+# app = App()
+# app.bgcolor = "green"
+#
+# page = Page(app)
+# page.bgcolor = "yellow"
+#
+# label = Label("hello!", page)
+# label.bgcolor = "red"
+#
+# label2 = Label("bar", page)
+# label2.bgcolor = "blue"
 
 
 

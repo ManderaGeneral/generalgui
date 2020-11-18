@@ -2,24 +2,29 @@
 import tkinter as tk
 
 
-class _Attr:
+class _DataKey:
     def __init__(self, name, tk_name, inittable, configurable):
         self.name = name
         self.tk_name = tk_name
         self.inittable = inittable
         self.configurable = configurable
 
-class Attrs:
+class DataKeys:
+    """ Connects to diagram's data_keys through hook_set_attribute().
+        Easily see if a data_key can be updated to tkinter widget by config or if it has to be re-created. """
     def __init__(self):
         self.attrs = []
+
+    def add(self, name, tk_name, inittable, configurable):
+        if name not in self.names:
+            self.attrs.append(_DataKey(name, tk_name, inittable, configurable))
 
     @property
     def names(self):
         return [attr.name for attr in self.attrs]
 
-    def add(self, name, tk_name, inittable, configurable):
-        if name not in self.names:
-            self.attrs.append(_Attr(name, tk_name, inittable, configurable))
+
+
 
 class Create:
     """ Incomplete inheritence like this is possible. """
@@ -30,8 +35,13 @@ class Create:
     init_map = {"bgcolor": "bg"}
     config_map = {}
 
-    attrs = Attrs()
-    attrs.add(name="bgcolor", tk_name="bg", inittable=True, configurable=True)  # HERE ** switch over to this
+    attrs = DataKeys()
+    attrs.add(name="bgcolor", tk_name="bg", inittable=True, configurable=True)
+
+    def __init__(self):
+        print(getattr(self, "original_methods")["Create"]["__init__"])
+
+
 
     def hook_draw(self):
         """ Default draw behaviour.
@@ -64,6 +74,8 @@ class Create:
 
 class Value(Create):
     init_map = {**Create.init_map, "value": "text"}
+
+    # attrs.add(name="bgcolor", tk_name="bg", inittable=True, configurable=True)
 
 
 class App(Create):

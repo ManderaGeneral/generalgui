@@ -1,5 +1,5 @@
 
-from generallibrary import HierarchyStorer, attributes
+from generallibrary import HierarchyStorer, attributes, addToDictInDict
 
 import atexit
 
@@ -34,13 +34,18 @@ class Generic(metaclass=HierarchyStorer, base="Generic"):
     def _load_cartridge(cls, pkg):
         """ Load tkinter hooks into parts and Tree diagram.
             Todo: Keep track of overriden hooks to be able to withdraw cartridge.
-            Todo: Possibly wrap methods for stacking. Thinking about __init__ for example. """
+                Possibly wrap methods for stacking. Thinking about __init__ for example.
+                Since initBases actually ignores overriden inits it should be possible.
+            Todo: Make cartridge general and put it in library, maybe use dynamic imports.
+            Todo: Cannot use attributes as we need it to replace __init__ too. """
+        cls.original_methods = {}  # HERE ** do something like this, use attributes_defined_by from lib
         dir_pkg = dir(pkg)
         for part_cls in getattr(cls, "_inheriters"):
             if part_cls.__name__ in dir_pkg:
                 hook_cls = getattr(pkg, part_cls.__name__)
-                for hook_name in attributes(hook_cls):
-                    setattr(part_cls, hook_name, getattr(hook_cls, hook_name))
+                for attr_name in attributes(hook_cls):
+                    addToDictInDict(cls.original_methods, part_cls.__name__, **{attr_name: getattr(part_cls, attr_name)})
+                    setattr(part_cls, attr_name, getattr(hook_cls, attr_name))
 
     def is_app(self):
         return self.__class__ is self.App

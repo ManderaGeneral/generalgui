@@ -9,6 +9,5 @@ class Value(Create):
     def __init__(self, value=None):
         """ :param generalgui.MethodGrouper self:
             :param value: """
-        self.data_keys.append("value")
-        self.value = value
+        self.value = self.data_keys_add("value", value)
 
