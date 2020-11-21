@@ -26,7 +26,7 @@ class DataKeys:
 
 
 
-class Create:
+class _Create:
     """ Incomplete inheritence like this is possible. """
     widget = None
     class_map = {"Label": "Label", "Button": "Button", "App": "Tk", "Page": "Frame"}
@@ -39,7 +39,7 @@ class Create:
     attrs.add(name="bgcolor", tk_name="bg", inittable=True, configurable=True)
 
     def __init__(self):
-        print(getattr(self, "original_methods")["Create"]["__init__"])
+        print(getattr(self, "original_methods")["_Create"]["__init__"])
 
 
 
@@ -72,21 +72,21 @@ class Create:
                 self.widget.config(**{self.config_map[key]: value})
 
 
-class Value(Create):
-    init_map = {**Create.init_map, "value": "text"}
+class _Value(_Create):
+    init_map = {**_Create.init_map, "value": "text"}
 
     # attrs.add(name="bgcolor", tk_name="bg", inittable=True, configurable=True)
 
 
-class App(Create):
-    init_map = {**Create.init_map}
+class App(_Create):
+    init_map = {**_Create.init_map}
     del init_map["bgcolor"]
 
-    config_map = {**Create.config_map, "bgcolor": "bg"}
+    config_map = {**_Create.config_map, "bgcolor": "bg"}
 
     def hook_draw(self):
         """ :param generalgui.MethodGrouper self: """
-        Create.hook_draw(self=self)
+        _Create.hook_draw(self=self)
 
         if tk.mainloop not in self._atexit_funcs:
             self._atexit_funcs.append(tk.mainloop)

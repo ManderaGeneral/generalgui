@@ -1,11 +1,11 @@
 
 from generallibrary import initBases
 
-from generalgui import Create
+from generalgui import _Create
 
 
 @initBases
-class Value(Create):
+class _Value(_Create):
     def __init__(self, value=None):
         """ :param generalgui.MethodGrouper self:
             :param value: """

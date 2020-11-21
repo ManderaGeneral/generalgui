@@ -1,11 +1,11 @@
 
 from generallibrary import initBases, TreeDiagram
 
-from generalgui import Generic
+from generalgui import _Generic
 
 
 @initBases
-class Create(TreeDiagram, Generic):
+class _Create(TreeDiagram, _Generic):
     """ Contains all methods having to do with creating a GUI part. """
     def __init__(self, parent=None, bgcolor=None):
         self.bgcolor = self.data_keys_add("bgcolor", bgcolor)

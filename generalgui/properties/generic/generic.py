@@ -4,8 +4,8 @@ from generallibrary import HierarchyStorer, attributes, addToDictInDict
 import atexit
 
 
-class Generic(metaclass=HierarchyStorer, base="Generic"):
-    Generic, Create, Contain, Value, App, Page, Label = ..., ..., ..., ..., ..., ..., ...  # Wet for autocompletion
+class _Generic(metaclass=HierarchyStorer, base="_Generic"):
+    _Generic, _Create, _Contain, _Value, App, Page, Label = ..., ..., ..., ..., ..., ..., ...  # Wet for autocompletion
     _cartridge = None
     _atexit_funcs = []
     def __init__(self):
@@ -19,11 +19,11 @@ class Generic(metaclass=HierarchyStorer, base="Generic"):
 
     @classmethod
     def get_cartridge(cls):
-        return cls.Generic._cartridge
+        return cls._Generic._cartridge
 
     @classmethod
     def set_cartridge(cls, cartridge):
-        cls.Generic._cartridge = cartridge
+        cls._Generic._cartridge = cartridge
         if cartridge == "tkinter":
             import generalgui.cartridge.tkinter
             cls._load_cartridge(generalgui.cartridge.tkinter)
@@ -56,5 +56,5 @@ class Generic(metaclass=HierarchyStorer, base="Generic"):
     def __repr__(self):
         return f"<GUI {self.__class__.__name__}>"
 
-atexit.unregister(Generic._atexit)
-atexit.register(Generic._atexit)
+atexit.unregister(_Generic._atexit)
+atexit.register(_Generic._atexit)

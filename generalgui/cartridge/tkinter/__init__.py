@@ -1,2 +1,2 @@
 
-from generalgui.cartridge.tkinter.tkinter import Create, Value, App
+from generalgui.cartridge.tkinter.tkinter import _Create, _Value, App

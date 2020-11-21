@@ -1,8 +1,11 @@
 """Random testing"""
 
-from generallibrary import initBases, getBaseClasses, Timer, attributes, getClassFromMethod
+from generallibrary import initBases, getBaseClasses, Timer, attributes, attributes_to_readme
+import generalgui
 
-from generalgui import Label, Page, App, Value
+attributes_to_readme(generalgui, allow_bad_docs=True)
+
+from generalgui import Label, Page, App, _Value
 # from generalgui.cartridge.tkinter import Label, Page, App
 
 

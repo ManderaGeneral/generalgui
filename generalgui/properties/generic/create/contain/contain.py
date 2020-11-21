@@ -1,11 +1,11 @@
 
 from generallibrary import initBases
 
-from generalgui import Create
+from generalgui import _Create
 
 
 @initBases
-class Contain(Create):
+class _Contain(_Create):
     """ Contains all methods having to do with containing a part. """
     def draw(self):
         super().draw()
