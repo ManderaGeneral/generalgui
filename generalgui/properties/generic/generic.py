@@ -1,5 +1,5 @@
 
-from generallibrary import HierarchyStorer, attributes, addToDictInDict
+from generallibrary import HierarchyStorer, addToDictInDict
 
 import atexit
 
