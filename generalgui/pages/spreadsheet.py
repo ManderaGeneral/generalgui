@@ -7,9 +7,9 @@ from generalvector import Vec2
 import pandas as pd
 
 from tkinter import filedialog
-from generalfile import File
+from generalfile import Path
 
-from generallibrary.functions import changeArgsAndKwargs, getParameter
+from generallibrary.functions import SigInfo
 from generallibrary.types import typeChecker
 
 # import statistics
@@ -19,7 +19,7 @@ import numpy as np
 
 def ascending(attrName):
     """
-    Generate a decorator based on attrName that works both for row and coloumn
+    Generate a decorator based on attrName that works both for row and column
 
     :param str attrName: Should be "previousColumnSort" or "previousRowSort"
     """
@@ -27,19 +27,19 @@ def ascending(attrName):
         """Decorator to automatically make the ascending parameter toggleable"""
         def decorator(self, *args, **kwargs):
             """."""
-            cellValue = getParameter(func, args, kwargs, "cellValue")
+            sigInfo = SigInfo(func, *args, **kwargs)
 
-            if getParameter(func, args, kwargs, "ascending") is None:
+            if sigInfo["ascending"] is None:
                 ascending = True
-                if getattr(self, attrName) == cellValue:
+                if getattr(self, attrName) == sigInfo["cellValue"]:
                     ascending = False
                     setattr(self, attrName, None)
                 else:
-                    setattr(self, attrName, cellValue)
+                    setattr(self, attrName, sigInfo["cellValue"])
 
-                changeArgsAndKwargs(func, args, kwargs, ascending=ascending)
+                sigInfo["ascending"] = ascending
 
-            return func(self, *args, **kwargs)
+            return sigInfo.call()
         return decorator
     return wrapper
 
@@ -69,10 +69,10 @@ def headerValue(func):
 
 def _cellValue(func, self, args, kwargs, index=False, header=False):
     """Helper for indexValue and headerValue decorators"""
-    cellValue = getParameter(func, args, kwargs, "cellValue")
+    sigInfo = SigInfo(func, self, *args, **kwargs)
 
     element = None
-    if cellValue is None:
+    if sigInfo["cellValue"] is None:
         if self.app.menuTargetElement is None:
             raise ValueError("cellValue is None and app.menuTargetElement is None")
 
@@ -80,8 +80,8 @@ def _cellValue(func, self, args, kwargs, index=False, header=False):
         if not typeChecker(element, ("Button", "Label"), error=False):  # Because element can be Frame
             return
 
-    elif typeChecker(cellValue, "Event", error=False):
-        event = cellValue
+    elif typeChecker(sigInfo["cellValue"], "Event", error=False):
+        event = sigInfo["cellValue"]
         element = event.widget.element
 
     if element is not None:
@@ -97,9 +97,9 @@ def _cellValue(func, self, args, kwargs, index=False, header=False):
                 raise ValueError("index or header has to be True")
         else:
             value = element.getValue()
-        args, kwargs = changeArgsAndKwargs(func, args, kwargs, cellValue=value)
+        sigInfo["cellValue"] = value
 
-    return func(self, *args, **kwargs)
+    return sigInfo.call()
 
 
 class Spreadsheet(Page):
@@ -438,7 +438,7 @@ class Spreadsheet(Page):
         filetypes = [("Open a tsv file", ".tsv")]
         path = filedialog.askopenfilename(title="Select spreadsheet", filetypes=filetypes)
         if path:
-            read = File.read(path)
+            read = Path(path).spreadsheet.read()
             if read is not None:
                 self.dataFrame = read
                 self.loadDataFrame()
@@ -448,7 +448,7 @@ class Spreadsheet(Page):
         filetypes = [("Save spreadsheet as tsv", ".tsv")]
         path = filedialog.asksaveasfilename(filetypes=filetypes, defaultextension=".tsv", title="Save spreadsheet", initialfile="Spreadsheet")
         if path:
-            File.write(path, self.dataFrame, overwrite=True)
+            Path(path).spreadsheet.write(df=self.dataFrame, overwrite=True)
 
     def getMainValues(self):
         """Returns all label cell values from mainGrid in a list, going left to right row by row"""

@@ -13,7 +13,7 @@ Functions:
 
 from generallibrary.iterables import SortedList
 from generallibrary.types import typeChecker
-from generallibrary.functions import getSignatureNames
+from generallibrary.functions import SigInfo
 
 
 class Styler:
@@ -74,14 +74,15 @@ def styleDecorator(func):
     """
     def f(styleHandler, *args, **kwargs):
         """Wrapper func."""
+        sigInfo = SigInfo(func)
         if style := kwargs.get("style"):
             kwargs["style"] = styleDecorator_helper(styleHandler, style)
 
             if kwargs["style"] is None:
                 return None
 
-        elif "style" in (signatureNames := getSignatureNames(func)):
-            index = signatureNames.index("style") - 1
+        elif "style" in sigInfo.names:
+            index = sigInfo.names.index("style") - 1
             if len(args) > index:
                 args = list(args)
                 args[index] = styleDecorator_helper(styleHandler, args[index])

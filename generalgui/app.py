@@ -10,7 +10,7 @@ from generalgui.shared_methods.resizer import Resizer
 from generalgui.shared_methods.menu import Menu_App
 from generalgui.shared_methods.binder import Binder_App
 
-from generallibrary.iterables import getFreeIndex
+from generallibrary.iterables import get_free_index
 
 
 class tkTk(Tk):
@@ -22,7 +22,7 @@ class tkTk(Tk):
 
     def after(self, ms, func=None, *args, **kwargs):
         """Overriding to fill dict"""
-        index = getFreeIndex(self.element.afters)
+        index = get_free_index(self.element.afters)
         identifier = super().after(ms, lambda func=func, index=index, args=args: self.after_helper(func, index, *args, **kwargs))
         self.element.afters[index] = identifier
         return index

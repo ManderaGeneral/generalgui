@@ -3,8 +3,8 @@ Binder for app and elements.
 Could be it's own package and be called Config and ConfigHandler instead.
 """
 
-from generallibrary.functions import leadingArgsCount
-from generallibrary.iterables import addToListInDict, uniqueObjInList
+from generallibrary.functions import SigInfo
+from generallibrary.iterables import extend_list_in_dict, unique_obj_in_list
 from generallibrary.types import typeChecker
 
 
@@ -57,7 +57,7 @@ class Binder_App:
         returns = []
         for part in element.getParents(includeSelf=True, includeApp=True):
             for bind in part.events.get(key, []):
-                if leadingArgsCount(bind.func):
+                if SigInfo(bind.func).leadingArgNames:
                     value = bind(event)
                 else:
                     value = bind()
@@ -86,7 +86,7 @@ class Binder:
         :param str key: Bind key, <Button-1> for example.
         :param bool enable: Whether to enable propagation or not.
         """
-        uniqueObjInList(self.disabledPropagations, key, not enable)
+        unique_obj_in_list(self.disabledPropagations, key, not enable)
 
     def createBind(self, key, func, add=True, name=None):
         """
@@ -112,7 +112,7 @@ class Binder:
                     raise NameError(f"{existingBind} is already using this name with another key")
 
         bind = Bind(element=self, key=key, func=func, name=name)
-        addToListInDict(self.events, key, bind)
+        extend_list_in_dict(self.events, key, bind)
         self.app.widgetBind(key)
 
         # print(typeChecker(self, "Element", error=False), key == "<Button-1>", self.styleHandler)

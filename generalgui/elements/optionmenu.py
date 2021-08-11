@@ -2,7 +2,7 @@
 
 import tkinter as tk
 
-from generallibrary.functions import leadingArgsCount
+from generallibrary import SigInfo
 from generallibrary.types import strToDynamicType
 
 from generalgui.element import Element
@@ -22,7 +22,7 @@ class OptionMenu(Element):
         :param function func: A function that is triggered when an option is pressed. 'Value' argument is passed if needed.
         :param parameters: Both config and pack parameters together
         """
-        if func and leadingArgsCount(func) < 1:
+        if func and len(SigInfo(func).leadingArgNames) < 1:
             oldFunc = func
             func = lambda _: oldFunc()
         self._options = options

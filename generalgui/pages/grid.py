@@ -7,7 +7,6 @@ from generalvector import Vec2
 
 from generallibrary.types import typeChecker
 
-from generallibrary.values import debug
 
 
 class Grid(Page):
