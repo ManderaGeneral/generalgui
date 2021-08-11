@@ -3,7 +3,6 @@ from generallibrary import initBases
 from generalgui import _Contain
 
 
-@initBases
 class App(_Contain):
     """ Blank App. """
     apps = []

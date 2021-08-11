@@ -4,7 +4,6 @@ from generallibrary import initBases, TreeDiagram
 from generalgui import _Generic
 
 
-@initBases
 class _Create(TreeDiagram, _Generic):
     """ Contains all methods having to do with creating a GUI part. """
     def __init__(self, parent=None, bgcolor=None):

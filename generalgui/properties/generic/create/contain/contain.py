@@ -4,7 +4,6 @@ from generallibrary import initBases
 from generalgui import _Create
 
 
-@initBases
 class _Contain(_Create):
     """ Contains all methods having to do with containing a part. """
     def draw(self):

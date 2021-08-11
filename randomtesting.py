@@ -7,7 +7,7 @@ from generalgui import Label, Page, App, _Value
 # from generalgui.cartridge.tkinter import Label, Page, App
 
 
-# app = App()
+app = App()
 # app.bgcolor = "green"
 #
 # page = Page(app)

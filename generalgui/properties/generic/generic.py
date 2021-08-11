@@ -1,10 +1,11 @@
 
-from generallibrary import HierarchyStorer, addToDictInDict
+from generallibrary import HierarchyStorer, extend_list_in_dict
 
 import atexit
 
 
-class _Generic(metaclass=HierarchyStorer, base="_Generic"):
+class _Generic:
+# class _Generic(metaclass=HierarchyStorer, base="_Generic"):
     _Generic, _Create, _Contain, _Value, App, Page, Label = ..., ..., ..., ..., ..., ..., ...  # Wet for autocompletion
     _cartridge = None
     _atexit_funcs = []
@@ -19,11 +20,11 @@ class _Generic(metaclass=HierarchyStorer, base="_Generic"):
 
     @classmethod
     def get_cartridge(cls):
-        return cls._Generic._cartridge
+        return _Generic._cartridge
 
     @classmethod
     def set_cartridge(cls, cartridge):
-        cls._Generic._cartridge = cartridge
+        _Generic._cartridge = cartridge
         if cartridge == "tkinter":
             import generalgui.cartridge.tkinter
             cls._load_cartridge(generalgui.cartridge.tkinter)
@@ -44,7 +45,7 @@ class _Generic(metaclass=HierarchyStorer, base="_Generic"):
             if part_cls.__name__ in dir_pkg:
                 hook_cls = getattr(pkg, part_cls.__name__)
                 for attr_name in attributes(hook_cls):
-                    addToDictInDict(cls.original_methods, part_cls.__name__, **{attr_name: getattr(part_cls, attr_name)})
+                    extend_list_in_dict(cls.original_methods, part_cls.__name__, **{attr_name: getattr(part_cls, attr_name)})
                     setattr(part_cls, attr_name, getattr(hook_cls, attr_name))
 
     def is_app(self):

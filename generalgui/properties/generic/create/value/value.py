@@ -4,7 +4,6 @@ from generallibrary import initBases
 from generalgui import _Create
 
 
-@initBases
 class _Value(_Create):
     def __init__(self, value=None):
         """ :param generalgui.MethodGrouper self:
