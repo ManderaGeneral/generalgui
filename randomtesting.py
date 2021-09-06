@@ -1,48 +1,17 @@
 """Random testing"""
 
-import generalgui
+
+from generalgui.elements.page import Page
+from generalgui.elements.label import Label
 
 
-from generalgui import Label, Page, App, _Value
-# from generalgui.cartridge.tkinter import Label, Page, App
+# a = Page()
 
+# b = Page(a)
 
-app = App()
-# app.bgcolor = "green"
-#
-# page = Page(app)
-# page.bgcolor = "yellow"
-#
-# label = Label("hello!", page)
-# label.bgcolor = "red"
-#
-# label2 = Label("bar", page)
-# label2.bgcolor = "blue"
+c = Label(Page())  # deco_cast_to_self tries to create new Label because Label and Page aren't same class, even though they both have TreeDiagram
 
-
-
-
-
-
-
-# label = Label()
-# label.value = 5
-
-# copy = label.copy_to(label.get_parent())
-
-
-
-# Label(parent=label.get_parent())
-
-# print(App.load(label.app().save()).save())
-
-
-
-
-
-# app = App()
-
-# print(app.App)
+# print(a.get_children())
 
 
 
@@ -51,28 +20,9 @@ app = App()
 
 
 
-# Save / Load
-# part = Part(None, "Label")
-# Part(part, "Button")
-# Part(part, "Dropdown")
-# saved = part.save()
-# print(part)
-# print(saved)
-# part_loaded = Part.load(saved)
-# print(part_loaded)
-# print(part_loaded.save())
 
 
 
-# pprint(label.app.storage)
-
-
-
-# print(label, label.all_parents())
-
-# print(label.get_parent().storages)
-
-# print(label.app.store_get_dict())
 
 
 # WANT: Easy autocompletion for each arg
