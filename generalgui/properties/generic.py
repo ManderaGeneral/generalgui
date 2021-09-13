@@ -3,9 +3,16 @@ from generallibrary import TreeDiagram, hook, getBaseClassNames
 
 
 class Generic(TreeDiagram):
+    widget_cls = ...
+
     def __init__(self, parent):
+        self.widget = None
         self.binds = []
         self._shown = True
+
+    def __init_subclass__(cls, **kwargs):
+        if cls.widget_cls is Ellipsis:
+            raise AttributeError(f"widget_cls attr is not defined for {cls}")
 
     @property
     def shown(self):
@@ -34,6 +41,11 @@ class Generic(TreeDiagram):
 
     def bind(self, func):
         self.binds.append(func)
+
+
+    # ----- tkinter -----
+    def create(self):
+        pass
 
 
 def container_parent_check(parent):

@@ -5,6 +5,8 @@ from generalgui.elements.page import Page
 from generalgui.elements.label import Label
 from generalgui.elements.button import Button
 
+from generalgui.cartridge.tkinter.dynamic_loader import Draw
+
 
 def test():
     print(5)
@@ -24,6 +26,7 @@ assert a.view(print_out=False) == copy.view(print_out=False)
 
 
 
+Draw(a)
 
 
 
