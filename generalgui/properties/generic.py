@@ -1,5 +1,5 @@
 
-from generallibrary import TreeDiagram, hook, getBaseClassNames
+from generallibrary import TreeDiagram, hook, getBaseClassNames, SigInfo
 
 
 class Generic(TreeDiagram):
@@ -40,16 +40,17 @@ class Generic(TreeDiagram):
         return self.__class__.__name__ == "Page"
 
     def bind(self, func):
-        self.binds.append(func)
+        sigInfo = SigInfo(func)
+        self.binds.append(sigInfo)
+        # self.binds.append(func)
 
-
-    # ----- tkinter -----
-    def create(self):
-        pass
+    def call_binds(self):
+        for sigInfo in self.binds:
+            sigInfo.call()
 
 
 def container_parent_check(parent):
-    assert "Contain" in getBaseClassNames(parent)
+    assert "Contain" in getBaseClassNames(parent) or parent is None
 
 hook(Generic.set_parent, container_parent_check)
 

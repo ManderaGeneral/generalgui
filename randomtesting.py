@@ -7,23 +7,32 @@ from generalgui.elements.button import Button
 
 from generalgui.cartridge.tkinter.dynamic_loader import Draw
 
+import random
+
 
 def test():
     print(5)
 
+def test2(part):
+    part.remove_node()
+    # part.shown = False
+    # part.value = "hello"
+
 a = Page()
 b = a.add_node()
 c = Label(b, "hi")
-btn = Button(b, "hey", test)
 
-btn.value = "foo"
+for i in range(50):
+    btn = Button(b, str(random.randint(1,1000)))
+    btn.bind(lambda x=btn: test2(x))
 
 a.view()
-
-
 copy = a.copy_node()
 assert a.view(print_out=False) == copy.view(print_out=False)
+# copy.view()
 
+
+# print(a.get_children(depth=-1, include_self=True, flat=False))
 
 
 Draw(a)
