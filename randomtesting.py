@@ -3,16 +3,24 @@
 
 from generalgui.elements.page import Page
 from generalgui.elements.label import Label
+from generalgui.elements.button import Button
 
 
-# a = Page()
+def test():
+    print(5)
 
-# b = Page(a)
+a = Page()
+b = a.add_node()
+c = Label(b, "hi")
+btn = Button(b, "hey", test)
 
-c = Label(Page())  # deco_cast_to_self tries to create new Label because Label and Page aren't same class, even though they both have TreeDiagram
+btn.value = "foo"
 
-# print(a.get_children())
+a.view()
 
+
+copy = a.copy_node()
+assert a.view(print_out=False) == copy.view(print_out=False)
 
 
 
