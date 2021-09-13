@@ -11,17 +11,11 @@ class Generic(TreeDiagram):
     def shown(self):
         return self._shown
 
-    @property
-    def hidden(self):
-        return not self.shown
+    @shown.setter
+    def shown(self, shown):
+        self._shown = shown
 
-    def show(self):
-        pass
-
-    def hide(self):
-        pass
-
-    repr_attrs = ["value", "binds"]
+    repr_attrs = ["value", "binds", "shown"]
 
     def __repr__(self):
         parts = [self.__class__.__name__]
