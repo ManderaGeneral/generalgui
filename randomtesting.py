@@ -14,7 +14,10 @@ def test():
     print(5)
 
 def test2(part):
-    part.remove_node()
+    # part.get_parent().copy_part()
+    # part.copy_part()
+    part.copy_part(part.get_parent())
+    # part.remove_node()
     # part.shown = False
     # part.value = "hello"
 
@@ -22,9 +25,10 @@ a = Page()
 b = a.add_node()
 c = Label(b, "hi")
 
-for i in range(500):
+for i in range(10):
     btn = Button(b, str(random.randint(1, 1000)))
     btn.bind(lambda x=btn: test2(x))
+
 
 # a.view()
 copy = a.copy_node()
@@ -32,10 +36,11 @@ assert a.view(print_out=False) == copy.view(print_out=False)
 # copy.view()
 
 
+
 # print(a.get_children(depth=-1, include_self=True, flat=False))
 
 
-Draw(a)
+a.draw()
 
 
 

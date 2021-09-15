@@ -1,8 +1,24 @@
 
 from generallibrary import TreeDiagram, hook, getBaseClassNames, SigInfo
 
+from generalgui import Draw
 
-class Generic(TreeDiagram):
+
+class Binder:
+    def __init__(self):
+        self.binds = []
+
+    def bind(self, func):
+        sigInfo = SigInfo(func)
+        self.binds.append(sigInfo)
+        # self.binds.append(func)
+
+    def call_binds(self):
+        return tuple(sigInfo.call() for sigInfo in self.binds)
+
+
+
+class Generic(TreeDiagram, Binder):
     widget_cls = ...
 
     def __init__(self, parent):
@@ -10,9 +26,47 @@ class Generic(TreeDiagram):
         self.binds = []
         self._shown = True
 
+    def __getstate__(self):
+        self.widget = None
+        # self._parents = []
+        return self.__dict__
+
     def __init_subclass__(cls, **kwargs):
         if cls.widget_cls is Ellipsis:
             raise AttributeError(f"widget_cls attr is not defined for {cls}")
+
+    def draw(self):
+        Draw(self)
+
+    def copy_part(self, parent=None):
+        old_parent, old_index = self.get_parent(), self.get_index()
+        self.set_parent(parent=None)
+
+        new = self.copy_node()
+        new.set_parent(parent=parent)
+
+        self.set_parent(parent=old_parent)
+        self.set_index(index=old_index)
+
+        if parent is None:
+            new.draw()
+
+        # widget = self.widget
+        # old_parent = self.get_parent()
+        #
+        # self.set_parent(None)
+        # self.widget = None
+        #
+        # new = self.copy_node()
+        #
+        # self.widget = widget
+        # self.set_parent(parent=old_parent)
+        #
+        # for child in new.get_children(depth=-1, gen=True):
+        #     child.widget = None
+        # new.set_parent(parent=parent)
+        # if parent is None:
+        #     new.draw()
 
     @property
     def shown(self):
@@ -46,15 +100,6 @@ class Generic(TreeDiagram):
 
     def is_page(self):
         return self.__class__.__name__ == "Page"
-
-    def bind(self, func):
-        sigInfo = SigInfo(func)
-        self.binds.append(sigInfo)
-        # self.binds.append(func)
-
-    def call_binds(self):
-        for sigInfo in self.binds:
-            sigInfo.call()
 
 
 def container_parent_check(parent):

@@ -12,10 +12,7 @@ class Value:
 
     @value.setter
     def value(self, value):
-        self._value = value
+        self._value = "" if value is None else value
 
-        # This isn't really how I wanna do it, this syncing is prone to failure
-        # if getattr(self, "widget"):
-        #     self.widget.config(text=value)
 
 
