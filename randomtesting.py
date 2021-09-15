@@ -23,7 +23,7 @@ b = a.add_node()
 c = Label(b, "hi")
 
 for i in range(50):
-    btn = Button(b, str(random.randint(1,1000)))
+    btn = Button(b, str(random.randint(1, 1000)))
     btn.bind(lambda x=btn: test2(x))
 
 a.view()

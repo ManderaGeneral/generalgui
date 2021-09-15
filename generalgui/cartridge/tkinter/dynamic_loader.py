@@ -12,6 +12,7 @@ class Draw:
         self.last_draw_hash = None
         self.top_part = top_part
         self.tk = tk.Tk()
+        self.previous_parts = set()
         self.draw_all()
         while True:
             try:
@@ -27,8 +28,15 @@ class Draw:
     def draw_all(self):
         # HERE ** Maybe create a set of all widgets and store previous one too.
         # Easily compare to get widgets left behind
+        parts = set()
         for part in self.top_part.get_children(depth=-1, include_self=True, gen=True):
             self.create(part=part)
+            parts.add(part)
+
+        dead_parts = self.previous_parts - parts
+        for dead_part in dead_parts:
+            dead_part.widget.destroy()
+        self.previous_parts = parts
         self.last_draw_hash = self.get_draw_hash()
 
     def get_draw_hash(self):
