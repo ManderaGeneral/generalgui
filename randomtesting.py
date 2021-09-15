@@ -22,11 +22,11 @@ a = Page()
 b = a.add_node()
 c = Label(b, "hi")
 
-for i in range(50):
+for i in range(500):
     btn = Button(b, str(random.randint(1, 1000)))
     btn.bind(lambda x=btn: test2(x))
 
-a.view()
+# a.view()
 copy = a.copy_node()
 assert a.view(print_out=False) == copy.view(print_out=False)
 # copy.view()

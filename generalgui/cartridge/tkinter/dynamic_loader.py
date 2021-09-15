@@ -1,5 +1,5 @@
 
-from generallibrary import sleep
+from generallibrary import sleep, Timer
 
 import tkinter as tk
 
@@ -9,11 +9,12 @@ class Draw:
         Try to keep tkinter stuff here. """
     def __init__(self, top_part):
         """ :param any or generallibrary.TreeDiagram top_part: """
-        self.last_draw_hash = None
         self.top_part = top_part
         self.tk = tk.Tk()
         self.previous_parts = set()
         self.draw_all()
+
+        self.draw_timer = Timer()
         while True:
             try:
                 self.tk.update_idletasks()
@@ -21,15 +22,16 @@ class Draw:
             except tk.TclError:
                 exit()
 
-            if self.get_draw_hash() != self.last_draw_hash:
+            if set(self.get_parts()) != self.previous_parts:
                 print("changed")
                 self.draw_all()
 
+    def get_parts(self):
+        return self.top_part.get_children(depth=-1, include_self=True, gen=True)
+
     def draw_all(self):
-        # HERE ** Maybe create a set of all widgets and store previous one too.
-        # Easily compare to get widgets left behind
         parts = set()
-        for part in self.top_part.get_children(depth=-1, include_self=True, gen=True):
+        for part in self.get_parts():
             self.create(part=part)
             parts.add(part)
 
@@ -37,10 +39,6 @@ class Draw:
         for dead_part in dead_parts:
             dead_part.widget.destroy()
         self.previous_parts = parts
-        self.last_draw_hash = self.get_draw_hash()
-
-    def get_draw_hash(self):
-        return self.top_part.view(print_out=False)
 
     def create(self, part):
         # tk.Label().config

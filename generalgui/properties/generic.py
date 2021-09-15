@@ -25,7 +25,9 @@ class Generic(TreeDiagram):
     repr_attrs = ["value", "binds", "shown"]
 
     def __repr__(self):
-        parts = [self.__class__.__name__]
+        parts = [
+            self.__class__.__name__,
+        ]
 
         attr_dict = {key: getattr(self, key) for key in self.repr_attrs if getattr(self, key, None)}
         if attr_dict:
