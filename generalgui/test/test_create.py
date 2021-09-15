@@ -1,14 +1,30 @@
 
 import unittest
 
-from generalgui import Frame, Label
+from generalgui import Page, Label, Button
 
 class CreateTest(unittest.TestCase):
-    def test(self):
-        label = Label()
-        self.assertEqual(True, label.is_shown())
-        self.assertEqual(False, label.is_hidden_directly())
+    def test_shown(self):
+        page = Page()
+        self.assertEqual(True, page.shown)
+        self.assertEqual(False, page.is_hidden_by_parent())
 
-        app = label.app
-        label.master = False
-        self.assertEqual(False, app.widget.is_existing())
+        label = Label(page, "foo")
+        self.assertEqual(True, label.shown)
+        self.assertEqual(False, label.is_hidden_by_parent())
+
+        label.shown = False
+        self.assertEqual(False, label.shown)
+        self.assertEqual(False, label.is_hidden_by_parent())
+
+        page.shown = False
+        self.assertEqual(False, page.shown)
+        self.assertEqual(False, label.shown)
+        self.assertEqual(True, label.is_hidden_by_parent())
+
+        label.shown = True
+        self.assertEqual(False, page.shown)
+        self.assertEqual(True, label.shown)
+        self.assertEqual(True, label.is_hidden_by_parent())
+
+

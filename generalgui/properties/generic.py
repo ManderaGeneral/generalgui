@@ -22,6 +22,12 @@ class Generic(TreeDiagram):
     def shown(self, shown):
         self._shown = shown
 
+    def is_hidden_by_parent(self):
+        for parent in self.get_parents(depth=-1, gen=True):
+            if parent and not parent.shown:
+                return True
+        return False
+
     repr_attrs = ["value", "binds", "shown"]
 
     def __repr__(self):
