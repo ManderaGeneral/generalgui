@@ -35,8 +35,26 @@ class Generic(TreeDiagram, Binder):
         if cls.widget_cls is Ellipsis:
             raise AttributeError(f"widget_cls attr is not defined for {cls}")
 
+    repr_attrs = ["value", "binds", "shown"]
+    def __repr__(self):
+        parts = [
+            self.__class__.__name__,
+        ]
+
+        attr_dict = {key: getattr(self, key) for key in self.repr_attrs if getattr(self, key, None)}
+        if attr_dict:
+            parts.append(str(attr_dict))
+
+        return f"<GUI {', '.join(parts)}>"
+
+    def __eq__(self, other):
+        return repr(self) == repr(other)
+
+    def __hash__(self):
+        return super().__hash__()
+
     def draw(self):
-        Draw(self)
+        return Draw(self)
 
     def copy_part(self, parent=None):
         old_parent, old_index = self.get_parent(), self.get_index()
@@ -81,19 +99,6 @@ class Generic(TreeDiagram, Binder):
             if parent and not parent.shown:
                 return True
         return False
-
-    repr_attrs = ["value", "binds", "shown"]
-
-    def __repr__(self):
-        parts = [
-            self.__class__.__name__,
-        ]
-
-        attr_dict = {key: getattr(self, key) for key in self.repr_attrs if getattr(self, key, None)}
-        if attr_dict:
-            parts.append(str(attr_dict))
-
-        return f"<GUI {', '.join(parts)}>"
 
     def is_app(self):
         return self.__class__.__name__ == "App"

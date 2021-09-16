@@ -1,11 +1,8 @@
 """Random testing"""
 
 
-from generalgui.elements.page import Page
-from generalgui.elements.label import Label
-from generalgui.elements.button import Button
-
-from generalgui.cartridge.tkinter.dynamic_loader import Draw
+from generalgui import Page, Label, Button
+from generallibrary import getBaseClassNames
 
 import random
 
@@ -16,23 +13,27 @@ def test():
 def test2(part):
     # part.get_parent().copy_part()
     # part.copy_part()
-    part.copy_part(part.get_parent())
+    # part.copy_part(part.get_parent())
     # part.remove_node()
     # part.shown = False
-    # part.value = "hello"
+    part.value = "hello"
 
-a = Page()
-b = a.add_node()
-c = Label(b, "hi")
+page = Page()
+# b = page.add_node()  # This doesnt work now for some reason
+label = Label(page, "hi")
+label2 = Label(page, "hi")
 
-for i in range(10):
-    btn = Button(b, str(random.randint(1, 1000)))
-    btn.bind(lambda x=btn: test2(x))
+print(page.get_children())
+print(label, label2)
 
+# for i in range(2):
+#     btn = Button(page, str("hi"))
+#     # btn = Button(page, str(random.randint(1, 1000)))
+#     btn.bind(lambda x=btn: test2(x))
 
-# a.view()
-copy = a.copy_node()
-assert a.view(print_out=False) == copy.view(print_out=False)
+# page.view()
+copy = page.copy_node()
+assert page.view(print_out=False) == copy.view(print_out=False)
 # copy.view()
 
 
@@ -40,7 +41,7 @@ assert a.view(print_out=False) == copy.view(print_out=False)
 # print(a.get_children(depth=-1, include_self=True, flat=False))
 
 
-a.draw()
+draw = page.draw()
 
 
 

@@ -1,5 +1,5 @@
 
-from generallibrary import sleep, Timer
+from generallibrary import sleep, Timer, subtract_list
 
 import tkinter as tk
 
@@ -16,8 +16,9 @@ class Draw:
         self.draws.append(self)
 
         self.top_part = top_part
-        self.previous_parts = set()
+        self.previous_parts = []
         self.draw_all()
+
 
         self.mainloop()
 
@@ -31,24 +32,24 @@ class Draw:
                     except tk.TclError:
                         pass
 
-                    if set(draw.get_parts()) != draw.previous_parts:
+                    if draw.get_parts() != draw.previous_parts:
                         print("changed")
                         draw.draw_all()
                 if not self.draws:
                     exit()
 
-    def get_parts(self):
+    def get_parts_gen(self):
         return self.top_part.get_children(depth=-1, include_self=True, gen=True)
 
-    def draw_all(self):
-        parts = set()  # HERE ** Don't think we can use set as we need to allow duplicating nodes, maybe add something to repr? index?
-        for part in self.get_parts():
-            self.create(part=part)
-            parts.add(part)
+    def get_parts(self):
+        return list(self.get_parts_gen())
 
-        dead_parts = self.previous_parts - parts
+    def draw_all(self):
+        parts = [self.create(part=part) for part in self.get_parts_gen()]
+        dead_parts = subtract_list(self.previous_parts, parts)
         for dead_part in dead_parts:
             if dead_part.widget:
+                # print("destroyed", dead_part)
                 dead_part.widget.destroy()
         self.previous_parts = parts
 
@@ -70,6 +71,7 @@ class Draw:
         if part.binds:
             part.widget.bind("<Button-1>", lambda e, _part=part: _part.call_binds())
 
+        return part
 
 
 
