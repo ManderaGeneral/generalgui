@@ -19,7 +19,6 @@ class Draw:
         self.previous_parts = []
         self.draw_all()
 
-
         self.mainloop()
 
     def mainloop(self):
@@ -32,7 +31,7 @@ class Draw:
                     except tk.TclError:
                         pass
 
-                    if draw.get_parts() != draw.previous_parts:
+                    if draw.get_parts() != draw.previous_parts:  # HERE ** The parts in both lists are referring to the same obj, need to compare repr instead
                         print("changed")
                         draw.draw_all()
                 if not self.draws:

@@ -20,22 +20,32 @@ class Binder:
 
 class Generic(TreeDiagram, Binder):
     widget_cls = ...
+    id = 0
 
     def __init__(self, parent):
         self.widget = None
         self.binds = []
         self._shown = True
+        self.assign_id()
 
-    def __getstate__(self):
+    def __getstate__(self):  # For pickle
         self.widget = None
         # self._parents = []
         return self.__dict__
+
+    def __setstate__(self, state):
+        self.__dict__ = state
+        self.assign_id()
+
+    def assign_id(self):
+        self.id = Generic.id
+        Generic.id += 1
 
     def __init_subclass__(cls, **kwargs):
         if cls.widget_cls is Ellipsis:
             raise AttributeError(f"widget_cls attr is not defined for {cls}")
 
-    repr_attrs = ["value", "binds", "shown"]
+    repr_attrs = ["id", "value", "binds", "shown"]
     def __repr__(self):
         parts = [
             self.__class__.__name__,
@@ -48,7 +58,7 @@ class Generic(TreeDiagram, Binder):
         return f"<GUI {', '.join(parts)}>"
 
     def __eq__(self, other):
-        return repr(self) == repr(other)
+        return repr(self) == repr(other)  # might be slow
 
     def __hash__(self):
         return super().__hash__()
