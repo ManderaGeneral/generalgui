@@ -45,7 +45,7 @@ class Generic(TreeDiagram, Binder):
         if cls.widget_cls is Ellipsis:
             raise AttributeError(f"widget_cls attr is not defined for {cls}")
 
-    repr_attrs = ["id", "value", "binds", "shown"]
+    repr_attrs = {"value": None, "shown": None, "binds": bool}
     def __repr__(self):
         parts = [
             self.__class__.__name__,
@@ -62,6 +62,16 @@ class Generic(TreeDiagram, Binder):
 
     def __hash__(self):
         return super().__hash__()
+
+    def _get_data_value(self, key, func):
+        val = getattr(self, key, None)
+        if func is None:
+            return val
+        else:
+            return func(val)
+
+    def get_data_tuple(self):
+        return tuple(self._get_data_value(key=key, func=func) for key, func in self.repr_attrs.items())
 
     def draw(self):
         return Draw(self)

@@ -21,8 +21,12 @@ def test2(part):
 page = Page()
 # b = page.add_node()  # This doesnt work now for some reason
 label = Label(page, "hi")
-label2 = Label(page, "hi")
-label.copy_part(page)
+
+data = label.get_data_tuple()
+label.bind(lambda: 5)
+print(data)
+# label2 = Label(page, "hi")
+# label.copy_part(page)
 
 for i in range(2):
     # btn = Button(page, str("hi"))
@@ -43,6 +47,30 @@ draw = page.draw()
 
 
 
+
+"""
+Divide all parts into batches to detect changes, in the future we could direct it somehow if it notices one part keeps updating
+Instead of drawing all we should keep a different set of parts for drawn, that way we have a current tree and a target tree
+
+
+---------
+
+Trying to figure out a better way to detect change, previously I've compared reprs, too slow
+Thinking to use one huge tuple, constructed of each part and it's attrs
+Maybe this tuple could be deterministic (probably should be), if it is then we could draw the gui from the tuple purely, should be fast
+
+We don't actually need to keep track of binds because we don't need to redraw anything if bind changes, simply store bool to create the bind or not
+I don't think we're gonna need id either, now that we're moving away from sets
+
+Maybe the attrs used can be dynamically made from pars required to init each part
+    Instead of one big tuple we could have a big tuple containing tuples
+    Because the number of slots would otherwise increase for every part, even if only one uses it
+
+Not sure about using tuples instead of top part
+    Aren't we going to have to iterate parts anyway to create the tuple?
+    I think it would only make sense if changing a value would change the tuple directly, in which case it'd have to be a list
+    Think I'll scratch this whole idea
+"""
 
 
 
