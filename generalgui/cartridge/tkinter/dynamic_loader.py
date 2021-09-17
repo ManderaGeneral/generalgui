@@ -7,7 +7,6 @@ import tkinter as tk
 class Draw:
     """ Idea is that Draw visualizes a TreeDiagram decoupled.
         Try to keep tkinter stuff here. """
-
     draws = []
 
     def __init__(self, top_part):
@@ -15,7 +14,9 @@ class Draw:
         self.tk = tk.Tk()
         self.draws.append(self)
 
-        self.top_part = top_part
+        self.top_part_target = top_part
+        self.top_part_current = None
+
         self.previous_parts = []
         self.draw_all()
 
@@ -23,7 +24,7 @@ class Draw:
 
     def mainloop(self):
         if len(self.draws) == 1:
-            while True:
+            while True:  # Only the latest Draw while True loop will be active
                 for draw in self.draws:
                     try:
                         draw.tk.update_idletasks()
@@ -31,9 +32,8 @@ class Draw:
                     except tk.TclError:
                         pass
 
-                    if draw.get_parts() != draw.previous_parts:  # HERE ** The parts in both lists are referring to the same obj, need to compare repr instead
-                        print("changed")
-                        draw.draw_all()
+                    self.draw_all()
+
                 if not self.draws:
                     exit()
 

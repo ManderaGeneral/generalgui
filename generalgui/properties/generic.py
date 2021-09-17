@@ -17,16 +17,30 @@ class Binder:
         return tuple(sigInfo.call() for sigInfo in self.binds)
 
 
-
-class Generic(TreeDiagram, Binder):
-    widget_cls = ...
+class Indexer:
     id = 0
+    instance_by_id = {}
+
+    def __init__(self):
+        self.id_assign()
+
+    def id_assign(self):
+        self.id = Indexer.id
+        Indexer.id += 1
+        self.instance_by_id[self.id] = self
+
+    def id_remove(self):
+        del self.instance_by_id[self.id]
+
+
+
+class Generic(TreeDiagram, Binder, Indexer):
+    widget_cls = ...
 
     def __init__(self, parent):
         self.widget = None
         self.binds = []
         self._shown = True
-        self.assign_id()
 
     def __getstate__(self):  # For pickle
         self.widget = None
@@ -35,43 +49,28 @@ class Generic(TreeDiagram, Binder):
 
     def __setstate__(self, state):
         self.__dict__ = state
-        self.assign_id()
-
-    def assign_id(self):
-        self.id = Generic.id
-        Generic.id += 1
+        self.id_assign()
 
     def __init_subclass__(cls, **kwargs):
         if cls.widget_cls is Ellipsis:
             raise AttributeError(f"widget_cls attr is not defined for {cls}")
 
-    repr_attrs = {"value": None, "shown": None, "binds": bool}
+    repr_attrs = ("id", "value", "binds", "shown")
     def __repr__(self):
         parts = [
             self.__class__.__name__,
         ]
-
         attr_dict = {key: getattr(self, key) for key in self.repr_attrs if getattr(self, key, None)}
         if attr_dict:
             parts.append(str(attr_dict))
 
         return f"<GUI {', '.join(parts)}>"
 
-    def __eq__(self, other):
-        return repr(self) == repr(other)  # might be slow
-
-    def __hash__(self):
-        return super().__hash__()
-
-    def _get_data_value(self, key, func):
-        val = getattr(self, key, None)
-        if func is None:
-            return val
-        else:
-            return func(val)
-
-    def get_data_tuple(self):
-        return tuple(self._get_data_value(key=key, func=func) for key, func in self.repr_attrs.items())
+    # def __eq__(self, other):
+    #     return repr(self) == repr(other)  # might be slow
+    #
+    # def __hash__(self):
+    #     return super().__hash__()
 
     def draw(self):
         return Draw(self)
@@ -88,23 +87,6 @@ class Generic(TreeDiagram, Binder):
 
         if parent is None:
             new.draw()
-
-        # widget = self.widget
-        # old_parent = self.get_parent()
-        #
-        # self.set_parent(None)
-        # self.widget = None
-        #
-        # new = self.copy_node()
-        #
-        # self.widget = widget
-        # self.set_parent(parent=old_parent)
-        #
-        # for child in new.get_children(depth=-1, gen=True):
-        #     child.widget = None
-        # new.set_parent(parent=parent)
-        # if parent is None:
-        #     new.draw()
 
     @property
     def shown(self):

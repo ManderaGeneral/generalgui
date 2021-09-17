@@ -22,9 +22,6 @@ page = Page()
 # b = page.add_node()  # This doesnt work now for some reason
 label = Label(page, "hi")
 
-data = label.get_data_tuple()
-label.bind(lambda: 5)
-print(data)
 # label2 = Label(page, "hi")
 # label.copy_part(page)
 
@@ -51,7 +48,18 @@ draw = page.draw()
 """
 Divide all parts into batches to detect changes, in the future we could direct it somehow if it notices one part keeps updating
 Instead of drawing all we should keep a different set of parts for drawn, that way we have a current tree and a target tree
+Think it'll be hard to chain traverse both trees, so keep the previous_parts part to easily delete dead parts
+    That way we only need to traverse target tree and compare to current
+    previous_parts will actually have to change because of the bad way __eq__ uses __repr__
+        Let's just use a set of ids for the current and target tree
+            Then we'll only have to create a good way to fetch a part by id
 
+
+# HERE
+So the idea I have is that instead of checking the values of tkinter widgets directly, we have two sets of my Parts
+    That way it's easy to compare, then when a value is changed in the current tree it should update the widget immediately
+        That means I must have a way to connect each Part attr to a widget method
+        The only thing having two trees then does for us is the ability to queue and dynamically draw, which probably would be very nice
 
 ---------
 
