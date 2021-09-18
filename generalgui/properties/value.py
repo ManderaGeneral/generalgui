@@ -8,11 +8,14 @@ class Value:
 
     @property
     def value(self):
+        """ :param generalgui.MethodGrouper self: """
         return self._value
 
     @value.setter
     def value(self, value):
+        """ :param generalgui.MethodGrouper self: """
         self._value = "" if value is None else value
+        self.draw_value()
 
 
 

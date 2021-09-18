@@ -55,11 +55,14 @@ Think it'll be hard to chain traverse both trees, so keep the previous_parts par
             Then we'll only have to create a good way to fetch a part by id
 
 
-# HERE
 So the idea I have is that instead of checking the values of tkinter widgets directly, we have two sets of my Parts
     That way it's easy to compare, then when a value is changed in the current tree it should update the widget immediately
-        That means I must have a way to connect each Part attr to a widget method
+        That means I must have a way to connect each Part attr to a widget method either way
         The only thing having two trees then does for us is the ability to queue and dynamically draw, which probably would be very nice
+Maybe I could only have one tree but still have a queue for dynamic drawing
+    Must be able to remove prior orders, copying a part giving it None as parent, then setting parent to another part shouldn't briefly create an entire app
+    Should be able to remove id parts
+
 
 ---------
 

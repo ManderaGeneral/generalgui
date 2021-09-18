@@ -1,19 +1,19 @@
 
 from generallibrary import TreeDiagram, hook, getBaseClassNames, SigInfo
 
-from generalgui import Draw
-
 
 class Binder:
     def __init__(self):
         self.binds = []
 
     def bind(self, func):
+        """ :param generalgui.MethodGrouper self: """
         sigInfo = SigInfo(func)
         self.binds.append(sigInfo)
-        # self.binds.append(func)
+        self.draw_bind()
 
     def call_binds(self):
+        """ :param generalgui.MethodGrouper self: """
         return tuple(sigInfo.call() for sigInfo in self.binds)
 
 
@@ -33,14 +33,56 @@ class Indexer:
         del self.instance_by_id[self.id]
 
 
+class Drawer:
+    orders = []
 
-class Generic(TreeDiagram, Binder, Indexer):
+    def __init__(self):
+        """ :param generalgui.MethodGrouper self: """
+        self.widget = None
+
+    @staticmethod
+    def draw_queue(func):
+        def _wrapper(*args, **kwargs):
+            Drawer.orders.append(lambda _args=args, _kwargs=kwargs: func(*_args, **_kwargs))
+        return _wrapper
+
+    @draw_queue
+    def draw_create(self):
+        """ :param generalgui.MethodGrouper self: """
+        if self.widget is None:
+            master = self.get_parent().widget if self.get_parent() else self.tk  # HERE ** Create tk
+            self.widget = self.widget_cls(master=master)
+
+    @draw_queue
+    def draw_value(self):
+        """ :param generalgui.MethodGrouper self: """
+        if hasattr(self, "value"):
+            self.widget.config(text=self.value)
+
+    @draw_queue
+    def draw_show(self):
+        """ :param generalgui.MethodGrouper self: """
+        if self.shown is not self.widget.winfo_ismapped():
+            if self.shown:
+                self.widget.pack()
+            else:
+                self.widget.pack_forget()
+
+    @draw_queue
+    def draw_bind(self):
+        """ :param generalgui.MethodGrouper self: """
+        if self.binds:
+            self.widget.bind("<Button-1>", lambda e, _part=self: _part.call_binds())
+
+
+class Generic(TreeDiagram, Binder, Indexer, Drawer):
+
     widget_cls = ...
 
     def __init__(self, parent):
-        self.widget = None
         self.binds = []
         self._shown = True
+        self.draw_create()
 
     def __getstate__(self):  # For pickle
         self.widget = None
@@ -54,8 +96,14 @@ class Generic(TreeDiagram, Binder, Indexer):
     def __init_subclass__(cls, **kwargs):
         if cls.widget_cls is Ellipsis:
             raise AttributeError(f"widget_cls attr is not defined for {cls}")
-
     repr_attrs = ("id", "value", "binds", "shown")
+
+    # def __eq__(self, other):
+    #     return repr(self) == repr(other)  # might be slow
+    #
+    # def __hash__(self):
+    #     return super().__hash__()
+
     def __repr__(self):
         parts = [
             self.__class__.__name__,
@@ -65,15 +113,6 @@ class Generic(TreeDiagram, Binder, Indexer):
             parts.append(str(attr_dict))
 
         return f"<GUI {', '.join(parts)}>"
-
-    # def __eq__(self, other):
-    #     return repr(self) == repr(other)  # might be slow
-    #
-    # def __hash__(self):
-    #     return super().__hash__()
-
-    def draw(self):
-        return Draw(self)
 
     def copy_part(self, parent=None):
         old_parent, old_index = self.get_parent(), self.get_index()
@@ -95,6 +134,7 @@ class Generic(TreeDiagram, Binder, Indexer):
     @shown.setter
     def shown(self, shown):
         self._shown = shown
+        self.draw_show()
 
     def is_hidden_by_parent(self):
         for parent in self.get_parents(depth=-1, gen=True):
