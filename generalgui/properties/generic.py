@@ -39,11 +39,20 @@ class Indexer:
 
 def _deco_draw_queue(func):
     def _wrapper(*args, **kwargs):
-        Drawer.orders.append(lambda _args=args, _kwargs=kwargs: func(*_args, **_kwargs))
+        sigInfo = SigInfo(func, *args, **kwargs)
+        method = getattr(sigInfo["self"], func.__name__)
+
+        if method in Drawer.orders:  # Prevent duplicate orders
+            del Drawer.orders[method]
+        Drawer.orders[method] = sigInfo
+
+
     return _wrapper
 
+from collections import OrderedDict
+
 class Drawer:
-    orders = []
+    orders = OrderedDict()
     apps = []
     registered_mainloop = None
 
@@ -81,8 +90,9 @@ class Drawer:
     @classmethod
     def draw_queue_run(cls):
         if cls.orders:
+            order_iter = iter(cls.orders)
             for i in range(1):
-                cls.orders.pop(0)()
+                cls.orders.pop(next(order_iter)).call()
                 # sleep(0.1)
 
     @_deco_draw_queue
@@ -90,15 +100,20 @@ class Drawer:
         """ :param generalgui.MethodGrouper self: """
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
-        print(self)  # HERE ** Allow a good way to prevent duplicate create orders
         if not widget_master or widget_master is not parent_widget:
             if widget_master:
                 self.widget.destroy()
             master = parent_widget or self.create_app()
 
             kwargs = {"master": master}
+
+            # This could be generalized for each widget option, could put this and draw_value in value.py too
+            # value
             if hasattr(self, "value"):
-                kwargs["text"] = self.value  # This could be generalized for each widget option, could put this and draw_value in value.py too
+                kwargs["text"] = self.value
+            # binder
+            self.draw_bind()
+
             self.widget = self.widget_cls(**kwargs)
             self.widget.pack()
 
@@ -172,8 +187,8 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer):
         self.set_parent(parent=old_parent)
         self.set_index(index=old_index)
 
-        if parent is None:
-            new.draw()
+        # if parent is None:
+        #     new.draw()
 
     @property
     def shown(self):

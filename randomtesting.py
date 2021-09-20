@@ -7,15 +7,16 @@ from generallibrary import getBaseClassNames
 import random
 
 
+
 def test():
     print(5)
 
 def test2(part):
     # part.get_parent().copy_part()
     # part.copy_part()
-    # part.copy_part(part.get_parent())
+    part.copy_part(part.get_parent())  # HERE ** Figure out why it causes double
     # part.draw_destroy()
-    part.set_parent(None)
+    # part.set_parent(None)
     # part.shown = False
     # part.value = "hello"
 
@@ -28,10 +29,10 @@ label.set_parent(page)
 # label2 = Label(page, "hi")
 # label.copy_part(page)
 
-# for i in range(2):
-#     btn = Button(page, str(random.randint(1, 1000)))
-#     btn.bind(lambda x=btn: test2(x))
-#
+for i in range(2):
+    btn = Button(page, str(random.randint(1, 1000)))
+    btn.bind(lambda x=btn: test2(x))
+
 # page.view()
 # copy = page.copy_node()
 # assert page.view(print_out=False) == copy.view(print_out=False)
