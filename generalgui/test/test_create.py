@@ -3,7 +3,13 @@ import unittest
 
 from generalgui import Page, Label, Button
 
-class CreateTest(unittest.TestCase):
+
+class GuiTest(unittest.TestCase):
+    def tearDown(self):
+        Page.orders.clear()
+
+
+class CreateTest(GuiTest):
     def test_shown(self):
         page = Page()
         self.assertEqual(True, page.shown)

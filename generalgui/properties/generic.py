@@ -1,5 +1,8 @@
 
-from generallibrary import TreeDiagram, hook, getBaseClassNames, SigInfo
+from generallibrary import TreeDiagram, hook, getBaseClassNames, SigInfo, sleep
+
+import tkinter as tk
+import atexit
 
 
 class Binder:
@@ -33,33 +36,79 @@ class Indexer:
         del self.instance_by_id[self.id]
 
 
+
+def _deco_draw_queue(func):
+    def _wrapper(*args, **kwargs):
+        Drawer.orders.append(lambda _args=args, _kwargs=kwargs: func(*_args, **_kwargs))
+    return _wrapper
+
 class Drawer:
     orders = []
+    apps = []
+    registered_mainloop = None
 
-    def __init__(self):
+    def __init__(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
+        if parent is None:
+            self.draw_create()
 
-    @staticmethod
-    def draw_queue(func):
-        def _wrapper(*args, **kwargs):
-            Drawer.orders.append(lambda _args=args, _kwargs=kwargs: func(*_args, **_kwargs))
-        return _wrapper
+    def create_app(self):
+        app = tk.Tk()
+        self.apps.append(app)
+        return app
 
-    @draw_queue
+    @classmethod
+    def mainloop(cls):
+        while True:
+            cls.draw_queue_run()
+
+            for app in cls.apps:
+                try:
+                    app.update_idletasks()
+                    app.update()
+                except tk.TclError:
+                    pass
+
+            if not cls.apps:
+                exit()
+
+    @classmethod
+    def register_mainloop(cls):
+        if not cls.registered_mainloop:
+            cls.registered_mainloop = atexit.register(Drawer.mainloop)
+
+    @classmethod
+    def draw_queue_run(cls):
+        if cls.orders:
+            for i in range(1):
+                cls.orders.pop(0)()
+                # sleep(0.1)
+
+    @_deco_draw_queue
     def draw_create(self):
         """ :param generalgui.MethodGrouper self: """
-        if self.widget is None:
-            master = self.get_parent().widget if self.get_parent() else self.tk  # HERE ** Create tk
-            self.widget = self.widget_cls(master=master)
+        widget_master = getattr(self.widget, "master", None)
+        parent_widget = getattr(self.get_parent(), "widget", None)
+        print(self)  # HERE ** Allow a good way to prevent duplicate create orders
+        if not widget_master or widget_master is not parent_widget:
+            if widget_master:
+                self.widget.destroy()
+            master = parent_widget or self.create_app()
 
-    @draw_queue
+            kwargs = {"master": master}
+            if hasattr(self, "value"):
+                kwargs["text"] = self.value  # This could be generalized for each widget option, could put this and draw_value in value.py too
+            self.widget = self.widget_cls(**kwargs)
+            self.widget.pack()
+
+    @_deco_draw_queue
     def draw_value(self):
         """ :param generalgui.MethodGrouper self: """
         if hasattr(self, "value"):
             self.widget.config(text=self.value)
 
-    @draw_queue
+    @_deco_draw_queue
     def draw_show(self):
         """ :param generalgui.MethodGrouper self: """
         if self.shown is not self.widget.winfo_ismapped():
@@ -68,7 +117,7 @@ class Drawer:
             else:
                 self.widget.pack_forget()
 
-    @draw_queue
+    @_deco_draw_queue
     def draw_bind(self):
         """ :param generalgui.MethodGrouper self: """
         if self.binds:
@@ -82,7 +131,6 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer):
     def __init__(self, parent):
         self.binds = []
         self._shown = True
-        self.draw_create()
 
     def __getstate__(self):  # For pickle
         self.widget = None
@@ -149,8 +197,11 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer):
         return self.__class__.__name__ == "Page"
 
 
-def container_parent_check(parent):
+def container_parent_check(self, parent):
     assert "Contain" in getBaseClassNames(parent) or parent is None
+    self.draw_create()
 
+
+Drawer.register_mainloop()
 hook(Generic.set_parent, container_parent_check)
 

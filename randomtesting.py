@@ -14,23 +14,25 @@ def test2(part):
     # part.get_parent().copy_part()
     # part.copy_part()
     # part.copy_part(part.get_parent())
-    # part.remove_node()
+    # part.draw_destroy()
+    part.set_parent(None)
     # part.shown = False
-    part.value = "hello"
+    # part.value = "hello"
 
 page = Page()
 # b = page.add_node()  # This doesnt work now for some reason
-label = Label(page, "hi")
+
+label = Label(None, "hi")
+label.set_parent(page)
 
 # label2 = Label(page, "hi")
 # label.copy_part(page)
 
-for i in range(2):
-    # btn = Button(page, str("hi"))
-    btn = Button(page, str(random.randint(1, 1000)))
-    btn.bind(lambda x=btn: test2(x))
-
-page.view()
+# for i in range(2):
+#     btn = Button(page, str(random.randint(1, 1000)))
+#     btn.bind(lambda x=btn: test2(x))
+#
+# page.view()
 # copy = page.copy_node()
 # assert page.view(print_out=False) == copy.view(print_out=False)
 # copy.view()
@@ -40,7 +42,6 @@ page.view()
 # print(a.get_children(depth=-1, include_self=True, flat=False))
 
 
-draw = page.draw()
 
 
 
