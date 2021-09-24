@@ -98,8 +98,13 @@ class Drawer:
     @_deco_draw_queue
     def draw_create(self):
         """ :param generalgui.MethodGrouper self: """
+        # HERE ** This is getting messy without an App class as parent, we must be able to assert that the correct App is the parent
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
+
+        if widget_master.__class__.__name__ == "Tk":
+            widget_master = None
+
         if not widget_master or widget_master is not parent_widget:
             if widget_master:
                 self.widget.destroy()
@@ -148,9 +153,11 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer):
         self._shown = True
 
     def __getstate__(self):  # For pickle
-        self.widget = None
+        # self.widget = None
         # self._parents = []
-        return self.__dict__
+        dict_ = self.__dict__.copy()
+        dict_["widget"] = None
+        return dict_
 
     def __setstate__(self, state):
         self.__dict__ = state

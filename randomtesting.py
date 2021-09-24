@@ -13,8 +13,8 @@ def test():
 
 def test2(part):
     # part.get_parent().copy_part()
-    # part.copy_part()
-    part.copy_part(part.get_parent())  # HERE ** Figure out why it causes double
+    part.copy_part()
+    # part.copy_part(part.get_parent())  # HERE ** Figure out why it causes double
     # part.draw_destroy()
     # part.set_parent(None)
     # part.shown = False
