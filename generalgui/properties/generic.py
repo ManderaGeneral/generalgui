@@ -60,6 +60,8 @@ class Drawer:
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         if parent is None:
+            if not self.is_page():
+                self.set_parent(self.Page())
             self.draw_create()
 
     def create_app(self):
@@ -97,14 +99,15 @@ class Drawer:
 
     @_deco_draw_queue
     def draw_create(self):
-        """ :param generalgui.MethodGrouper self: """
-        # HERE ** This is getting messy without an App class as parent, we must be able to assert that the correct App is the parent
+        """ This one should create a widget but also destroy it.
+
+            :param generalgui.MethodGrouper self: """
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
 
         if widget_master.__class__.__name__ == "Tk":
             widget_master = None
-
+        # HERE ** Fix code here to delete a widget, then make sure second app closes
         if not widget_master or widget_master is not parent_widget:
             if widget_master:
                 self.widget.destroy()
@@ -149,7 +152,6 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer):
     widget_cls = ...
 
     def __init__(self, parent):
-        self.binds = []
         self._shown = True
 
     def __getstate__(self):  # For pickle
@@ -219,11 +221,19 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer):
         return self.__class__.__name__ == "Page"
 
 
-def container_parent_check(self, parent):
+def set_parent_hook(self, parent):
+    """ :param generalgui.MethodGrouper self:
+        :param generalgui.MethodGrouper parent: """
     assert "Contain" in getBaseClassNames(parent) or parent is None
+    old_parent = self.get_parent()
+
+    # Could call draw_create on the parent a bit more loosely
+    if old_parent and old_parent.get_parent() is None and old_parent is not parent and old_parent.get_children() == [self]:
+        old_parent.draw_create()
+
     self.draw_create()
 
 
 Drawer.register_mainloop()
-hook(Generic.set_parent, container_parent_check)
+hook(Generic.set_parent, set_parent_hook)
 

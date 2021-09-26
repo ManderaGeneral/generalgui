@@ -11,3 +11,4 @@ class Page(Generic, Contain):
     def __init__(self, parent=None):
         pass
 
+Generic.Page = Page
