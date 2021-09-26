@@ -59,15 +59,25 @@ class Drawer:
     def __init__(self, parent=None):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
-        if parent is None:
-            if not self.is_page():
-                self.set_parent(self.Page())
-            self.draw_create()
+        # set_parent_hook(self=self, parent=parent)
+        self.create_top_page(parent=parent)
 
     def create_app(self):
+        """ :param generalgui.MethodGrouper self: """
         app = tk.Tk()
         self.apps.append(app)
         return app
+
+    def create_top_page(self, parent=...):
+        """ :param generalgui.MethodGrouper self:
+            :param parent: """
+        if parent is Ellipsis:
+            parent = self.get_parent()
+
+        if parent is None and not self.is_page():
+            self.set_parent(self.Page())
+            return True
+        return False
 
     @classmethod
     def mainloop(cls):
@@ -97,20 +107,27 @@ class Drawer:
                 cls.orders.pop(next(order_iter)).call()
                 # sleep(0.1)
 
+    def part_delete(self):
+        """ Delete part directly without queue. """
+        if self.widget:
+            try:
+                self.widget.destroy()
+            except tk.TclError:
+                pass
+
     @_deco_draw_queue
     def draw_create(self):
         """ This one should create a widget but also destroy it.
+            Syncs tkinter widget to match Part and Part parent.
+            Creates App tk if self is Page and widget's master is None.
 
             :param generalgui.MethodGrouper self: """
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
 
-        if widget_master.__class__.__name__ == "Tk":
-            widget_master = None
-        # HERE ** Fix code here to delete a widget, then make sure second app closes
         if not widget_master or widget_master is not parent_widget:
-            if widget_master:
-                self.widget.destroy()
+            self.part_delete()
+
             master = parent_widget or self.create_app()
 
             kwargs = {"master": master}
@@ -147,7 +164,19 @@ class Drawer:
             self.widget.bind("<Button-1>", lambda e, _part=self: _part.call_binds())
 
 
-class Generic(TreeDiagram, Binder, Indexer, Drawer):
+class App:
+    @property
+    def _tk(self):
+        """ :param generalgui.MethodGrouper self: """
+        return getattr(self.get_parent(index=-1, depth=-1, include_self=True).widget, "master", None)
+
+    def app_close(self):
+        """ :param generalgui.MethodGrouper self: """
+        if self._tk:
+            self._tk.destroy()
+
+
+class Generic(TreeDiagram, Binder, Indexer, Drawer, App):
 
     widget_cls = ...
 
@@ -221,18 +250,26 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer):
         return self.__class__.__name__ == "Page"
 
 
+from generallibrary import debug
+
 def set_parent_hook(self, parent):
-    """ :param generalgui.MethodGrouper self:
+    """ Not called from init.
+
+        :param generalgui.MethodGrouper self:
         :param generalgui.MethodGrouper parent: """
+    self.create_top_page(parent=parent)
+
     assert "Contain" in getBaseClassNames(parent) or parent is None
     old_parent = self.get_parent()
 
-    # Could call draw_create on the parent a bit more loosely
+    debug(locals(), "self", "old_parent", "old_parent.get_parent()", "parent", "old_parent.get_children()")
     if old_parent and old_parent.get_parent() is None and old_parent is not parent and old_parent.get_children() == [self]:
-        old_parent.draw_create()
+        print("yes", old_parent, old_parent.widget)  # HERE ** Wee cannot actually close app because the widget isn't created yet
+        old_parent.app_close()
+    else:
+        print("no")
 
     self.draw_create()
-
 
 Drawer.register_mainloop()
 hook(Generic.set_parent, set_parent_hook)

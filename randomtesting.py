@@ -14,24 +14,26 @@ def test():
 def test2(part):
     # part.get_parent().copy_part()
     # part.copy_part()
-    part.copy_part(part.get_parent())  # HERE ** Figure out why it causes double
+    # part.copy_part(part.get_parent())
     # part.draw_destroy()
-    # part.set_parent(None)
+    part.set_parent(None)
     # part.shown = False
     # part.value = "hello"
 
-page = Page()
+# page = Page()
 # b = page.add_node()  # This doesnt work now for some reason
 
 label = Label(None, "hi")
-label.set_parent(page)
+label.bind(lambda x=label: test2(x))
+
+# label.set_parent(page)
 
 # label2 = Label(page, "hi")
 # label.copy_part(page)
 
-for i in range(2):
-    btn = Button(page, str(random.randint(1, 1000)))
-    btn.bind(lambda x=btn: test2(x))
+# for i in range(2):
+#     btn = Button(page, str(random.randint(1, 1000)))
+#     btn.bind(lambda x=btn: test2(x))
 
 # page.view()
 # copy = page.copy_node()
@@ -48,6 +50,12 @@ for i in range(2):
 
 
 """
+Got a bit of a mess with automatically creating Page for parentless non-pages.
+Also problematic with closing app when top Page has no children.
+Should try solving one thing at a time if possible.
+
+---------
+
 Divide all parts into batches to detect changes, in the future we could direct it somehow if it notices one part keeps updating
 Instead of drawing all we should keep a different set of parts for drawn, that way we have a current tree and a target tree
 Think it'll be hard to chain traverse both trees, so keep the previous_parts part to easily delete dead parts
