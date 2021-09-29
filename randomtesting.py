@@ -16,6 +16,7 @@ def test2(part):
     # part.copy_part()
     # part.copy_part(part.get_parent())
     # part.draw_destroy()
+
     part.set_parent(None)
     # part.shown = False
     # part.value = "hello"
@@ -25,6 +26,7 @@ def test2(part):
 
 label = Label(None, "hi")
 label.bind(lambda x=label: test2(x))
+
 
 # label.set_parent(page)
 

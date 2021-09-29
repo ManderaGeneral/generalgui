@@ -60,6 +60,7 @@ class Drawer:
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         # set_parent_hook(self=self, parent=parent)
+        self.draw_create()
         self.create_top_page(parent=parent)
 
     def create_app(self):
@@ -124,11 +125,12 @@ class Drawer:
             :param generalgui.MethodGrouper self: """
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
-
         if not widget_master or widget_master is not parent_widget:
             self.part_delete()
-
             master = parent_widget or self.create_app()
+
+            # HERE ** Why is Label's parent None?
+            debug(locals(), "self", "self.get_parent()", "widget_master", "parent_widget", "master")
 
             kwargs = {"master": master}
 
@@ -170,6 +172,7 @@ class App:
         """ :param generalgui.MethodGrouper self: """
         return getattr(self.get_parent(index=-1, depth=-1, include_self=True).widget, "master", None)
 
+    @_deco_draw_queue
     def app_close(self):
         """ :param generalgui.MethodGrouper self: """
         if self._tk:
@@ -257,19 +260,18 @@ def set_parent_hook(self, parent):
 
         :param generalgui.MethodGrouper self:
         :param generalgui.MethodGrouper parent: """
+    old_parent = self.get_parent()
     self.create_top_page(parent=parent)
 
-    assert "Contain" in getBaseClassNames(parent) or parent is None
-    old_parent = self.get_parent()
-
-    debug(locals(), "self", "old_parent", "old_parent.get_parent()", "parent", "old_parent.get_children()")
-    if old_parent and old_parent.get_parent() is None and old_parent is not parent and old_parent.get_children() == [self]:
-        print("yes", old_parent, old_parent.widget)  # HERE ** Wee cannot actually close app because the widget isn't created yet
-        old_parent.app_close()
-    else:
-        print("no")
+    # debug(locals(), "self", "old_parent", "old_parent.get_parent()", "parent", "old_parent.get_children()")
+    # if old_parent and old_parent.get_parent() is None and old_parent is not parent and old_parent.get_children() == [self]:
+    #     print("yes", old_parent, old_parent.widget)
+    #     old_parent.app_close()
+    # else:
+    #     print("no")
 
     self.draw_create()
+    assert "Contain" in getBaseClassNames(parent) or parent is None
 
 Drawer.register_mainloop()
 hook(Generic.set_parent, set_parent_hook)
