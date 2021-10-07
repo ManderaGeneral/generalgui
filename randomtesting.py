@@ -24,7 +24,7 @@ def test2(part):
 # page = Page()
 # b = page.add_node()  # This doesnt work now for some reason
 
-label = Label(None, "hi")
+label = Label(value="hi")
 label.bind(lambda x=label: test2(x))
 
 

@@ -40,11 +40,14 @@ class Indexer:
 def _deco_draw_queue(func):
     def _wrapper(*args, **kwargs):
         sigInfo = SigInfo(func, *args, **kwargs)
-        method = getattr(sigInfo["self"], func.__name__)
 
-        if method in Drawer.orders:  # Prevent duplicate orders
-            del Drawer.orders[method]
-        Drawer.orders[method] = sigInfo
+        if sigInfo["draw_now"]:
+            sigInfo.call()
+        else:
+            method = getattr(sigInfo["self"], func.__name__)
+            if method in Drawer.orders:  # Prevent duplicate orders
+                del Drawer.orders[method]
+            Drawer.orders[method] = sigInfo
 
 
     return _wrapper
@@ -56,12 +59,12 @@ class Drawer:
     apps = []
     registered_mainloop = None
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, draw_now=None):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         # set_parent_hook(self=self, parent=parent)
-        self.draw_create()
-        self.create_top_page(parent=parent)
+        self.draw_create(draw_now=draw_now)
+        # self.create_top_page(parent=parent)
 
     def create_app(self):
         """ :param generalgui.MethodGrouper self: """
@@ -69,16 +72,12 @@ class Drawer:
         self.apps.append(app)
         return app
 
-    def create_top_page(self, parent=...):
-        """ :param generalgui.MethodGrouper self:
-            :param parent: """
-        if parent is Ellipsis:
-            parent = self.get_parent()
-
-        if parent is None and not self.is_page():
-            self.set_parent(self.Page())
-            return True
-        return False
+    def create_top_page(self):
+        """ :param generalgui.MethodGrouper self: """
+        if self.get_parent() is None and not self.is_page():
+            page = self.Page(draw_now=True)
+            self.set_parent(page)
+            return page
 
     @classmethod
     def mainloop(cls):
@@ -123,9 +122,11 @@ class Drawer:
             Creates App tk if self is Page and widget's master is None.
 
             :param generalgui.MethodGrouper self: """
+        self.create_top_page()
+
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
-        if not widget_master or widget_master is not parent_widget:
+        if not widget_master or widget_master is not parent_widget:  # If current widget master does not match parent part's widget
             self.part_delete()
             master = parent_widget or self.create_app()
 
@@ -183,7 +184,7 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer, App):
 
     widget_cls = ...
 
-    def __init__(self, parent):
+    def __init__(self, parent, draw_now):
         self._shown = True
 
     def __getstate__(self):  # For pickle
@@ -260,8 +261,8 @@ def set_parent_hook(self, parent):
 
         :param generalgui.MethodGrouper self:
         :param generalgui.MethodGrouper parent: """
-    old_parent = self.get_parent()
-    self.create_top_page(parent=parent)
+    # old_parent = self.get_parent()
+    # self.create_top_page(parent=parent)
 
     # debug(locals(), "self", "old_parent", "old_parent.get_parent()", "parent", "old_parent.get_children()")
     # if old_parent and old_parent.get_parent() is None and old_parent is not parent and old_parent.get_children() == [self]:
