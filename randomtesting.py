@@ -7,25 +7,24 @@ from generallibrary import getBaseClassNames
 import random
 
 
-
-def test():
-    print(5)
+def test(part):
+    part.get_parent().copy_part()
 
 def test2(part):
     # part.get_parent().copy_part()
     # part.copy_part()
-    # part.copy_part(part.get_parent())
+    part.copy_part(part.get_parent())
     # part.draw_destroy()
 
-    part.set_parent(None)
-    # part.shown = False
+    # part.set_parent(None)
+    # part.shown = Falsed
     # part.value = "hello"
 
-# page = Page()
+page = Page()
 # b = page.add_node()  # This doesnt work now for some reason
 
-label = Label(value="hi")
-label.bind(lambda x=label: test2(x))
+label = Label(parent=page, value="hi")
+label.bind(lambda x=label: test(x))
 
 
 # label.set_parent(page)
@@ -33,9 +32,12 @@ label.bind(lambda x=label: test2(x))
 # label2 = Label(page, "hi")
 # label.copy_part(page)
 
-# for i in range(2):
-#     btn = Button(page, str(random.randint(1, 1000)))
-#     btn.bind(lambda x=btn: test2(x))
+for i in range(5):
+    btn = Button(page, str(random.randint(1, 1000)))
+    btn.bind(lambda x=btn: test2(x))
+
+from pprint import pprint
+pprint(Page.orders)
 
 # page.view()
 # copy = page.copy_node()

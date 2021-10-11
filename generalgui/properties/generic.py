@@ -50,6 +50,8 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer, App, States):
 
         self.set_parent(parent=old_parent)
         self.set_index(index=old_index)
+        # from pprint import pprint
+        # pprint(Generic.orders)
 
 
 Drawer.register_mainloop()

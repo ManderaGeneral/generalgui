@@ -2,7 +2,7 @@ import atexit
 import tkinter as tk
 from collections import OrderedDict
 
-from generallibrary import SigInfo
+from generallibrary import SigInfo, get_origin
 
 
 def _deco_draw_queue(func):
@@ -12,15 +12,17 @@ def _deco_draw_queue(func):
         if sigInfo["draw_now"]:
             sigInfo.call()
         else:
-            method = getattr(sigInfo["self"], func.__name__)
-            if method in Drawer.orders:  # Prevent duplicate orders
-                del Drawer.orders[method]
-            Drawer.orders[method] = sigInfo
+            # key = getattr(sigInfo["self"], func.__name__)
+            key = f"{sigInfo['self'].id}-{func.__name__}"
+
+            if key in Drawer.orders:  # Prevent duplicate orders
+                del Drawer.orders[key]
+            Drawer.orders[key] = sigInfo
     return _wrapper
 
 
 class Drawer:
-    orders = OrderedDict()
+    orders = {}
     apps = []
     registered_mainloop = None
 
