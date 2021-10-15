@@ -48,17 +48,16 @@ class Drawer:
 
     @classmethod
     def draw_queue_run(cls, limit=None):
-        max_limit = len(cls.orders)
+        """ Execute some orders, 0 is limitless. """
         if limit is None:
-            limit = 1
-        elif limit == 0:
-            limit = max_limit
-        if limit > max_limit:
-            limit = max_limit
+            limit = 0
 
-        order_iter = iter(cls.orders)
-        for i in range(limit):
-            cls.orders.pop(next(order_iter)).call()
+        i = 0
+        while True:
+            i += 1
+            if not cls.orders or i == limit:
+                break
+            cls.orders.pop(next(iter(cls.orders))).call()
             # sleep(0.1)
 
     @classmethod
@@ -79,7 +78,7 @@ class Drawer:
     @classmethod
     def mainloop(cls):
         while True:
-            if not cls.single_loop():
+            if not cls.single_loop(limit=1):
                 exit()
 
     @classmethod
@@ -116,6 +115,8 @@ class Drawer:
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
+
+            # HERE ** decouple this
             # This could be generalized for each widget option, could put this and draw_value in value.py too
             # value
             if hasattr(self, "value"):

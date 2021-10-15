@@ -17,10 +17,30 @@ class GuiTest(unittest.TestCase):
         Page.single_loop(limit=0)
 
 class CreateTest(GuiTest):
-    def test_draw(self):
+    def test_draw_page(self):
         page = Page()
-
         self.draw()
+        self.assertEqual(1, page.widget.winfo_ismapped())
 
-        print(page.widget.winfo_ismapped())
+    def test_draw_button(self):
+        button = Button()
+        self.draw()
+        self.assertEqual(1, button.widget.winfo_ismapped())
+
+    def test_value(self):
+        label = Label(value="hi")
+        self.draw()
+        self.assertEqual("hi", label.widget["text"])
+
+
+
+
+
+
+
+
+
+
+
+
 

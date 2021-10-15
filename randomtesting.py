@@ -21,21 +21,27 @@ def test2(part):
     # part.shown = False
     # part.value = "hello"
 
-page = Page()
-# b = page.add_node()  # This doesnt work now for some reason
-
-label = Label(parent=page, value="hi")
-label.bind(lambda x=label: test(x))
 
 
-# label.set_parent(page)
+button = Button(bind=lambda: print(5))
 
-# label2 = Label(page, "hi")
-# label.copy_part(page)
+button.single_loop()
+button.single_loop()
+button.widget.invoke()
+button.widget.invoke()
 
-for i in range(5):
-    btn = Button(page, str(random.randint(1, 1000)))
-    btn.bind(lambda x=btn: test2(x))
+
+
+# page = Page()
+#
+# label = Label(parent=page, value="hi")
+# label.bind(lambda x=label: test(x))
+#
+# for i in range(5):
+#     btn = Button(page, str(random.randint(1, 1000)))
+#     btn.bind(lambda x=btn: test2(x))
+
+
 
 # from pprint import pprint
 # pprint(Page.orders)
