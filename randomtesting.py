@@ -7,6 +7,7 @@ from generallibrary import getBaseClassNames
 import random
 
 
+
 def test(part):
     part.get_parent().copy_part()
 
@@ -17,7 +18,7 @@ def test2(part):
     # part.draw_destroy()
 
     # part.set_parent(None)
-    # part.shown = Falsed
+    # part.shown = False
     # part.value = "hello"
 
 page = Page()
@@ -36,8 +37,10 @@ for i in range(5):
     btn = Button(page, str(random.randint(1, 1000)))
     btn.bind(lambda x=btn: test2(x))
 
-from pprint import pprint
-pprint(Page.orders)
+# from pprint import pprint
+# pprint(Page.orders)
+
+
 
 # page.view()
 # copy = page.copy_node()

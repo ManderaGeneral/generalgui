@@ -47,18 +47,39 @@ class Drawer:
             return page
 
     @classmethod
+    def draw_queue_run(cls, limit=None):
+        max_limit = len(cls.orders)
+        if limit is None:
+            limit = 1
+        elif limit == 0:
+            limit = max_limit
+        if limit > max_limit:
+            limit = max_limit
+
+        order_iter = iter(cls.orders)
+        for i in range(limit):
+            cls.orders.pop(next(order_iter)).call()
+            # sleep(0.1)
+
+    @classmethod
+    def update_apps(cls):
+        for app in cls.apps:
+            try:
+                app.update_idletasks()
+                app.update()
+            except tk.TclError:
+                pass
+        return bool(cls.apps)
+
+    @classmethod
+    def single_loop(cls, limit=None):
+        cls.draw_queue_run(limit=limit)
+        return cls.update_apps()
+
+    @classmethod
     def mainloop(cls):
         while True:
-            cls.draw_queue_run()
-
-            for app in cls.apps:
-                try:
-                    app.update_idletasks()
-                    app.update()
-                except tk.TclError:
-                    pass
-
-            if not cls.apps:
+            if not cls.single_loop():
                 exit()
 
     @classmethod
@@ -67,12 +88,9 @@ class Drawer:
             cls.registered_mainloop = atexit.register(Drawer.mainloop)
 
     @classmethod
-    def draw_queue_run(cls):
-        if cls.orders:
-            order_iter = iter(cls.orders)
-            for i in range(1):
-                cls.orders.pop(next(order_iter)).call()
-                # sleep(0.1)
+    def unreqister_mainloop(cls):
+        if cls.registered_mainloop:
+            atexit.unregister(cls.registered_mainloop)
 
     def part_delete(self):
         """ Delete part directly without queue. """
