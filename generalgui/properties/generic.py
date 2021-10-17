@@ -55,5 +55,5 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer, App, States):
 
 
 Drawer.register_mainloop()
-hook(Generic.set_parent, set_parent_hook)
+hook(Generic.set_parent, set_parent_hook, owner=Generic)
 

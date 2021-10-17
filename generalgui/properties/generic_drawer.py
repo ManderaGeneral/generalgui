@@ -2,7 +2,7 @@ import atexit
 import tkinter as tk
 from collections import OrderedDict
 
-from generallibrary import SigInfo, get_origin
+from generallibrary import SigInfo, get_origin, getBaseClasses, ObjInfo
 
 
 def _deco_draw_queue(func):
@@ -48,16 +48,15 @@ class Drawer:
 
     @classmethod
     def draw_queue_run(cls, limit=None):
-        """ Execute some orders, 0 is limitless. """
-        if limit is None:
-            limit = 0
-
+        """ Execute some orders, limit of <= 0 is limitless. """
+        if not limit:
+            limit = -1
         i = 0
         while True:
-            i += 1
             if not cls.orders or i == limit:
                 break
             cls.orders.pop(next(iter(cls.orders))).call()
+            i += 1
             # sleep(0.1)
 
     @classmethod
@@ -115,8 +114,18 @@ class Drawer:
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
-
             # HERE ** decouple this
+            for base in getBaseClasses(self, includeSelf=True):
+                draw_create_hook = getattr(base, "draw_create_hook", None)
+                if draw_create_hook:
+                    objInfo = ObjInfo(draw_create_hook, parent=ObjInfo(base))
+                    if objInfo.defined_by_parent():  # HERE ** This should work now
+                        print(f"Calling draw hook for {base}")
+                        hook_return = draw_create_hook(self, kwargs=kwargs)
+                        if hook_return:
+                            kwargs = hook_return
+                        # print(kwargs)
+
             # This could be generalized for each widget option, could put this and draw_value in value.py too
             # value
             if hasattr(self, "value"):

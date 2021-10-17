@@ -2,7 +2,7 @@
 
 
 from generalgui import Page, Label, Button
-from generallibrary import getBaseClassNames
+from generallibrary import getBaseClassNames, TreeDiagram
 
 import random
 
@@ -22,14 +22,7 @@ def test2(part):
     # part.value = "hello"
 
 
-
-button = Button(bind=lambda: print(5))
-
-button.single_loop()
-button.single_loop()
-button.widget.invoke()
-button.widget.invoke()
-
+button = Button(value="hi")
 
 
 # page = Page()
