@@ -1,24 +1,9 @@
 import atexit
 import tkinter as tk
-from collections import OrderedDict
 
-from generallibrary import SigInfo, get_origin, getBaseClasses, ObjInfo
+from generallibrary import getBaseClasses, ObjInfo
 
-
-def _deco_draw_queue(func):
-    def _wrapper(*args, **kwargs):
-        sigInfo = SigInfo(func, *args, **kwargs)
-
-        if sigInfo["draw_now"]:
-            sigInfo.call()
-        else:
-            # key = getattr(sigInfo["self"], func.__name__)
-            key = f"{sigInfo['self'].id}-{func.__name__}"
-
-            if key in Drawer.orders:  # Prevent duplicate orders
-                del Drawer.orders[key]
-            Drawer.orders[key] = sigInfo
-    return _wrapper
+from generalgui.properties.funcs import _deco_draw_queue
 
 
 class Drawer:
@@ -120,27 +105,12 @@ class Drawer:
                 if draw_create_hook:
                     objInfo = ObjInfo(draw_create_hook, parent=ObjInfo(base))
                     if objInfo.defined_by_parent():  # HERE ** This should work now
-                        print(f"Calling draw hook for {base}")
                         hook_return = draw_create_hook(self, kwargs=kwargs)
-                        if hook_return:
+                        if hook_return is not None:
                             kwargs = hook_return
-                        # print(kwargs)
-
-            # This could be generalized for each widget option, could put this and draw_value in value.py too
-            # value
-            if hasattr(self, "value"):
-                kwargs["text"] = self.value
-            # binder
-            self.draw_bind()
 
             self.widget = self.widget_cls(**kwargs)
             self.widget.pack()
-
-    @_deco_draw_queue
-    def draw_value(self):
-        """ :param generalgui.MethodGrouper self: """
-        if hasattr(self, "value"):
-            self.widget.config(text=self.value)
 
     @_deco_draw_queue
     def draw_show(self):
@@ -150,11 +120,5 @@ class Drawer:
                 self.widget.pack()
             else:
                 self.widget.pack_forget()
-
-    @_deco_draw_queue
-    def draw_bind(self):
-        """ :param generalgui.MethodGrouper self: """
-        if self.binds:
-            self.widget.bind("<Button-1>", lambda e, _part=self: _part.call_binds())
 
 

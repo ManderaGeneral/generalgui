@@ -1,4 +1,4 @@
-from generalgui.properties.generic_drawer import _deco_draw_queue
+from generalgui.properties.funcs import _deco_draw_queue
 
 
 class App:

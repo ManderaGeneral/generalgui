@@ -22,7 +22,7 @@ def test2(part):
     # part.value = "hello"
 
 
-button = Button(value="hi")
+button = Button(value="hi", bind=lambda: print(5))
 
 
 # page = Page()

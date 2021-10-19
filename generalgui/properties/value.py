@@ -1,7 +1,6 @@
 
+from generalgui.properties.funcs import PartBaseClass, _deco_draw_queue
 
-class PartBaseClass:
-    def draw_create_hook(self, kwargs): ...
 
 class Value(PartBaseClass):
     def __init__(self, value=None):
@@ -23,6 +22,12 @@ class Value(PartBaseClass):
         """ :param generalgui.MethodGrouper self: """
         self._value = "" if value is None else value
         self.draw_value()
+
+    @_deco_draw_queue
+    def draw_value(self):
+        """ :param generalgui.MethodGrouper self: """
+        if hasattr(self, "value"):
+            self.widget.config(text=self.value)
 
 
 
