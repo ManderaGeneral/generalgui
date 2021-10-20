@@ -99,7 +99,6 @@ class Drawer:
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
-            # HERE ** decouple this
             for base in getBaseClasses(self, includeSelf=True):
                 draw_create_hook = getattr(base, "draw_create_hook", None)
                 if draw_create_hook:
