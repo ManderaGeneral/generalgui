@@ -1,7 +1,7 @@
 """Random testing"""
 
 
-from generalgui import Page, Label, Button
+from generalgui import Page, Label, Button, Plot
 from generallibrary import getBaseClassNames, TreeDiagram
 
 import random
@@ -22,13 +22,15 @@ def test2(part):
 
 
 
-page = Page()
+plot = Plot()
 
-label = Label(parent=page, value="hi")
-
-for i in range(5):
-    btn = Button(page, str(random.randint(1, 1000)))
-    btn.bind(lambda x=btn: test2(x))
+# page = Page()
+#
+# label = Label(parent=page, value="hi")
+#
+# for i in range(5):
+#     btn = Button(page, str(random.randint(1, 1000)))
+#     btn.bind(lambda x=btn: test2(x))
 
 
 """
