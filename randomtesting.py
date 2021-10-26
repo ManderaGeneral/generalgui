@@ -1,7 +1,7 @@
 """Random testing"""
 
 
-from generalgui import Page, Label, Button, Plot
+from generalgui import Page, Label, Button, Plot, Checkbutton
 from generallibrary import getBaseClassNames, TreeDiagram
 
 import random
@@ -21,8 +21,9 @@ def test2(part):
     # part.value = "hello"
 
 
+checkbutton = Checkbutton(value="hi")
 
-plot = Plot()
+# plot = Plot()
 
 # page = Page()
 #
@@ -34,6 +35,24 @@ plot = Plot()
 
 
 """
+Starting with platform to actually sell program (Goal is to easily be able to sell new products)
+    Generate a simple gui exe
+    [mainframe_api] Create a new private github repo
+    Create a new lightsail server with django api
+    Database for users to sign in and track programs
+    Workflow uploads new exe files to lightsail
+    Allow purchases when signed in
+    Exe files downloadable through api when signed in
+    [generalmainframe] Local mainframe gui to sign into and start up downloaded exe files (Shortcut to skip mainframe)
+    [product_stock] Create actual product, analyze portfolio, stocks and whatnot
+
+How are private product repos treated differently?
+    Private
+    Not on PiPY
+    Generates exe for mainframe_api when dependency publishes
+    Could be included in Mandera readme, links would only work for me though
+
+
 
 MVP plan for first product release
 Decide on simple useful program

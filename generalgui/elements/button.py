@@ -6,7 +6,7 @@ from generalgui.properties.value import Value
 
 
 class Button(Generic, Value):
-    widget = ... # type: tk.Button
+    widget = ...  # type: tk.Button
     widget_cls = tk.Button
 
     def __init__(self, parent=None, value=None, bind=None):
