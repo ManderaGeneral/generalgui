@@ -37,6 +37,9 @@ checkbutton = Checkbutton(value="hi")
 """
 Starting with platform to actually sell program (Goal is to easily be able to sell new products)
     Generate a simple gui exe
+        pip install pyinstaller
+        pyinstaller randomtesting.py --onefile --windowed
+    
     [mainframe_api] Create a new private github repo
     Create a new lightsail server with django api
     Database for users to sign in and track programs
