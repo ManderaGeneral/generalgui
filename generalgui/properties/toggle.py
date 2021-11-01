@@ -7,6 +7,11 @@ class Toggle:
             :param toggled: """
         self._toggled = toggled
 
+        self.bind(self._sync_toggle)
+
+    def _sync_toggle(self):
+
+
     def toggled(self):
         return self._toggled
 

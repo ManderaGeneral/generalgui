@@ -22,9 +22,11 @@ def test2(part):
 
 
 
-# checkbutton = Checkbutton(value="hi")
+checkbutton = Checkbutton(value="hi")
 
-plot = Plot()
+button = Button(value="click me", bind=lambda: checkbutton.copy_part())
+
+# plot = Plot()
 
 
 # page = Page()
