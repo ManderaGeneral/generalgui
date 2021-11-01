@@ -21,9 +21,11 @@ def test2(part):
     # part.value = "hello"
 
 
-checkbutton = Checkbutton(value="hi")
 
-# plot = Plot()
+# checkbutton = Checkbutton(value="hi")
+
+plot = Plot()
+
 
 # page = Page()
 #
@@ -39,10 +41,12 @@ Starting with platform to actually sell program (Goal is to easily be able to se
     Generate a simple gui exe
         pip install pyinstaller
         pyinstaller randomtesting.py --onefile --windowed
-    
     [mainframe_api] Create a new private github repo
     Create a new lightsail server with django api
     Database for users to sign in and track programs
+    
+    HERE ** json_data in mainframe could store the whole gui as it was left when exiting
+    
     Workflow uploads new exe files to lightsail
     Allow purchases when signed in
     Exe files downloadable through api when signed in
@@ -56,6 +60,12 @@ How are private product repos treated differently?
     Could be included in Mandera readme, links would only work for me though
 
 
+Stock tool
+    Search for a symbol
+    Display stock with different periods (Smooth slider? Update dynamically so that it's intuitive when it changes)
+    A graph Page could be it's own window
+        Drag and drop window on another graph Page to automatically combine to see correlations etc
+        
 
 MVP plan for first product release
 Decide on simple useful program
