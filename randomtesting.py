@@ -24,7 +24,9 @@ def test2(part):
 
 checkbutton = Checkbutton(value="hi")
 
-button = Button(value="click me", bind=lambda: checkbutton.copy_part())
+# button = Button(value="click me")
+button = Button(value="click me", bind=lambda: print(checkbutton.toggled()))  # HERE ** Not sure why reversed toggle
+# button = Button(value="click me", bind=lambda: checkbutton.copy_part())
 
 # plot = Plot()
 
