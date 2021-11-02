@@ -99,11 +99,12 @@ class Drawer:
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
+            # Decoupling properties with these hooks
             for base in getBaseClasses(self, includeSelf=True):
                 draw_create_hook = getattr(base, "draw_create_hook", None)
                 if draw_create_hook:
                     objInfo = ObjInfo(draw_create_hook, parent=ObjInfo(base))
-                    if objInfo.defined_by_parent():  # HERE ** This should work now
+                    if objInfo.defined_by_parent():
                         hook_return = draw_create_hook(self, kwargs=kwargs)
                         if hook_return is not None:
                             kwargs = hook_return

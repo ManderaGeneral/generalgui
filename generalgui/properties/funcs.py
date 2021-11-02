@@ -1,4 +1,4 @@
-from generallibrary import getBaseClassNames, SigInfo
+from generallibrary import getBaseClassNames, SigInfo, dict_insert
 
 
 def set_parent_hook(self, parent):
@@ -29,5 +29,33 @@ def _deco_draw_queue(func):
             if key in orders:  # Prevent duplicate orders
                 del orders[key]
             orders[key] = sigInfo
+
+        # Could possibly do something like this to skip queue instead of drawing instantly
+        # if sigInfo["draw_now"]:
+        #     dict_insert(orders, **{key: sigInfo})
+        # else:
+        #     orders[key] = sigInfo
+
     return _wrapper
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -9,7 +9,7 @@ class Checkbutton(Generic, Value, Toggle):
     widget = ...  # type: tk.Checkbutton
     widget_cls = tk.Checkbutton
 
-    def __init__(self, parent=None, toggled=None, value=None):
+    def __init__(self, parent=None, value=None, toggled=None,):
         pass
 
 
