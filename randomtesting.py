@@ -2,7 +2,8 @@
 
 
 from generalgui import Page, Label, Button, Plot, Checkbutton
-from generallibrary import getBaseClassNames, TreeDiagram
+from generallibrary import getBaseClassNames, TreeDiagram, terminal
+
 
 import random
 
@@ -18,24 +19,28 @@ def test2(part):
 
     # part.set_parent(None)
     # part.shown = False
-    # part.value = "hello"
+    # part.text = "hello"
 
 
 
-page = Page()
+# page = Page()
+page = None
 checkbutton = Checkbutton(page, "hi")
-button = Button(parent=page, value="click me", bind=lambda: print(checkbutton.toggled()))
+
+button = Button(parent=page, text="click me", bind=lambda: print(checkbutton.toggled()))
 
 
-# button = Button(value="click me")
-# button = Button(value="click me", bind=lambda: checkbutton.copy_part())
+
+
+# button = Button(text="click me")
+# button = Button(text="click me", bind=lambda: checkbutton.copy_part())
 
 # plot = Plot()
 
 
 # page = Page()
 #
-# label = Label(parent=page, value="hi")
+# label = Label(parent=page, text="hi")
 #
 # for i in range(5):
 #     btn = Button(page, str(random.randint(1, 1000)))
@@ -51,13 +56,14 @@ Starting with platform to actually sell program (Goal is to easily be able to se
     Create a new lightsail server with django api
     Database for users to sign in and track programs
     
-    HERE ** json_data in mainframe could store the whole gui as it was left when exiting
-    
     Workflow uploads new exe files to lightsail
     Allow purchases when signed in
     Exe files downloadable through api when signed in
     [generalmainframe] Local mainframe gui to sign into and start up downloaded exe files (Shortcut to skip mainframe)
     [product_stock] Create actual product, analyze portfolio, stocks and whatnot
+    
+    
+    Non-MVP: json_data in mainframe could store the whole gui as it was left when exiting, experiment with that
 
 How are private product repos treated differently?
     Private

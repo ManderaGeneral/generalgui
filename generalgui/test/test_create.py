@@ -35,11 +35,11 @@ class CreateTest(GuiTest):
 
     def test_values(self):
         label = Label(None, "hi")
-        self.assertEqual("hi", label.value)
-        label.value = "foo"
-        self.assertEqual("foo", label.value)
-        label.value = None
-        self.assertEqual("", label.value)
+        self.assertEqual("hi", label.text)
+        label.text = "foo"
+        self.assertEqual("foo", label.text)
+        label.text = None
+        self.assertEqual("", label.text)
 
     def test_contain(self):
         with self.assertRaises(Exception):

@@ -51,7 +51,8 @@ class Drawer:
                 app.update_idletasks()
                 app.update()
             except tk.TclError:
-                pass
+                cls.apps.remove(app)
+                break
         return bool(cls.apps)
 
     @classmethod

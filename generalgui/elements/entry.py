@@ -6,8 +6,8 @@ from generalgui.properties.text import Text
 
 
 class Label(Generic, Text):
-    widget = ... # type: tk.Label
-    widget_cls = tk.Label
+    widget_cls = tk.Entry
+    widget = ...  # type: tk.Entry
 
     def __init__(self, parent=None, value=None):
         pass

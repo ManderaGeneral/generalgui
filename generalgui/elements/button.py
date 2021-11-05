@@ -1,11 +1,11 @@
 import tkinter as tk
 
 from generalgui.properties.generic import Generic
-from generalgui.properties.value import Value
+from generalgui.properties.text import Text
 
 
 
-class Button(Generic, Value):
+class Button(Generic, Text):
     widget = ...  # type: tk.Button
     widget_cls = tk.Button
 

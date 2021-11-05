@@ -8,21 +8,23 @@ class Toggle:
         """ :param generalgui.MethodGrouper self:
             :param toggled: """
         self._toggled = bool(toggled)
-        self.bind(self._sync_tk_to_toggle)
+        # self.bind(self._sync_tk_to_toggle)
         self._boolVar = ...
 
     def draw_create_hook(self, kwargs):
         self._boolVar = tk.BooleanVar()
+        self._boolVar.trace_add("write", lambda *_: self._sync_tk_to_toggle())
         self._sync_toggle_to_tk()
         kwargs["variable"] = self._boolVar
         return kwargs
         # super().__init__(parentPage, tk.Checkbutton, variable=self._boolVar, cursor="hand2", **parameters)
 
     def _sync_tk_to_toggle(self):
-        self._toggled = not self._boolVar.get()  # Invert because of bind order...
+        self._toggled = self._boolVar.get()
 
     def _sync_toggle_to_tk(self):
-        self._boolVar.set(self.toggled())
+        if self._boolVar is not Ellipsis:
+            self._boolVar.set(self.toggled())
 
     def toggled(self):
         return self._toggled
