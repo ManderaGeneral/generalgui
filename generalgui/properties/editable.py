@@ -35,7 +35,10 @@ class Editable:
         self._editable_tk_var_inst = self._editable_tk_var()
         self._editable_tk_var_inst.trace_add("write", lambda *_: self._editable_hook_set())
         self._editable_tk_var_inst.set(self._editable_hook_get())  # Set value once, then we let whatever other method handles it call draw
-        kwargs["variable"] = self._editable_tk_var_inst
+
+        key = "variable" if self._editable_tk_var.__name__ == "BooleanVar" else "textvariable"
+
+        kwargs[key] = self._editable_tk_var_inst
         return kwargs
 
 

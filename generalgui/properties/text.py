@@ -26,7 +26,9 @@ class Text(PartBaseClass):
     @_deco_draw_queue
     def draw_text(self):
         """ :param generalgui.MethodGrouper self: """
-        if hasattr(self, "text"):
+        if hasattr(self, "_editable_tk_var_inst"):  # Coupled to Editable
+            self._editable_tk_var_inst.set(self.text)
+        elif hasattr(self, "text"):
             self.widget.config(text=self.text)
 
 

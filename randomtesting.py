@@ -1,7 +1,7 @@
 """Random testing"""
 
 
-from generalgui import Page, Label, Button, Plot, Checkbutton
+from generalgui import *
 from generallibrary import getBaseClassNames, TreeDiagram, terminal
 
 import random
@@ -24,9 +24,13 @@ def test2(part):
 
 page = Page()
 # page = None
-checkbutton = Checkbutton(page, "hi")
-button = Button(parent=page, text="click me", bind=lambda: print(checkbutton.toggled()))
-button2 = Button(parent=page, text="toggle", bind=lambda: checkbutton.toggle())
+# checkbutton = Checkbutton(page, "hi")
+# button = Button(parent=page, text="click me", bind=lambda: print(checkbutton.toggled()))
+# button2 = Button(parent=page, text="toggle", bind=lambda: checkbutton.toggle())
+
+entry = Entry(page, "hi")
+button = Button(parent=page, text="click me", bind=lambda: print(entry.text))
+button2 = Button(parent=page, text="change", bind=lambda: setattr(entry, "text", "foo"))
 
 
 
