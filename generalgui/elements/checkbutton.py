@@ -12,10 +12,17 @@ class Checkbutton(Generic, Text, Toggle, Editable):
 
     # Generic
     widget_cls = tk.Checkbutton
-    widget_var = tk.BooleanVar  # HERE ** Maybe we can define vars here? Decouple Editable from Toggle
 
     # Editable
-    editable_attr = "_toggle"
+    _editable_tk_var = tk.BooleanVar
+    def _editable_hook_get(self):
+        return self._toggled
+    def _editable_hook_set(self):
+        self._toggled = self._editable_tk_var_inst.get()
+
+    # Toggle
+    def _draw_toggle_hook(self):
+        self._editable_tk_var_inst.set(self._toggled)
 
     def __init__(self, parent=None, text=None, toggled=None,):
         pass
