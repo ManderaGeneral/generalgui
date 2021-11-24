@@ -21,6 +21,7 @@ class Drawer:
     def create_app(self):
         """ :param generalgui.MethodGrouper self: """
         app = tk.Tk()
+        app.geometry("300x200")
         self.apps.append(app)
         return app
 

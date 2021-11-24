@@ -12,3 +12,4 @@ class App:
         """ :param generalgui.MethodGrouper self: """
         if self._tk:
             self._tk.destroy()
+

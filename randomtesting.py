@@ -64,8 +64,6 @@ Starting with platform to actually sell program (Goal is to easily be able to se
     Exe files downloadable through api when signed in
     [generalmainframe] Local mainframe gui to sign into and start up downloaded exe files (Shortcut to skip mainframe)
     [product_stock] Create actual product, analyze portfolio, stocks and whatnot
-    
-    
     Non-MVP: json_data in mainframe could store the whole gui as it was left when exiting, experiment with that
 
 How are private product repos treated differently?
