@@ -9,7 +9,7 @@ class Button(Generic, Text):
     widget = ...  # type: tk.Button
     widget_cls = tk.Button
 
-    def __init__(self, parent=None, value=None, bind=None):
+    def __init__(self, parent=None, text=None, bind=None):
         if bind:
             self.bind(bind)
 

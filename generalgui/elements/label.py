@@ -9,5 +9,5 @@ class Label(Generic, Text):
     widget = ... # type: tk.Label
     widget_cls = tk.Label
 
-    def __init__(self, parent=None, value=None):
+    def __init__(self, parent=None, text=None):
         pass
