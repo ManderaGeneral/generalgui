@@ -1,59 +1,18 @@
-# Merge files from `shared` repo (If this repo is new or if a shared file was changed for some reason)
-# UnitTests
-# Get old package version and dependents
-# Create artifact with metadata
-# Publish to PyPI if new version
 
-
-name: workflow
+name: UnitTest and Publish
 
 on:
   push:
     branches: master
 
 jobs:
-  sharedmerge:
-    outputs:
-      changed: ${{ steps.merge.outputs.changed }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.ACTIONS_TOKEN }}
-
-      - name: Setup git
-        run: |
-          sudo apt install git
-          git config --global user.email "rickard.abraham@gmail.com"
-          git config --global user.name Mandera
-
-      - name: Shared merge and possible repush
-        id: merge
-        run: |
-          cd ..
-          git clone https://Mandera:${{ secrets.GIT_PASSWORD }}@github.com/ManderaGeneral/shared.git
-          cp -r shared/generalasterisk/. ${{ github.event.repository.name }}
-          cd ${{ github.event.repository.name }}
-
-          if [[ $(git status) != *"clean"* ]]; then
-            echo Package was not up to date so it will be updated
-            git add .
-            git commit -m "[CI AUTO] Updating shared files for this package." -m "${{ github.event.head_commit.message }}"
-            git push
-
-            echo '::set-output name=changed::true'
-          else
-            echo Package is up to date
-            echo '::set-output name=changed::false'
-          fi
 
   unittest:
-    needs: sharedmerge
-    if: needs.sharedmerge.outputs.changed == 'false' && !contains(github.event.head_commit.message, '[CI SKIP]')
+    if: "!contains(github.event.head_commit.message, '[CI SKIP]')"
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: [3.8, 3.9]
+        python-version: [3.7, 3.8]
         os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
@@ -67,12 +26,11 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install wheel
           pip install .[full]
 
       - name: Run unittests
         run: |
-          python -m unittest discover ${{ github.event.repository.name }}/test
+          python -m unittest discover
 
 
   publisher:
@@ -82,7 +40,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: 3.7
 
       - name: Install all my packages to get versions and dependents
         run: |
@@ -96,8 +54,9 @@ jobs:
           echo ALL_PACKAGES=$ALL_PACKAGES >> $GITHUB_ENV
           pip install $ALL_PACKAGES
 
-          python -m pip install --upgrade pip==20.2.*
-          
+
+
+          python -m pip install --upgrade pip
           pip install pipdeptree ${{ github.event.repository.name }}[full]
 
           X=($(echo $(pip show ${{ github.event.repository.name }} | grep Version) | tr -d " " | tr ":" "\n"))
@@ -148,19 +107,7 @@ jobs:
           python setup.py sdist bdist_wheel
           twine upload dist/*
 
-          for x in {0..10}; do
-          pypi_versions=$(pip install ${{ github.event.repository.name }}== 2>&1) || :
-          if [[ $pypi_versions == *"${{ env.NEW_VERSION }}"* ]]; then
-          found_version=1
-          echo "Found new verson on PyPI!"
-          break
-          fi
-          echo "Couldn't find new version on PyPI, trying again in 30 seconds"
-          echo "${{ env.NEW_VERSION }} not in $pypi_versions"
-          sleep 30
-          done
 
-          if [[ -v found_version ]]; then
           sudo apt install git
           git config --global user.email "rickard.abraham@gmail.com"
           git config --global user.name Mandera
@@ -168,22 +115,12 @@ jobs:
           for x in ${{ env.DEPENDENT_PACKAGES }}; do
           git clone https://Mandera:${{ secrets.GIT_PASSWORD }}@github.com/ManderaGeneral/$x.git
           cd $x
-          git commit -m "[CI AUTO] ${{ github.event.repository.name }} ${{ env.NEW_VERSION }} published." -m "${{ github.event.head_commit.message }}" --allow-empty
+          git commit -m "[CI] Automatic test trigger for ${{ github.event.repository.name }}'s new ${{ env.NEW_VERSION }} release" --allow-empty
           git push
           cd ..
           done
 
-          else
-          echo "FAILING: Couldn't find new version on PyPI in time"
-          exit 1
-          fi
 
-      - name: Version tag
-        if: env.NEW_VERSION != env.OLD_VERSION
-        uses: mathieudutour/github-tag-action@v4.6
-        with:
-          github_token: ${{ secrets.ACTIONS_TOKEN }}
-          custom_tag: ${{ env.NEW_VERSION }}
 
 
 

@@ -1,42 +1,31 @@
-"""Checkbutton class that inherits Element"""
 
 import tkinter as tk
 
-from generalgui.element import Element
+from generalgui.properties.generic import Generic
+from generalgui.properties.text import Text
+from generalgui.properties.toggle import Toggle
+from generalgui.properties.editable import Editable
 
 
-class Checkbutton(Element):
-    """
-    Controls one tkinter Checkbutton
-    """
-    def __init__(self, parentPage, default=False, **parameters):
-        """
-        Create an Entry element that controls an entry.
+class Checkbutton(Generic, Text, Toggle, Editable):
+    # Type hinting
+    widget = ...  # type: tk.Checkbutton
 
-        :param generalgui.Page parentPage: Parent page
-        :param bool default: Whether to be created on or off
-        :param parameters: Both config and pack parameters together
-        """
-        self._boolVar = tk.BooleanVar(value=default)
-        super().__init__(parentPage, tk.Checkbutton, variable=self._boolVar, cursor="hand2", **parameters)
-        self.default = default
+    # Generic
+    widget_cls = tk.Checkbutton
 
-    def toggle(self):
-        """
-        Turn on checkbutton if it's off and vice versa.
-        """
-        self.setValue(not self.getValue())
+    # Editable
+    _editable_tk_var = tk.BooleanVar
+    def _editable_hook_get(self):
+        return self.toggled()
+    def _editable_hook_set(self):
+        self._toggled = self._editable_tk_var_inst.get()  # Set without triggering draw
 
-    def getValue(self):
-        """
-        Get whether checkbutton is toggled or not.
-        """
-        return self._boolVar.get()
+    # Toggle
+    def _draw_toggle_hook(self):
+        self._editable_tk_var_inst.set(self.toggled())
 
-    def setValue(self, value):
-        """
-        Set the value of checkbutton
+    def __init__(self, parent=None, text=None, toggled=None):
+        pass
 
-        :param bool value: New boolean value
-        """
-        self._boolVar.set(value)
+
