@@ -35,6 +35,7 @@ button2 = Button(parent=page, text="change", bind=lambda: setattr(entry, "text",
 
 
 
+
 # button = Button(text="click me")
 # button = Button(text="click me", bind=lambda: checkbutton.copy_part())
 
