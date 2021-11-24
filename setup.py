@@ -1,31 +1,39 @@
 
-from setuptools import setup, find_packages
 
-from os import path
+from setuptools import setup, find_namespace_packages
+from pathlib import Path
 
-
-this_directory = path.abspath(path.dirname(__file__))
-with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
-    long_description = f.read()
+try:
+    long_description = (Path(__file__).parent / 'README.md').read_text(encoding='utf-8')
+except FileNotFoundError:
+    long_description = 'Readme missing'
 
 setup(
     name="generalgui",
-    long_description=long_description,
-    long_description_content_type='text/markdown',
     author='Rickard "Mandera" Abraham',
+    author_email="rickard.abraham@gmail.com",
+    version="1.3",
+    description="Extends and simplifies tkinter functionality with built-in QoL improvements.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    install_requires=[
+        'generalvector',
+        'generallibrary',
+        'generalfile',
+        'pandas',
+        'numpy',
+    ],
     url="https://github.com/ManderaGeneral/generalgui",
-    version="1.3.0",
-    description=(
-        "Extends and simplifies tkinter functionality with built-in QoL improvements."
-    ),
-    packages=find_packages(),
-    install_requires=["wheel", "generallibrary", "generalvector", "generalfile", "pandas", "numpy"],
-    license="MIT",
+    license="mit",
+    python_requires=">=3.8, <3.10",
+    packages=find_namespace_packages(exclude=("build*", "dist*")),
+    extras_require={},
     classifiers=[
-        "Operating System :: Microsoft :: Windows :: Windows 7",
-        "Programming Language :: Python :: 3.8",
-        "Development Status :: 2 - Pre-Alpha",
-        "License :: OSI Approved :: MIT License",
-        "Topic :: Software Development :: User Interfaces",
-    ]
+        'Topic :: Software Development :: User Interfaces',
+        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'License :: OSI Approved :: MIT License',
+        'Operating System :: Microsoft :: Windows',
+        'Operating System :: POSIX :: Linux',
+    ],
 )
