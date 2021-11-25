@@ -1,12 +1,6 @@
 
-import unittest
-
-from generalgui import Page, Label, Button
-
-
-class GuiTest(unittest.TestCase):
-    def tearDown(self):
-        Page.orders.clear()
+from generalgui import Page, Label
+from generalgui.test.test_generalgui import GuiTest
 
 
 class CreateTest(GuiTest):

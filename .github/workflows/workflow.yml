@@ -45,9 +45,6 @@ jobs:
           git clone ssh://git@github.com/ManderaGeneral/.github.git
       - name: Run Packager method 'workflow_unittest'
         run: |
-          sudo apt-get install -y xvfb
-          python -c "import os; os.system('Xvfb :1 -screen 0 1600x1200x16  &'); os.environ['DISPLAY']=':1.0'"
-
           python -c "from generalpackager import Packager; Packager('generalpackager').workflow_unittest()"
         env:
           PACKAGER_GITHUB_API: ${{ secrets.PACKAGER_GITHUB_API }}
