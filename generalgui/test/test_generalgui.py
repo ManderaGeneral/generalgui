@@ -5,17 +5,21 @@ from unittest import TestCase
 import os
 
 
-class GuiTest(unittest.TestCase):
-    def setUpClass(self):
+class GuiTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
         os.system('Xvfb :1 -screen 0 1600x1200x16  &')
         os.environ['DISPLAY'] = ':1.0'
 
-    def tearDown(self):
-        Page.orders.clear()
+    def setUp(self):
+        pass
 
     @classmethod
     def tearDownClass(cls):
         Page.unreqister_mainloop()
+
+    def tearDown(self):
+        Page.orders.clear()
 
     def draw(self):
         """ Draw everything at once without mainloop. """
