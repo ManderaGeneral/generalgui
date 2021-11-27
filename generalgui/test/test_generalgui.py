@@ -1,5 +1,6 @@
 
 from generalgui import Page
+from generallibrary import VerInfo
 
 from unittest import TestCase
 import os
@@ -8,7 +9,8 @@ import os
 class GuiTest(TestCase):
     @classmethod
     def setUpClass(cls):
-        # os.system('Xvfb :1 -screen 1 1600x1200x16 &')
+        if VerInfo().linux:
+            os.system('Xvfb :1 -screen 1 1600x1200x16 &')
         os.environ['DISPLAY'] = ':1.0'
 
     def setUp(self):
