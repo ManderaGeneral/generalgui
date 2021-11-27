@@ -8,7 +8,7 @@ import os
 class GuiTest(TestCase):
     @classmethod
     def setUpClass(cls):
-        os.system('Xvfb :1 -screen 1 1600x1200x16 &')
+        # os.system('Xvfb :1 -screen 1 1600x1200x16 &')
         os.environ['DISPLAY'] = ':1.0'
 
     def setUp(self):
