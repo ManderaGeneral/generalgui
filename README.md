@@ -4,9 +4,9 @@ Extends and simplifies tkinter functionality with built-in QoL improvements.
 This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGeneral).
 
 ## Information
-| Package                                                    | Ver                                         | Latest Release       | Python                                                                                                                   | Platform        |   Lvl | Todo                                                   | Tests   |
-|:-----------------------------------------------------------|:--------------------------------------------|:---------------------|:-------------------------------------------------------------------------------------------------------------------------|:----------------|------:|:-------------------------------------------------------|:--------|
-| [generalgui](https://github.com/ManderaGeneral/generalgui) | [2.0](https://pypi.org/project/generalgui/) | 2021-11-27 21:34 CET | [3.8](https://www.python.org/downloads/release/python-380/), [3.9](https://www.python.org/downloads/release/python-390/) | Windows, Ubuntu |     2 | [8](https://github.com/ManderaGeneral/generalgui#Todo) | 69.5 %  |
+| Package                                                    | Ver                                           | Latest Release       | Python                                                                                                                   | Platform        |   Lvl | Todo                                                   | Tests   |
+|:-----------------------------------------------------------|:----------------------------------------------|:---------------------|:-------------------------------------------------------------------------------------------------------------------------|:----------------|------:|:-------------------------------------------------------|:--------|
+| [generalgui](https://github.com/ManderaGeneral/generalgui) | [2.0.1](https://pypi.org/project/generalgui/) | 2021-11-30 17:39 CET | [3.8](https://www.python.org/downloads/release/python-380/), [3.9](https://www.python.org/downloads/release/python-390/) | Windows, Ubuntu |     2 | [8](https://github.com/ManderaGeneral/generalgui#Todo) | 69.5 %  |
 
 ## Contents
 <pre>
@@ -64,5 +64,5 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L1'>plot.py</a>                  | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L5'>[UnitTest] for Class: Plot</a>                   |
 
 <sup>
-Generated 2021-11-30 17:12 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
+Generated 2021-11-30 17:39 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
 </sup>
