@@ -1,7 +1,6 @@
 {
     "enabled": true,
     "private": false,
-    "installable": true,
     "name": "generalgui",
     "version": "2.0",
     "description": "Extends and simplifies tkinter functionality with built-in QoL improvements.",
