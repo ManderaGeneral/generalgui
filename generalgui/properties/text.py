@@ -6,7 +6,7 @@ class Text(PartBaseClass):
     def __init__(self, text=None):
         """ :param generalgui.MethodGrouper self:
             :param text: """
-        self._text = text
+        self._text = self._text_scrub(text=text)
 
     def draw_create_hook(self, kwargs):
         kwargs["text"] = self.text
@@ -16,11 +16,14 @@ class Text(PartBaseClass):
     def text(self):
         """ :param generalgui.MethodGrouper self: """
         return self._text
-
+    
+    def _text_scrub(self, text):
+        return "" if text is None else text
+    
     @text.setter
     def text(self, text):
         """ :param generalgui.MethodGrouper self: """
-        self._text = "" if text is None else text
+        self._text = self._text_scrub(text=text)
         self.draw_text()
 
     @_deco_draw_queue

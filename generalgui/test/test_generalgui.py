@@ -7,9 +7,12 @@ import os
 
 
 class GuiTest(TestCase):
+    _config_xvfb = False
+
     @classmethod
     def setUpClass(cls):
-        if VerInfo().linux:
+        if VerInfo().linux and not GuiTest._config_xvfb:
+            GuiTest._config_xvfb = True
             os.system('Xvfb :1 -screen 1 1600x1200x16 &')
         os.environ['DISPLAY'] = ':1.0'
 
