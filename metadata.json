@@ -2,7 +2,7 @@
     "enabled": true,
     "private": false,
     "name": "generalgui",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Extends and simplifies tkinter functionality with built-in QoL improvements.",
     "install_requires": [
         "generalvector",
