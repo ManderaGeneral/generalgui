@@ -25,31 +25,31 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 
 ## Attributes
 <pre>
-<a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/__init__.py#L1'>Module: generalgui</a>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/elements/button.py#L1'>Class: Button</a>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/funcs.py#L1'>Method: draw_text</a> <b>(Untested)</b>
-│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/text.py#L1'>Property: text</a>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/elements/checkbutton.py#L1'>Class: Checkbutton</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/funcs.py#L1'>Method: draw_text</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/text.py#L1'>Property: text</a>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/toggle.py#L1'>Method: toggle</a> <b>(Untested)</b>
-│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/toggle.py#L1'>Method: toggled</a> <b>(Untested)</b>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/elements/entry.py#L1'>Class: Entry</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/funcs.py#L1'>Method: draw_text</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/text.py#L1'>Property: text</a>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/toggle.py#L1'>Method: toggle</a> <b>(Untested)</b>
-│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/toggle.py#L1'>Method: toggled</a> <b>(Untested)</b>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/elements/label.py#L1'>Class: Label</a>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/funcs.py#L1'>Method: draw_text</a> <b>(Untested)</b>
-│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/text.py#L1'>Property: text</a>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/__init__.py#L1'>Class: MethodGrouper</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/funcs.py#L1'>Method: draw_text</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/text.py#L1'>Property: text</a>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/toggle.py#L1'>Method: toggle</a> <b>(Untested)</b>
-│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/properties/toggle.py#L1'>Method: toggled</a> <b>(Untested)</b>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/elements/page.py#L1'>Class: Page</a>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/elements/subelements/password.py#L1'>Class: Password</a> <b>(Untested)</b>
-└─ <a href='https://github.com/ManderaGeneral/generalgui/blob/02fe061/generalgui/pages/plot.py#L1'>Class: Plot</a> <b>(Untested)</b>
+<a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/__init__.py#L1'>Module: generalgui</a>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/button.py#L8'>Class: Button</a>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/checkbutton.py#L10'>Class: Checkbutton</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L23'>Method: toggle</a> <b>(Untested)</b>
+│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>Method: toggled</a> <b>(Untested)</b>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/entry.py#L10'>Class: Entry</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L23'>Method: toggle</a> <b>(Untested)</b>
+│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>Method: toggled</a> <b>(Untested)</b>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/label.py#L8'>Class: Label</a>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/__init__.py#L10'>Class: MethodGrouper</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L23'>Method: toggle</a> <b>(Untested)</b>
+│  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>Method: toggled</a> <b>(Untested)</b>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/page.py#L8'>Class: Page</a>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/subelements/password.py#L5'>Class: Password</a> <b>(Untested)</b>
+└─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L5'>Class: Plot</a> <b>(Untested)</b>
 </pre>
 
 ## Todo
@@ -66,5 +66,5 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L1'>plot.py</a>                        | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L5'>[UnitTest] for Class: Plot</a>                        |
 
 <sup>
-Generated 2021-12-03 17:14 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/02fe061'>02fe061</a>.
+Generated 2021-12-04 17:31 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
 </sup>
