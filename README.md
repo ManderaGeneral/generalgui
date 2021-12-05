@@ -66,5 +66,5 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L1'>plot.py</a>                        | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L5'>[UnitTest] for Class: Plot</a>                        |
 
 <sup>
-Generated 2021-12-04 17:31 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
+Generated 2021-12-05 11:06 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
 </sup>
