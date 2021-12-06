@@ -2,10 +2,9 @@
 
 
 from generalgui import *
-from generallibrary import getBaseClassNames, TreeDiagram, terminal
+from generallibrary import getBaseClassNames, TreeDiagram, terminal, ceil
 
 import random
-
 
 def test(part):
     part.get_parent().copy_part()
@@ -21,16 +20,36 @@ def test2(part):
     # part.text = "hello"
 
 
+# I want to be able to delete a part and then create it
+def create():
+    x.draw_create()
+def delete():
+    x.draw_delete()
+
 
 page = Page()
+Button(page, "state", lambda: print(x.exists()))
+Button(page, "create", create)
+Button(page, "delete", delete)
+
+
+page2 = Page(page).dont_draw()
+entry = Entry(page2, "hi")
+entry2 = Entry(page2, "hi")
+button = Button(page2, "click", lambda: print(5))
+
+x = button
+
+
+
 # page = None
 # checkbutton = Checkbutton(page, "hi")
 # button = Button(parent=page, text="click me", bind=lambda: print(checkbutton.toggled()))
 # button2 = Button(parent=page, text="toggle", bind=lambda: checkbutton.toggle())
 
-entry = Entry(page, "hi")
-button = Button(parent=page, text="click me", bind=lambda: print(entry.text))
-button2 = Button(parent=page, text="change", bind=lambda: setattr(entry, "text", "foo"))
+# entry = Entry(page, "hi")
+# button = Button(parent=page, text="click me", bind=lambda: print(entry.text))
+# button2 = Button(parent=page, text="change", bind=lambda: setattr(entry, "text", "foo"))
 
 
 

@@ -7,6 +7,8 @@ from generalgui.properties.funcs import _deco_draw_queue
 
 
 class Drawer:
+    """ All draw_* methods just syncs tkinter widget to Part attribute. """
+
     orders = {}
     apps = []
     registered_mainloop = None
@@ -15,9 +17,19 @@ class Drawer:
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         # set_parent_hook(self=self, parent=parent)
-        self.draw_create(draw_now=draw_now)
+        if self.get_parent() is None or self.get_parent().exists():  # HERE ** We need an exists state here that changes without queue
+            self.draw_create(draw_now=draw_now)
         # self.create_top_page(parent=parent)
-
+    
+    def get_order_key(self, method):
+        """ :param generalgui.MethodGrouper self: """
+        return f"{self.id}-{method.__name__}"
+    
+    def dont_draw(self):
+        """ :param generalgui.MethodGrouper self: """
+        self.orders.pop(self.get_order_key(self.draw_create), None)
+        return self
+    
     def create_app(self):
         """ :param generalgui.MethodGrouper self: """
         app = tk.Tk()
@@ -52,6 +64,7 @@ class Drawer:
                 app.update_idletasks()
                 app.update()
             except tk.TclError:
+            # except (tk.TclError, KeyboardInterrupt):
                 cls.apps.remove(app)
                 break
         return bool(cls.apps)
@@ -77,17 +90,25 @@ class Drawer:
         if cls.registered_mainloop:
             atexit.unregister(cls.registered_mainloop)
 
-    def part_delete(self):
-        """ Delete part directly without queue. """
-        if self.widget:
+    def exists(self):
+        """ :param generalgui.MethodGrouper self: """
+        return bool(self.widget)
+
+    @_deco_draw_queue
+    def draw_delete(self):
+        """ Deletes widget.
+
+            :param generalgui.MethodGrouper self: """
+        if self.exists():
             try:
                 self.widget.destroy()
             except tk.TclError:
                 pass
-
+            self.widget = None
+    
     @_deco_draw_queue
     def draw_create(self):
-        """ This one should create a widget but also destroy it.
+        """ Creates widget.
             Syncs tkinter widget to match Part and Part parent.
             Creates App tk if self is Page and widget's master is None.
 
@@ -97,7 +118,7 @@ class Drawer:
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
         if not widget_master or widget_master is not parent_widget:  # If current widget master does not match parent part's widget
-            self.part_delete()
+            self.draw_delete(draw_now=True)  # untested
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 

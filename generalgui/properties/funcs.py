@@ -1,4 +1,4 @@
-from generallibrary import getBaseClassNames, SigInfo, dict_insert
+from generallibrary import getBaseClassNames, SigInfo, dict_insert, wrapper_transfer
 
 
 def set_parent_hook(self, parent):
@@ -16,6 +16,10 @@ class PartBaseClass:
 
 
 def _deco_draw_queue(func):
+    """ Append one order to dict for this func call. 
+        Creates a key with id of Part and func's name. 
+        If key exists as an old order then it's removed. 
+        Returns key unless draw_now is True. """
     def _wrapper(*args, **kwargs):
         sigInfo = SigInfo(func, *args, **kwargs)
 
@@ -23,12 +27,13 @@ def _deco_draw_queue(func):
             sigInfo.call()
         else:
             # key = getattr(sigInfo["self"], func.__name__)
-            key = f"{sigInfo['self'].id}-{func.__name__}"
+            key = sigInfo["self"].get_order_key(func)
 
             orders = sigInfo["self"].orders
             if key in orders:  # Prevent duplicate orders
                 del orders[key]
             orders[key] = sigInfo
+            return key
 
         # Could possibly do something like this to skip queue instead of drawing instantly
         # if sigInfo["draw_now"]:
@@ -36,7 +41,7 @@ def _deco_draw_queue(func):
         # else:
         #     orders[key] = sigInfo
 
-    return _wrapper
+    return wrapper_transfer(func, _wrapper)
 
 
 

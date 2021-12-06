@@ -31,9 +31,16 @@ class Editable:
         assert self._editable_hook_get is not Editable._editable_hook_get
         assert self._editable_hook_set is not Editable._editable_hook_set
 
+    def _call_editable_hook_set(self, *_):
+        """ Trace_add does not play nicely with KeyboardInterrupt. """
+        try:
+            self._editable_hook_set()
+        except KeyboardInterrupt:
+            exit()
+
     def draw_create_hook(self, kwargs):
         self._editable_tk_var_inst = self._editable_tk_var()
-        self._editable_tk_var_inst.trace_add("write", lambda *_: self._editable_hook_set())
+        self._editable_tk_var_inst.trace_add("write", self._call_editable_hook_set)
         self._editable_tk_var_inst.set(self._editable_hook_get())  # Set value once, then we let whatever other method handles it call draw
 
         key = "variable" if self._editable_tk_var.__name__ == "BooleanVar" else "textvariable"
