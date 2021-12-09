@@ -19,7 +19,7 @@ class Entry(Generic, Text, Toggle, Editable):
     def _editable_hook_get(self):
         return self.text
     def _editable_hook_set(self):
-        self.text = self._editable_tk_var_inst.get()
+        self._text = self._editable_tk_var_inst.get()
 
     def __init__(self, parent=None, text=None):
         pass

@@ -23,13 +23,14 @@ def _deco_draw_queue(func):
     def _wrapper(*args, **kwargs):
         sigInfo = SigInfo(func, *args, **kwargs)
 
+        methodGrouper = sigInfo["self"]
+
         if sigInfo["draw_now"]:
             sigInfo.call()
         else:
             # key = getattr(sigInfo["self"], func.__name__)
-            key = sigInfo["self"].get_order_key(func)
-
-            orders = sigInfo["self"].orders
+            key = methodGrouper.get_order_key(func)
+            orders = methodGrouper.orders
             if key in orders:  # Prevent duplicate orders
                 del orders[key]
             orders[key] = sigInfo

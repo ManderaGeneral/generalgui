@@ -22,23 +22,25 @@ def test2(part):
 
 # I want to be able to delete a part and then create it
 def create():
-    x.draw_create()
+    x.exists = True
 def delete():
-    x.draw_delete()
+    x.exists = False
 
 
 page = Page()
-Button(page, "state", lambda: print(x.exists()))
+Button(page, "state", lambda: print(page2.exists, page2._exists_tk(), button.exists, button._exists_tk()))
 Button(page, "create", create)
 Button(page, "delete", delete)
 
 
-page2 = Page(page).dont_draw()
+page2 = Page(page)
+page2.exists = False
 entry = Entry(page2, "hi")
 entry2 = Entry(page2, "hi")
-button = Button(page2, "click", lambda: print(5))
+page3 = Page(page2)
+button = Button(page3, "click", lambda: print(5))
 
-x = button
+x = page2
 
 
 

@@ -17,18 +17,12 @@ class Drawer:
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         # set_parent_hook(self=self, parent=parent)
-        if self.get_parent() is None or self.get_parent().exists():  # HERE ** We need an exists state here that changes without queue
-            self.draw_create(draw_now=draw_now)
+        self.draw_create(draw_now=draw_now)
         # self.create_top_page(parent=parent)
     
     def get_order_key(self, method):
         """ :param generalgui.MethodGrouper self: """
         return f"{self.id}-{method.__name__}"
-    
-    def dont_draw(self):
-        """ :param generalgui.MethodGrouper self: """
-        self.orders.pop(self.get_order_key(self.draw_create), None)
-        return self
     
     def create_app(self):
         """ :param generalgui.MethodGrouper self: """
@@ -53,7 +47,14 @@ class Drawer:
         while True:
             if not cls.orders or i == limit:
                 break
-            cls.orders.pop(next(iter(cls.orders))).call()
+
+            sigInfo = cls.orders.pop(next(iter(cls.orders)))
+
+            methodGrouper = sigInfo["self"]
+            # parent_exists = methodGrouper.get_parent() is None or methodGrouper.get_parent().exists
+            if not methodGrouper.is_deleted_by_parent():
+                sigInfo.call()
+
             i += 1
             # sleep(0.1)
 
@@ -90,35 +91,23 @@ class Drawer:
         if cls.registered_mainloop:
             atexit.unregister(cls.registered_mainloop)
 
-    def exists(self):
+    def _draw_create_delete(self):
         """ :param generalgui.MethodGrouper self: """
-        return bool(self.widget)
-
-    @_deco_draw_queue
-    def draw_delete(self):
-        """ Deletes widget.
-
-            :param generalgui.MethodGrouper self: """
-        if self.exists():
+        if self._exists_tk():
             try:
                 self.widget.destroy()
             except tk.TclError:
                 pass
             self.widget = None
-    
-    @_deco_draw_queue
-    def draw_create(self):
-        """ Creates widget.
-            Syncs tkinter widget to match Part and Part parent.
-            Creates App tk if self is Page and widget's master is None.
 
-            :param generalgui.MethodGrouper self: """
+    def _draw_create_create(self):
+        """ :param generalgui.MethodGrouper self: """
         self.create_top_page()
 
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
         if not widget_master or widget_master is not parent_widget:  # If current widget master does not match parent part's widget
-            self.draw_delete(draw_now=True)  # untested
+            self._draw_create_delete()  # untested
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
@@ -136,9 +125,24 @@ class Drawer:
             self.widget.pack()
 
     @_deco_draw_queue
+    def draw_create(self):
+        """ Creates or deletes widget depending on self.exists.
+            Syncs tkinter widget to match Part and Part parent.
+            Creates App tk if self is Page and widget's master is None.
+
+            :param generalgui.MethodGrouper self: """
+        if self.exists is not self._exists_tk():
+            if self.exists:
+                self._draw_create_create()
+            else:
+                self._draw_create_delete()
+
+    @_deco_draw_queue
     def draw_show(self):
-        """ :param generalgui.MethodGrouper self: """
-        if self.shown is not self.widget.winfo_ismapped():
+        """ Shows or hides widget depending on self.shown.
+
+            :param generalgui.MethodGrouper self: """
+        if self.shown is not self._shown_tk():
             if self.shown:
                 self.widget.pack()
             else:

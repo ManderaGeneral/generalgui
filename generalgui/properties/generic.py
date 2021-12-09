@@ -9,7 +9,7 @@ from generalgui.properties.generic_indexer import Indexer
 from generalgui.properties.generic_states import States
 
 
-class Generic(TreeDiagram, Binder, Indexer, Drawer, App, States):
+class Generic(TreeDiagram, States, Binder, Indexer, Drawer, App):
     widget_cls = ...
 
     def __init__(self, parent, draw_now):
@@ -29,8 +29,8 @@ class Generic(TreeDiagram, Binder, Indexer, Drawer, App, States):
     def __init_subclass__(cls, **kwargs):
         if cls.widget_cls is Ellipsis:
             raise AttributeError(f"widget_cls attr is not defined for {cls}")
-    repr_attrs = ("id", "text", "binds", "shown")
 
+    repr_attrs = ("id", "text", "binds", "shown", "exists")
     def __repr__(self):
         parts = [
             self.__class__.__name__,
