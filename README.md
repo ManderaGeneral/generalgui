@@ -6,7 +6,7 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 ## Information
 | Package                                                    | Ver                                           | Latest Release       | Python                                                                                                                   | Platform        |   Lvl | Todo                                                   | Tests   |
 |:-----------------------------------------------------------|:----------------------------------------------|:---------------------|:-------------------------------------------------------------------------------------------------------------------------|:----------------|------:|:-------------------------------------------------------|:--------|
-| [generalgui](https://github.com/ManderaGeneral/generalgui) | [2.0.2](https://pypi.org/project/generalgui/) | 2021-12-03 17:14 CET | [3.8](https://www.python.org/downloads/release/python-380/), [3.9](https://www.python.org/downloads/release/python-390/) | Windows, Ubuntu |     2 | [9](https://github.com/ManderaGeneral/generalgui#Todo) | 66.6 %  |
+| [generalgui](https://github.com/ManderaGeneral/generalgui) | [2.0.3](https://pypi.org/project/generalgui/) | 2021-12-10 18:58 CET | [3.8](https://www.python.org/downloads/release/python-380/), [3.9](https://www.python.org/downloads/release/python-390/) | Windows, Ubuntu |     2 | [9](https://github.com/ManderaGeneral/generalgui#Todo) | 66.6 %  |
 
 ## Contents
 <pre>
@@ -27,23 +27,23 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 <pre>
 <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/__init__.py#L1'>Module: generalgui</a>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/button.py#L8'>Class: Button</a>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L30'>Method: draw_text</a> <b>(Untested)</b>
 │  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/checkbutton.py#L10'>Class: Checkbutton</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L30'>Method: draw_text</a> <b>(Untested)</b>
 │  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
 │  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L23'>Method: toggle</a> <b>(Untested)</b>
 │  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>Method: toggled</a> <b>(Untested)</b>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/entry.py#L10'>Class: Entry</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L30'>Method: draw_text</a> <b>(Untested)</b>
 │  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
 │  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L23'>Method: toggle</a> <b>(Untested)</b>
 │  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>Method: toggled</a> <b>(Untested)</b>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/label.py#L8'>Class: Label</a>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L30'>Method: draw_text</a> <b>(Untested)</b>
 │  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/__init__.py#L10'>Class: MethodGrouper</a> <b>(Untested)</b>
-│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>Method: draw_text</a> <b>(Untested)</b>
+│  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L30'>Method: draw_text</a> <b>(Untested)</b>
 │  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L16'>Property: text</a>
 │  ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L23'>Method: toggle</a> <b>(Untested)</b>
 │  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>Method: toggled</a> <b>(Untested)</b>
@@ -56,7 +56,7 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 | Module                                                                                                                            | Message                                                                                                                                              |
 |:----------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------|
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/editable.py#L1'>editable.py</a>           | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/editable.py#L5'>Move trace to generallibrary.</a>            |
-| <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L1'>funcs.py</a>                 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/funcs.py#L19'>[UnitTest] for Method: draw_text</a>           |
+| <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L1'>text.py</a>                   | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/text.py#L30'>[UnitTest] for Method: draw_text</a>            |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/checkbutton.py#L1'>checkbutton.py</a>       | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/checkbutton.py#L10'>[UnitTest] for Class: Checkbutton</a>      |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L1'>toggle.py</a>               | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L23'>[UnitTest] for Method: toggle</a>             |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L1'>toggle.py</a>               | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>[UnitTest] for Method: toggled</a>            |
@@ -66,5 +66,5 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L1'>plot.py</a>                        | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L5'>[UnitTest] for Class: Plot</a>                        |
 
 <sup>
-Generated 2021-12-06 14:19 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
+Generated 2021-12-10 18:58 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
 </sup>
