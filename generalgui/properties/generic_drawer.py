@@ -5,6 +5,24 @@ from generallibrary import getBaseClasses, ObjInfo
 
 from generalgui.properties.funcs import _deco_draw_queue
 
+def call_base_hooks(self, name, kwargs=None):
+    """ Call a certain method in each base, ignoring overriding.
+        Method can take kwargs or nothing as args.
+        Kwargs can be updated in each method, returned by this method. """
+    for base in getBaseClasses(self, includeSelf=True):
+        draw_create_hook = getattr(base, name, None)
+        if draw_create_hook:
+            objInfo = ObjInfo(draw_create_hook, parent=ObjInfo(base))
+            if objInfo.defined_by_parent():
+                if kwargs is None:
+                    draw_create_hook(self)
+                else:
+                    hook_return = draw_create_hook(self, kwargs=kwargs)
+                    if hook_return is not None:
+                        kwargs = hook_return
+    return kwargs
+
+
 
 class Drawer:
     """ All draw_* methods just syncs tkinter widget to Part attribute. """
@@ -111,18 +129,14 @@ class Drawer:
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
-            # Decoupling properties with these hooks
-            for base in getBaseClasses(self, includeSelf=True):
-                draw_create_hook = getattr(base, "draw_create_hook", None)
-                if draw_create_hook:
-                    objInfo = ObjInfo(draw_create_hook, parent=ObjInfo(base))
-                    if objInfo.defined_by_parent():
-                        hook_return = draw_create_hook(self, kwargs=kwargs)
-                        if hook_return is not None:
-                            kwargs = hook_return
+            kwargs = call_base_hooks(self, "draw_create_hook", kwargs)
 
             self.widget = self.widget_cls(**kwargs)
             self.widget.pack()
+
+            call_base_hooks(self, "draw_create_post_hook")
+
+
 
     @_deco_draw_queue
     def draw_create(self):

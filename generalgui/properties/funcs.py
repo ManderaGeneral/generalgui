@@ -13,6 +13,8 @@ def set_parent_hook(self, parent):
 class PartBaseClass:
     def draw_create_hook(self, kwargs):
         """ Used to decouple properties, called by draw_create which is called by init and set_parent. """
+    def draw_create_post_hook(self):
+        """ Called after widget is packed. """
 
 
 def _deco_draw_queue(func):
@@ -30,10 +32,15 @@ def _deco_draw_queue(func):
         else:
             # key = getattr(sigInfo["self"], func.__name__)
             key = methodGrouper.get_order_key(func)
+
             orders = methodGrouper.orders
-            if key in orders:  # Prevent duplicate orders
-                del orders[key]
+
+            # Disabled this to preserve same order of orders, even if order is modified (All so far doesn't have any args anyway)
+            # if key in orders:  # Prevent duplicate orders
+            #     del orders[key]
+
             orders[key] = sigInfo
+
             return key
 
         # Could possibly do something like this to skip queue instead of drawing instantly

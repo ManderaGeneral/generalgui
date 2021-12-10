@@ -12,8 +12,10 @@
 #             func()
 #     cls.__setattr__ = deco
 
+from generalgui.properties.funcs import PartBaseClass
 
-class Editable:
+
+class Editable(PartBaseClass):
     """ Property to easily allow tk to update Part attrs when changed by using tk var trace. """
     # I think only Editable parts should need a tk var
     _editable_tk_var = ...

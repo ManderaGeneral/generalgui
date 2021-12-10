@@ -1,8 +1,8 @@
 
-from generalgui.properties.funcs import _deco_draw_queue
+from generalgui.properties.funcs import PartBaseClass, _deco_draw_queue
 
 
-class Toggle:
+class Toggle(PartBaseClass):
     """ Property to easily toggle a Part's attr with optional hooks. """
 
     def __init__(self, toggled=None):

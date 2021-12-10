@@ -34,11 +34,14 @@ Button(page, "delete", delete)
 
 
 page2 = Page(page)
-page2.exists = False
+
+
 entry = Entry(page2, "hi")
 entry2 = Entry(page2, "hi")
 page3 = Page(page2)
 button = Button(page3, "click", lambda: print(5))
+
+page2.exists = False
 
 x = page2
 
