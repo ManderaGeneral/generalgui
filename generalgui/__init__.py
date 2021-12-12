@@ -5,7 +5,8 @@ from generalgui.elements.checkbutton import Checkbutton
 from generalgui.elements.entry import Entry
 from generalgui.elements.subelements.password import Password
 
-from generalgui.pages.plot import Plot
+from generalgui.pages.plot import PlotPage
+from generalgui.pages.signin import SigninPage
 
-class MethodGrouper(Plot, Page, Label, Button, Checkbutton, Password, Entry):
+class MethodGrouper(SigninPage, PlotPage, Page, Label, Button, Checkbutton, Password, Entry):
     pass

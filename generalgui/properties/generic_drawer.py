@@ -1,26 +1,10 @@
 import atexit
 import tkinter as tk
 
-from generallibrary import getBaseClasses, ObjInfo
+from generallibrary import call_base_hooks
 
 from generalgui.properties.funcs import _deco_draw_queue
 
-def call_base_hooks(self, name, kwargs=None):
-    """ Call a certain method in each base, ignoring overriding.
-        Method can take kwargs or nothing as args.
-        Kwargs can be updated in each method, returned by this method. """
-    for base in getBaseClasses(self, includeSelf=True):
-        draw_create_hook = getattr(base, name, None)
-        if draw_create_hook:
-            objInfo = ObjInfo(draw_create_hook, parent=ObjInfo(base))
-            if objInfo.defined_by_parent():
-                if kwargs is None:
-                    draw_create_hook(self)
-                else:
-                    hook_return = draw_create_hook(self, kwargs=kwargs)
-                    if hook_return is not None:
-                        kwargs = hook_return
-    return kwargs
 
 
 
