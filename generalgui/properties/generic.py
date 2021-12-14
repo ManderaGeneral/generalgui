@@ -12,7 +12,7 @@ from generalgui.properties.generic_states import States
 class Generic(TreeDiagram, States, Binder, Indexer, Drawer, App):
     widget_cls = ...
 
-    def __init__(self, parent, draw_now):
+    def __init__(self, parent, draw_now, /, **extra):
         pass
 
     def __getstate__(self):  # For pickle

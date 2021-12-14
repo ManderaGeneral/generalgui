@@ -15,11 +15,13 @@ class Drawer:
     apps = []
     registered_mainloop = None
 
-    def __init__(self, parent=None, draw_now=None):
+    def __init__(self, parent=None, draw_now=None, **extra):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None
         # set_parent_hook(self=self, parent=parent)
+        self.extra = extra
         self.draw_create(draw_now=draw_now)
+
         # self.create_top_page(parent=parent)
     
     def get_order_key(self, method):
@@ -109,18 +111,21 @@ class Drawer:
         widget_master = getattr(self.widget, "master", None)
         parent_widget = getattr(self.get_parent(), "widget", None)
         if not widget_master or widget_master is not parent_widget:  # If current widget master does not match parent part's widget
-            self._draw_create_delete()  # untested
+            self._draw_create_delete()
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
             kwargs = call_base_hooks(self, "draw_create_hook", kwargs)
 
+            # HERE ** Something like this for pack kwargs?
+            # Would be nice if we didn't have to add **extra to all subclasses
+            # Would need to allow to change side dynamically post draw
+            pack_kwargs = {key: value for key, value in self.extra.items() if key in ("side", "expand", "fill")}
+
             self.widget = self.widget_cls(**kwargs)
-            self.widget.pack()
+            self.widget.pack(**pack_kwargs)
 
             call_base_hooks(self, "draw_create_post_hook")
-
-
 
     @_deco_draw_queue
     def draw_create(self):
@@ -145,5 +150,13 @@ class Drawer:
                 self.widget.pack()
             else:
                 self.widget.pack_forget()
-
-
+    
+    def clear(self):
+        """ :param generalgui.MethodGrouper self: """
+        self.exists = False
+        self.set_parent(None)
+    
+    def clear_children(self):
+        """ :param generalgui.MethodGrouper self: """
+        for child in self.get_children():
+            child.clear()
