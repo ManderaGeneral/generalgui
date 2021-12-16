@@ -47,6 +47,7 @@ x = page2
 
 
 
+
 # page = None
 # checkbutton = Checkbutton(page, "hi")
 # button = Button(parent=page, text="click me", bind=lambda: print(checkbutton.toggled()))

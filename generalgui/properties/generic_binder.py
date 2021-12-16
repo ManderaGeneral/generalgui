@@ -1,7 +1,7 @@
 
 from generalgui.properties.funcs import PartBaseClass, _deco_draw_queue
 
-from generallibrary import SigInfo
+from generallibrary import SigInfo, extend_list_in_dict, unique_obj_in_list, typeChecker
 
 
 class Binder(PartBaseClass):
@@ -20,3 +20,28 @@ class Binder(PartBaseClass):
     def call_binds(self):
         """ :param generalgui.MethodGrouper self: """
         return tuple(sigInfo.call() for sigInfo in self.binds)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,6 +10,7 @@ from generalgui.properties.generic_states import States
 
 
 class Generic(TreeDiagram, States, Binder, Indexer, Drawer, App):
+    """ Used for every part. """
     widget_cls = ...
 
     def __init__(self, parent, draw_now, /, **extra):
