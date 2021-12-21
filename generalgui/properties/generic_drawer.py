@@ -124,6 +124,7 @@ class Drawer:
 
             self.widget = self.widget_cls(**kwargs)
             self.widget.pack(**pack_kwargs)
+            setattr(self.widget, "part", self)
 
             call_base_hooks(self, "draw_create_post_hook")
 

@@ -93,9 +93,9 @@ class _Binder:
         :raises NameError: If bind name exists with another key
         """
         if not add:
-            self.removeBind(key)
+            self.remove_bind(key)
         elif name:
-            existingBind = self.getBindByName(name)
+            existingBind = self.get_bind_by_name(name)
             if existingBind:
                 if existingBind.key == key:
                     existingBind.remove()
@@ -112,7 +112,7 @@ class _Binder:
             self.widgetConfig(cursor="hand2")
             self.createStyle("Hover", "<Enter>", "<Leave>", bg="gray90")
             self.createStyle("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
-            self.createBind("<Return>", self.click)
+            self.create_bind("<Return>", self.click)
 
         return bind
 
@@ -173,7 +173,7 @@ class _Binder:
         :param function or None func: Any function or None to unbind
         :param add: Whether to add to functions list or replace all
         """
-        self.createBind(key="<Button-1>", func=func, add=add)
+        self.create_bind(key="<Button-1>", func=func, add=add)
 
     def click(self, animate=True):
         """
@@ -199,7 +199,7 @@ class _Binder:
         :param function or None func: Any function or None to unbind
         :param add: Whether to add to functions list or replace all
         """
-        self.createBind(key="<Button-3>", func=func, add=add)
+        self.create_bind(key="<Button-3>", func=func, add=add)
 
     def rightClick(self, animate=True):
         """
@@ -234,7 +234,7 @@ class Bind:
 
     def remove(self):
         """Remove this bind from it's element"""
-        self.element.removeBind(key=self.key, bind=self)
+        self.element.remove_bind(key=self.key, bind=self)
 
     # def __repr__(self):
     #     import inspect

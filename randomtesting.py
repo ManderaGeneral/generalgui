@@ -2,9 +2,14 @@
 
 
 from generalgui import *
-from generallibrary import getBaseClassNames, TreeDiagram, terminal, ceil
+from generallibrary import getBaseClassNames, TreeDiagram, terminal, ceil, sleep
+from generalpackager import Packager
 
 import random
+
+Packager().localrepo.format_file("generalgui/properties/generic_binder.py", write=True)
+exit()
+
 
 def test(part):
     part.get_parent().copy_part()
