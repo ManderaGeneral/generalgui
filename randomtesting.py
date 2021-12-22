@@ -7,8 +7,8 @@ from generalpackager import Packager
 
 import random
 
-Packager().localrepo.format_file("generalgui/properties/generic_binder.py", write=True)
-exit()
+# Packager().localrepo.format_file("generalgui/properties/generic_binder.py", write=True)
+# exit()
 
 
 def test(part):
@@ -40,6 +40,7 @@ Button(page, "delete", delete)
 
 page2 = Page(page)
 
+page.on_click(lambda: print(2))
 
 entry = Entry(page2, "hi")
 entry2 = Entry(page2, "hi")

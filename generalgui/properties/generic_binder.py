@@ -7,11 +7,11 @@ from generallibrary import SigInfo, extend_list_in_dict, unique_obj_in_list, typ
 class Binder(PartBaseClass):
     def __init__(self):
         """ :param generalgui.MethodGrouper self: """
-        self.events = {}
+        self.events = {}  # type: dict[str, list[Bind]]
         self.disabled_propagations = []
 
     @property
-    def bound_keys(self):
+    def bound_keys(self):  # HERE ** Test with copying and moving nodes
         """ Shared list.
             
             :param generalgui.MethodGrouper self: """
@@ -19,6 +19,7 @@ class Binder(PartBaseClass):
             self.shared["bound_keys"] = []
         return self.shared["bound_keys"]
 
+    @_deco_draw_queue
     def _tk_bind(self, key):
         """ Do a non-reversible one-time bind to app's Tk widget.
             Since all binds are stored in each part, it's nice if App doesn't have to keep track of them.
@@ -26,10 +27,10 @@ class Binder(PartBaseClass):
             
             :param generalgui.MethodGrouper self: """
         if key not in self.bound_keys:
-            self._tk.bind(key, lambda event: self._bind_caller(event=event, key=key), add=False)
+            self._tk.bind(key, lambda event: self.call_bind(event=event, key=key), add=False)
             self.bound_keys.append(key)
 
-    def _bind_caller(self, key, event=None, part=None):
+    def call_bind(self, key, event=None, part=None):
         """ This method is bound to _tk for any part key that is bound.
             It starts with event.widget.part and goes through all parents to call each method stored in self.events.
             It stops if it reaches App or a disabled propagation.
@@ -40,6 +41,8 @@ class Binder(PartBaseClass):
             return []
 
         if part is None:
+            if not hasattr(event.widget, "part"):
+                return []
             part = event.widget.part
 
         if not part.exists:
@@ -48,7 +51,7 @@ class Binder(PartBaseClass):
         returns = []
         for part in part.get_parents(include_self=True, gen=True):
             for bind in part.events.get(key, []):
-                if SigInfo(bind.func).leading_arg_names:
+                if SigInfo(bind.func).leadingArgNames:
                     value = bind(event)
                 else:
                     value = bind()
@@ -66,16 +69,16 @@ class Binder(PartBaseClass):
             Make the last function called with this bind return "break" which tkinter listens to.
             All propagations are enabled by default.
             
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
+            :param generalgui.MethodGrouper self:
             :param str key: Bind key, <Button-1> for example.
             :param bool enable: Whether to enable propagation or not. """
         unique_obj_in_list(self.disabled_propagations, key, not enable)
 
-    def create_bind(self, key, func, add=True, name=None):  # HERE ** Keep implementing old bind code
+    def create_bind(self, key, func, add=True, name=None):
         """ Add a function to a list in dict that is called with _bindCaller().
             If a bind exists with same name and key then it's overwritten unless add is True.
             
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
+            :param generalgui.MethodGrouper self:
             :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
             :param function or None func: A function to be called or None to unbind
             :param bool add: Add to existing binds instead of overwriting
@@ -92,17 +95,18 @@ class Binder(PartBaseClass):
                 else:
                     raise NameError(f"{existing_bind} is already using this name with another key")
 
-        bind = Bind(element=self, key=key, func=func, name=name)
+        bind = Bind(part=self, key=key, func=func, name=name)
         extend_list_in_dict(self.events, key, bind)
-        self.app.widget_bind(key)
+        self._tk_bind(key)
 
-        # print(typeChecker(self, "Element", error=False), key == "<Button-1>", self.style_handler)
+        # print(typeChecker(self, "Generic", error=False), key == "<Button-1>", self.style_handler)
 
-        if typeChecker(self, "Element", error=False) and key == "<Button-1>" and (not self.style_handler or "Hover" not in self.style_handler.all_styles):
-            self.widget_config(cursor="hand2")
-            self.create_style("Hover", "<Enter>", "<Leave>", bg="gray90")
-            self.create_style("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
-            self.create_bind("<Return>", self.click)
+        # Commented styling stuff for now
+        # if typeChecker(self, "Generic", error=False) and key == "<Button-1>" and (not self.style_handler or "Hover" not in self.style_handler.all_styles):
+        #     self.widget_config(cursor="hand2")
+        #     self.create_style("Hover", "<Enter>", "<Leave>", bg="gray90")
+        #     self.create_style("Click", "<Button-1>", "<ButtonRelease-1>", style="Hover", relief="sunken", fg="gray40")
+        #     self.create_bind("<Return>", self.click)
 
         return bind
 
@@ -122,7 +126,7 @@ class Binder(PartBaseClass):
     def remove_bind(self, key, bind=None, name=None):
         """ Remove a bind by key or bind object or name.
             
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
+            :param generalgui.MethodGrouper self:
             :param key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
             :param Bind bind: Specific Bind to be removed
             :param str name: Specific Bind with this name to be removed """
@@ -141,26 +145,18 @@ class Binder(PartBaseClass):
         if key in self.events and not self.events[key]:
             del self.events[key]
 
-    def call_bind(self, key):
-        """ Calls a binded key's function(s) manually.
-            
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
-            :param str key: A key from https://effbot.org/tkinterbook/tkinter-events-and-bindings.htm
-            :return: Function's return value or functions' return values in tuple in the order they were binded. """
-        return self.app.bind_caller(self, key)
-
     def on_click(self, func, add=True):
-        """ Call a function when this element is left clicked.
+        """ Call a function when this part is left clicked.
             
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
+            :param generalgui.MethodGrouper self:
             :param function or None func: Any function or None to unbind
             :param add: Whether to add to functions list or replace all """
         self.create_bind(key="<Button-1>", func=func, add=add)
 
     def click(self, animate=True):
-        """ Manually call the function that is called when this element is left clicked.
+        """ Manually call the function that is called when this part is left clicked.
             
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
+            :param generalgui.MethodGrouper self:
             :param animate: Whether to animate or not """
         value = self.call_bind("<Button-1>")
 
@@ -172,17 +168,17 @@ class Binder(PartBaseClass):
         return value
 
     def on_right_click(self, func, add=True):
-        """ Call a function when this element is right clicked.
+        """ Call a function when this part is right clicked.
             
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
+            :param generalgui.MethodGrouper self:
             :param function or None func: Any function or None to unbind
             :param add: Whether to add to functions list or replace all """
         self.create_bind(key="<Button-3>", func=func, add=add)
 
     def right_click(self, animate=True):
-        """ Manually call the function that is called when this element is right clicked.
+        """ Manually call the function that is called when this part is right clicked.
             
-            :param generalgui.Element or generalgui.Page or generalgui.App self:
+            :param generalgui.MethodGrouper self:
             :param animate: Whether to animate or not """
         value = self.call_bind("<Button-3>")
 
@@ -195,8 +191,9 @@ class Binder(PartBaseClass):
 
 class Bind:
     """ A specific bind that contains a func """
-    def __init__(self, element, key, func, name=None):
-        self.element = element
+    def __init__(self, part, key, func, name=None):
+        """ :param generalgui.MethodGrouper part: """
+        self.part = part
         self.name = name
         self.key = key
         self.func = func
@@ -205,14 +202,16 @@ class Bind:
         return f"<Bind - Name: {self.name} - Key: {self.key}>"
 
     def __call__(self, *args, **kwargs):
-        if not self.element.removed:
+        if self.part.exists:
             return self.func(*args, **kwargs)
 
     def remove(self):
-        """ Remove this bind from it's element """
-        self.element.remove_bind(key=self.key, bind=self)
+        """ Remove this bind from it's part """
+        self.part.remove_bind(key=self.key, bind=self)
 
 
+
+    # --- Old bind code
 
     #     self.binds = []
     #

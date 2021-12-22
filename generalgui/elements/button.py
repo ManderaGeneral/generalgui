@@ -11,7 +11,7 @@ class Button(Generic, Text):
 
     def __init__(self, parent=None, text=None, bind=None, **extra):
         if bind:
-            self.bind(bind)
+            self.on_click(bind)
 
 
 
