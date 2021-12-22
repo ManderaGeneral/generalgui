@@ -17,7 +17,7 @@ class Drawer:
 
     def __init__(self, parent=None, draw_now=None, **extra):
         """ :param generalgui.MethodGrouper self: """
-        self.widget = None
+        self.widget = None  # type: tk.Widget | None
         # set_parent_hook(self=self, parent=parent)
         self.extra = extra
         self.draw_create(draw_now=draw_now)
@@ -31,7 +31,7 @@ class Drawer:
     def create_app(self):
         """ :param generalgui.MethodGrouper self: """
         app = tk.Tk()
-        app.geometry("300x200")
+        # app.geometry("300x200")
         self.apps.append(app)
         return app
 
@@ -112,6 +112,7 @@ class Drawer:
         parent_widget = getattr(self.get_parent(), "widget", None)
         if not widget_master or widget_master is not parent_widget:  # If current widget master does not match parent part's widget
             self._draw_create_delete()
+
             master = parent_widget or self.create_app()
             kwargs = {"master": master}
 
@@ -124,6 +125,7 @@ class Drawer:
 
             self.widget = self.widget_cls(**kwargs)
             self.widget.pack(**pack_kwargs)
+
             setattr(self.widget, "part", self)
 
             call_base_hooks(self, "draw_create_post_hook")
@@ -135,11 +137,11 @@ class Drawer:
             Creates App tk if self is Page and widget's master is None.
 
             :param generalgui.MethodGrouper self: """
-        if self.exists is not self._exists_tk():
-            if self.exists:
-                self._draw_create_create()
-            else:
-                self._draw_create_delete()
+        # if self.exists is not self._exists_tk():
+        if self.exists:
+            self._draw_create_create()
+        else:
+            self._draw_create_delete()
 
     @_deco_draw_queue
     def draw_show(self):

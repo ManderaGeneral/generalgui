@@ -6,7 +6,8 @@ def set_parent_hook(self, parent):
 
         :param generalgui.MethodGrouper self:
         :param generalgui.MethodGrouper parent: """
-    self.draw_create()
+    for part in self.get_children(depth=-1, include_self=True, gen=True):
+        part.draw_create()
     assert "Contain" in getBaseClassNames(parent) or parent is None
 
 

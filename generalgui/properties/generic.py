@@ -8,6 +8,8 @@ from generalgui.properties.generic_drawer import Drawer
 from generalgui.properties.generic_indexer import Indexer
 from generalgui.properties.generic_states import States
 
+from generalvector import Vec
+
 
 class Generic(TreeDiagram, States, Binder, Indexer, Drawer, App):
     """ Used for every part. """
@@ -36,7 +38,7 @@ class Generic(TreeDiagram, States, Binder, Indexer, Drawer, App):
         parts = [
             self.__class__.__name__,
         ]
-        attr_dict = {key: getattr(self, key) for key in self.repr_attrs if getattr(self, key, None)}
+        attr_dict = {key: getattr(self, key) for key in self.repr_attrs if getattr(self, key, ...) is not ...}
         if attr_dict:
             parts.append(str(attr_dict))
 
@@ -53,6 +55,10 @@ class Generic(TreeDiagram, States, Binder, Indexer, Drawer, App):
         self.set_index(index=old_index)
         # from pprint import pprint
         # pprint(Generic.orders)
+
+    def rainbow(self):
+        for part in self.get_all(gen=True):  # type: Generic
+            part.widget.config(bg=Vec.random(50, 255).hex())
 
 
 Drawer.register_mainloop()

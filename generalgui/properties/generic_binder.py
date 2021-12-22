@@ -1,17 +1,21 @@
 
 from generalgui.properties.funcs import PartBaseClass, _deco_draw_queue
 
-from generallibrary import SigInfo, extend_list_in_dict, unique_obj_in_list, typeChecker
+from generallibrary import SigInfo, extend_list_in_dict, unique_obj_in_list, typeChecker, hook
 
 
 class Binder(PartBaseClass):
+    def __init_subclass__(cls, **kwargs):
+        """ :param generalgui.MethodGrouper cls: """
+        hook(cls.create_app, cls._tk_bind_all, owner=cls, after=True)
+
     def __init__(self):
         """ :param generalgui.MethodGrouper self: """
         self.events = {}  # type: dict[str, list[Bind]]
         self.disabled_propagations = []
 
     @property
-    def bound_keys(self):  # HERE ** Test with copying and moving nodes
+    def bound_keys(self):
         """ Shared list.
             
             :param generalgui.MethodGrouper self: """
@@ -19,16 +23,28 @@ class Binder(PartBaseClass):
             self.shared["bound_keys"] = []
         return self.shared["bound_keys"]
 
-    @_deco_draw_queue
     def _tk_bind(self, key):
+        """ :param generalgui.MethodGrouper self: """
+        self._tk.bind(key, lambda event: self.call_bind(event=event, key=key), add=False)
+
+    @_deco_draw_queue
+    def _tk_new_bind(self, key):
         """ Do a non-reversible one-time bind to app's Tk widget.
-            Since all binds are stored in each part, it's nice if App doesn't have to keep track of them.
-            Therefore all App has to do is bind the key, even if the part that caused the bind unbinds it.
+            Since all binds are stored in each part, it's nice if Tk doesn't have to keep track of them.
+            Therefore all Tk has to do is bind the key, even if the part that caused the bind unbinds it.
             
             :param generalgui.MethodGrouper self: """
         if key not in self.bound_keys:
-            self._tk.bind(key, lambda event: self.call_bind(event=event, key=key), add=False)
+            self._tk_bind(key=key)
             self.bound_keys.append(key)
+
+    def _tk_bind_all(self):
+        """ :param generalgui.MethodGrouper self: """
+        for part in self.get_children(include_self=True, depth=-1):
+            print(part, part.bound_keys)
+        print(2)
+        for key in self.bound_keys:
+            self._tk_bind(key=key)
 
     def call_bind(self, key, event=None, part=None):
         """ This method is bound to _tk for any part key that is bound.
@@ -97,9 +113,7 @@ class Binder(PartBaseClass):
 
         bind = Bind(part=self, key=key, func=func, name=name)
         extend_list_in_dict(self.events, key, bind)
-        self._tk_bind(key)
-
-        # print(typeChecker(self, "Generic", error=False), key == "<Button-1>", self.style_handler)
+        self._tk_new_bind(key=key)
 
         # Commented styling stuff for now
         # if typeChecker(self, "Generic", error=False) and key == "<Button-1>" and (not self.style_handler or "Hover" not in self.style_handler.all_styles):
