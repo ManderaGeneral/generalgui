@@ -42,10 +42,10 @@ class CreateTest(GuiTest):
 
     def test_binder(self):
         label = Label()
-        label.bind(lambda: 5)
-        self.assertEqual((5, ), label.call_binds())
-        label.bind(lambda: "hi")
-        self.assertEqual((5, "hi"), label.call_binds())
+        label.on_click(lambda: 5)
+        self.assertEqual([5], label.click())
+        label.on_click(lambda: "hi")
+        self.assertEqual([5, "hi"], label.click())
 
 
 

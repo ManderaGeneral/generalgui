@@ -33,14 +33,13 @@ def delete():
 
 def click():
     # button.rainbow()
-    new = Page()
-    Label(new, "new")
-    page.set_parent(new)
+    # new = Page()
+    # Label(new, "new")
+    page.set_parent(None)
 
     # for part in page.get_children(include_self=True, depth=-1):
     #     print(id(part.bound_keys))
 
-# HERE ** Test with copying and moving nodes with bound_keys
 
 page = Page(fill="both", expand=1)  # This should happen automatically for top page (Styler?)
 Button(page, "state", lambda: print(page2.exists, page2._exists_tk(), button.exists, button._exists_tk()))

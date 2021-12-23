@@ -2,9 +2,7 @@ from generallibrary import getBaseClassNames, SigInfo, dict_insert, wrapper_tran
 
 
 def set_parent_hook(self, parent):
-    """ Not called from init.
-
-        :param generalgui.MethodGrouper self:
+    """ :param generalgui.MethodGrouper self:
         :param generalgui.MethodGrouper parent: """
     for part in self.get_children(depth=-1, include_self=True, gen=True):
         part.draw_create()

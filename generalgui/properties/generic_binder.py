@@ -5,14 +5,15 @@ from generallibrary import SigInfo, extend_list_in_dict, unique_obj_in_list, typ
 
 
 class Binder(PartBaseClass):
-    def __init_subclass__(cls, **kwargs):
-        """ :param generalgui.MethodGrouper cls: """
-        hook(cls.create_app, cls._tk_bind_all, owner=cls, after=True)
-
     def __init__(self):
         """ :param generalgui.MethodGrouper self: """
         self.events = {}  # type: dict[str, list[Bind]]
         self.disabled_propagations = []
+
+    def draw_create_post_hook(self):
+        """ :param generalgui.MethodGrouper self: """
+        for key in self.events:
+            self._tk_new_bind(key=key)
 
     @property
     def bound_keys(self):
@@ -38,14 +39,6 @@ class Binder(PartBaseClass):
             self._tk_bind(key=key)
             self.bound_keys.append(key)
 
-    def _tk_bind_all(self):
-        """ :param generalgui.MethodGrouper self: """
-        for part in self.get_children(include_self=True, depth=-1):
-            print(part, part.bound_keys)
-        print(2)
-        for key in self.bound_keys:
-            self._tk_bind(key=key)
-
     def call_bind(self, key, event=None, part=None):
         """ This method is bound to _tk for any part key that is bound.
             It starts with event.widget.part and goes through all parents to call each method stored in self.events.
@@ -57,9 +50,12 @@ class Binder(PartBaseClass):
             return []
 
         if part is None:
-            if not hasattr(event.widget, "part"):
-                return []
-            part = event.widget.part
+            if event is None:
+                part = self
+            else:
+                if not hasattr(event.widget, "part"):
+                    return []
+                part = event.widget.part
 
         if not part.exists:
             return []
@@ -174,7 +170,7 @@ class Binder(PartBaseClass):
             :param animate: Whether to animate or not """
         value = self.call_bind("<Button-1>")
 
-        if animate:
+        if animate and self.widget:
             self.widget.after(250, lambda: self.call_bind("<ButtonRelease-1>"))
         else:
             self.call_bind("<ButtonRelease-1>")
@@ -196,7 +192,7 @@ class Binder(PartBaseClass):
             :param animate: Whether to animate or not """
         value = self.call_bind("<Button-3>")
 
-        if animate:
+        if animate and self.widget:
             self.widget.after(250, lambda: self.call_bind("<ButtonRelease-3>"))
         else:
             self.call_bind("<Button-3>")
