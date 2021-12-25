@@ -15,7 +15,7 @@ class Generic(TreeDiagram, States, Binder, Indexer, Drawer, App):
     """ Used for every part. """
     widget_cls = ...
 
-    def __init__(self, parent, draw_now, /, **extra):
+    def __init__(self, parent, /, **extra):
         pass
 
     def __getstate__(self):  # For pickle

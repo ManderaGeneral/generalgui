@@ -134,6 +134,10 @@ How should package-specific gui pages be defined? I want them decoupled
         This additional one would import base API package and add gui functionality on top
         Then you can chose whether to install generalstock or generalstock_gui
         File would want a GUI page though, worried about circular dependencies, should be fine, would make file a lvl 2 instead
+    Or make all pages in generalgui
+        Would make gui pretty messy and not general
+    Or put all specific pages in one new package
+    
 
 """
 

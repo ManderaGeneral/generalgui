@@ -15,12 +15,11 @@ class Drawer:
     apps = []
     registered_mainloop = None
 
-    def __init__(self, parent=None, draw_now=None, **extra):
+    def __init__(self, parent=None, **extra):
         """ :param generalgui.MethodGrouper self: """
         self.widget = None  # type: tk.Widget | None
         # set_parent_hook(self=self, parent=parent)
         self.extra = extra
-        self.draw_create(draw_now=draw_now)
 
         # self.create_top_page(parent=parent)
     
@@ -38,8 +37,9 @@ class Drawer:
     def create_top_page(self):
         """ :param generalgui.MethodGrouper self: """
         if self.get_parent() is None and not self.is_page():
-            page = self.Page(draw_now=True)
-            self.set_parent(page)
+            page = self.Page()
+            page.draw_create(draw_now=True)  # This will draw immediately and remove the order that set_parent made in Page init above.
+            self.set_parent(page, _draw=False)  # Set new parent without calling new draw orders
             return page
 
     @classmethod

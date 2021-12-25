@@ -1,11 +1,12 @@
 from generallibrary import getBaseClassNames, SigInfo, dict_insert, wrapper_transfer
 
 
-def set_parent_hook(self, parent):
+def set_parent_hook(self, parent, _draw=True):
     """ :param generalgui.MethodGrouper self:
         :param generalgui.MethodGrouper parent: """
-    for part in self.get_children(depth=-1, include_self=True, gen=True):
-        part.draw_create()
+    if _draw:
+        for part in self.get_children(depth=-1, include_self=True, gen=True):
+            part.draw_create()
     assert "Contain" in getBaseClassNames(parent) or parent is None
 
 
@@ -23,23 +24,15 @@ def _deco_draw_queue(func):
         Returns key unless draw_now is True. """
     def _wrapper(*args, **kwargs):
         sigInfo = SigInfo(func, *args, **kwargs)
-
         methodGrouper = sigInfo["self"]
+        orders = methodGrouper.orders
+        key = methodGrouper.get_order_key(func)
 
         if sigInfo["draw_now"]:
+            orders.pop(key, None)  # This allows us to manually call draw_create(draw_now=True) after instantiating a Page instead of passing draw_now to Page.
             sigInfo.call()
         else:
-            # key = getattr(sigInfo["self"], func.__name__)
-            key = methodGrouper.get_order_key(func)
-
-            orders = methodGrouper.orders
-
-            # Disabled this to preserve same order of orders, even if order is modified (All so far doesn't have any args anyway)
-            # if key in orders:  # Prevent duplicate orders
-            #     del orders[key]
-
             orders[key] = sigInfo
-
             return key
 
         # Could possibly do something like this to skip queue instead of drawing instantly
