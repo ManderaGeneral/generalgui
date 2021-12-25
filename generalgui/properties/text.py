@@ -12,12 +12,16 @@ class Text(PartBaseClass):
         kwargs["text"] = self.text
         return kwargs
 
+    # def draw_create_post_hook(self):
+    #     self.draw_text()
+
     @property
     def text(self):
         """ :param generalgui.MethodGrouper self: """
         return self._text
-    
-    def _text_scrub(self, text):
+
+    @staticmethod
+    def _text_scrub(text):
         return "" if text is None else text
     
     @text.setter

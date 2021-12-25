@@ -35,6 +35,7 @@ def click():
     # button.rainbow()
     # new = Page()
     # Label(new, "new")
+    # entry.set_parent(None)
     page.set_parent(None)
 
     # for part in page.get_children(include_self=True, depth=-1):

@@ -122,7 +122,6 @@ class Drawer:
             # Would be nice if we didn't have to add **extra to all subclasses
             # Would need to allow to change side dynamically post draw
             pack_kwargs = {key: value for key, value in self.extra.items() if key in ("side", "expand", "fill")}
-
             self.widget = self.widget_cls(**kwargs)
             self.widget.pack(**pack_kwargs)
 

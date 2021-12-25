@@ -11,6 +11,7 @@
 #         if name == attr:
 #             func()
 #     cls.__setattr__ = deco
+import tkinter
 
 from generalgui.properties.funcs import PartBaseClass
 
@@ -41,7 +42,8 @@ class Editable(PartBaseClass):
             exit()
 
     def draw_create_hook(self, kwargs):
-        self._editable_tk_var_inst = self._editable_tk_var()
+        """ :param generalgui.MethodGrouper self: """
+        self._editable_tk_var_inst = self._editable_tk_var(master=self._tk)  # Master default if not set becomes first Tk
         self._editable_tk_var_inst.trace_add("write", self._call_editable_hook_set)
         self._editable_tk_var_inst.set(self._editable_hook_get())  # Set value once, then we let whatever other method handles it call draw
 
