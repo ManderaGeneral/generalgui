@@ -2,13 +2,19 @@
 
 
 from generalgui import *
-from generallibrary import getBaseClassNames, TreeDiagram, terminal, ceil, sleep
+from generallibrary import getBaseClassNames, TreeDiagram, terminal, ceil, sleep, EnvVar
 from generalpackager import Packager
 
 import random
 
 # Packager().localrepo.format_file("generalgui/properties/generic_binder.py", write=True)
-# exit()
+
+
+PaymentPage(endpoint="http://127.0.0.1:8000/api/payment")
+
+
+
+exit()
 
 
 def test(part):

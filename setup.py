@@ -19,7 +19,6 @@ setup(
     install_requires=[
         'generalvector',
         'generallibrary',
-        'generalfile',
         'pandas',
         'numpy',
     ],

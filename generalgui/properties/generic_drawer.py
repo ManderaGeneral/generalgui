@@ -1,11 +1,9 @@
 import atexit
 import tkinter as tk
 
-from generallibrary import call_base_hooks
+from generallibrary import call_base_hooks, sleep
 
 from generalgui.properties.funcs import _deco_draw_queue
-
-
 
 
 class Drawer:
@@ -82,7 +80,7 @@ class Drawer:
     @classmethod
     def mainloop(cls):
         while True:
-            if not cls.single_loop(limit=1):
+            if not cls.single_loop(limit=100):
                 exit()
 
     @classmethod
