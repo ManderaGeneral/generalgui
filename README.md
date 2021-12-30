@@ -6,7 +6,7 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 ## Information
 | Package                                                    | Ver                                           | Latest Release       | Python                                                                                                                   | Platform        |   Lvl | Todo                                                    | Tests   |
 |:-----------------------------------------------------------|:----------------------------------------------|:---------------------|:-------------------------------------------------------------------------------------------------------------------------|:----------------|------:|:--------------------------------------------------------|:--------|
-| [generalgui](https://github.com/ManderaGeneral/generalgui) | [2.0.6](https://pypi.org/project/generalgui/) | 2021-12-25 16:02 CET | [3.8](https://www.python.org/downloads/release/python-380/), [3.9](https://www.python.org/downloads/release/python-390/) | Windows, Ubuntu |     2 | [14](https://github.com/ManderaGeneral/generalgui#Todo) | 55.1 %  |
+| [generalgui](https://github.com/ManderaGeneral/generalgui) | [2.0.8](https://pypi.org/project/generalgui/) | 2021-12-30 10:18 CET | [3.8](https://www.python.org/downloads/release/python-380/), [3.9](https://www.python.org/downloads/release/python-390/) | Windows, Ubuntu |     2 | [14](https://github.com/ManderaGeneral/generalgui#Todo) | 55.1 %  |
 
 ## Contents
 <pre>
@@ -49,7 +49,7 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 │  └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/properties/toggle.py#L20'>Method: toggled</a> <b>(Untested)</b>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/page.py#L8'>Class: Page</a>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/subelements/password.py#L5'>Class: Password</a> <b>(Untested)</b>
-├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/payment.py#L8'>Class: PaymentPage</a> <b>(Untested)</b>
+├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/payment.py#L7'>Class: PaymentPage</a> <b>(Untested)</b>
 ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L5'>Class: PlotPage</a> <b>(Untested)</b>
 └─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L5'>Class: SigninPage</a> <b>(Untested)</b>
    ├─ <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L22'>Method: hook_signin_success</a> <b>(Untested)</b>
@@ -68,7 +68,7 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/entry.py#L1'>entry.py</a>                   | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/entry.py#L10'>[UnitTest] for Class: Entry</a>                  |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/__init__.py#L1'>__init__.py</a>                      | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/__init__.py#L12'>[UnitTest] for Class: MethodGrouper</a>                |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/subelements/password.py#L1'>password.py</a> | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/elements/subelements/password.py#L5'>[UnitTest] for Class: Password</a> |
-| <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/payment.py#L1'>payment.py</a>                  | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/payment.py#L8'>[UnitTest] for Class: PaymentPage</a>              |
+| <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/payment.py#L1'>payment.py</a>                  | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/payment.py#L7'>[UnitTest] for Class: PaymentPage</a>              |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L1'>plot.py</a>                        | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/plot.py#L5'>[UnitTest] for Class: PlotPage</a>                    |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L1'>signin.py</a>                    | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L5'>[UnitTest] for Class: SigninPage</a>                |
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L1'>signin.py</a>                    | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L22'>[UnitTest] for Method: hook_signin_success</a>     |
@@ -76,5 +76,5 @@ This package and 6 other make up [ManderaGeneral](https://github.com/ManderaGene
 | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L1'>signin.py</a>                    | <a href='https://github.com/ManderaGeneral/generalgui/blob/master/generalgui/pages/signin.py#L24'>[UnitTest] for Method: signin</a>                  |
 
 <sup>
-Generated 2021-12-28 12:43 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
+Generated 2021-12-30 10:18 CET for commit <a href='https://github.com/ManderaGeneral/generalgui/commit/master'>master</a>.
 </sup>

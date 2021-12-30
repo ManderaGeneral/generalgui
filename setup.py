@@ -12,7 +12,7 @@ setup(
     name="generalgui",
     author='Rickard "Mandera" Abraham',
     author_email="rickard.abraham@gmail.com",
-    version="2.0.7",
+    version="2.0.8",
     description="Extends and simplifies tkinter functionality with built-in QoL improvements.",
     long_description=long_description,
     long_description_content_type="text/markdown",
