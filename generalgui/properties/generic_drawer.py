@@ -116,7 +116,7 @@ class Drawer:
 
             kwargs = call_base_hooks(self, "draw_create_hook", kwargs)
 
-            # HERE ** Something like this for pack kwargs?
+            # Something like this for pack kwargs?
             # Would be nice if we didn't have to add **extra to all subclasses
             # Would need to allow to change side dynamically post draw
             pack_kwargs = {key: value for key, value in self.extra.items() if key in ("side", "expand", "fill")}
